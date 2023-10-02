@@ -2,7 +2,7 @@ import axios from 'axios'
 import {AuthResponse} from "../models/response/AuthResponse";
 
 
-export const API_URL = 'https://tests-7ivn.vercel.app/api'
+export const API_URL = 'https://tests-bzrd.vercel.app/api'
 
 
 const $api = axios.create({
