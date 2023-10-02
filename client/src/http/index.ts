@@ -6,7 +6,6 @@ export const API_URL = 'https://tests-7ivn.vercel.app/api'
 
 
 const $api = axios.create({
-    withCredentials: true,
     baseURL: API_URL
 })
 
