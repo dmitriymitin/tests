@@ -28,7 +28,6 @@ const AllTest = () => {
     }
 
     const allTestArray = Object.values(allTest)
-    console.log(allTestArray)
 
     if (allTestArray.length === 0) {
         return (
