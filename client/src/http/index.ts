@@ -4,6 +4,7 @@ import {AuthResponse} from "../models/response/AuthResponse";
 
 export const API_URL = 'https://tests-bzrd.vercel.app/api'
 
+export const CLIENT_URL='https://tests-sandy.vercel.app'
 
 const $api = axios.create({
     baseURL: API_URL

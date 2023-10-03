@@ -4,6 +4,7 @@ import {useMutation, useQuery, useQueryClient} from "react-query";
 import {deleteTest, getAdminAllTests, updateAdminStatusTest} from "../api/test";
 import {testStatusType} from "../type/test/type";
 import {useNavigate} from "react-router-dom";
+import {CLIENT_URL} from "../http";
 
 
 const getTestStatusText = (status: testStatusType) => {
@@ -69,47 +70,52 @@ const AllAdminTestsList = () => {
     return (
         <div className="all__tests__list">
             {allTestArray.map(el =>
-                <div key={el._id} className="all__tests__list__test">
-                    <div className="title">
-                        {el.title}
-                    </div>
+                <div key={el._id} className="all__tests__list__wrapper">
+                    <div className={"all__tests__list__test__item"}>
+                        <div className="title">
+                            {el.title}
+                        </div>
 
-                    <div className={"info"}>
-                        Кол-во вопросов: {el.quantityQuestion}
-                    </div>
+                        <div className={"info"}>
+                            Кол-во вопросов: {el.quantityQuestion}
+                        </div>
 
-                    <div className="btns">
-                        {
-                            el.status === 'Close' &&
-                            <Button
-                                type={'primary'}
-                                onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
-                            >
-                                Ввести ключ
-                            </Button>
-                        }
-                        {
-                            el.status === 'Close' &&
+                        <div className="btns">
+                            {
+                                el.status === 'Close' &&
+                                <Button
+                                    type={'primary'}
+                                    onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
+                                >
+                                    Ввести ключ
+                                </Button>
+                            }
+                            {
+                                el.status === 'Close' &&
                                 <Button
                                     onClick={() => navigate(`/admin/testInfo/${el._id}`)}
                                 >
                                     Результаты
                                 </Button>
-                        }
-                        <Button
-                            type={'primary'}
-                            onClick={() => onUpdateStatusTest(el._id, el.status)}
-                            disabled={el.status === 'Close'}
-                        >
-                            {getTestStatusText(el.status)}
-                        </Button>
-                        <Button
-                            type={'primary'}
-                            onClick={() => onDeleteTest(el._id)}
-                            danger
-                        >
-                            Удалить
-                        </Button>
+                            }
+                            <Button
+                                type={'primary'}
+                                onClick={() => onUpdateStatusTest(el._id, el.status)}
+                                disabled={el.status === 'Close'}
+                            >
+                                {getTestStatusText(el.status)}
+                            </Button>
+                            <Button
+                                type={'primary'}
+                                onClick={() => onDeleteTest(el._id)}
+                                danger
+                            >
+                                Удалить
+                            </Button>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Адрес теста: {CLIENT_URL + `/tests/${el._id}`}</p>
                     </div>
                 </div>
             )}
