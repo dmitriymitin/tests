@@ -44,7 +44,7 @@ const AllTest = () => {
             </h1>
             <div className="all__tests__list">
                 {allTestArray.map(el =>
-                    <div key={el._id} className="all__tests__list__test">
+                    <div key={el._id} className="all__tests__list__test__item">
                         <div className="title">
                             {el.title}
                         </div>
