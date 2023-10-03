@@ -26,7 +26,7 @@ const Test = () => {
         return <Spin size={'large'}/>
     }
 
-    if (testData.status === 'Close') {
+    if (testData.status === 'Start' || testData.status === 'Close') {
         return (
             <div className={'user__test container'}>
                 <h1 className={'title'}>
