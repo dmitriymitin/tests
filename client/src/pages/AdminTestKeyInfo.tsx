@@ -52,7 +52,7 @@ const AdminTestKeyInfo = () => {
             <h1 className={'title'}>
                 {currentTest.title}
             </h1>
-            <div className={'testKeyWrapper'}>
+            <div className={'admin__test__info__testKeyWrapper'}>
                 <p className={'testKey'}>Ключ к тесту</p>
                 <Input
                     maxLength={currentTest.quantityQuestion}

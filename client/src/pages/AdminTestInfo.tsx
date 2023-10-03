@@ -28,7 +28,7 @@ const AdminTestInfo = () => {
             <h1 className={'title'}>
                 {currentTest.title}
             </h1>
-            <div className={'changeKey'}>
+            <div className={'admin__test__info__changeKey'}>
                 Ключ {testInfoData.testKey || 'не установлен'}
                 <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/key/${currentTest._id}`)}>Изменить ключ</Button>
             </div>

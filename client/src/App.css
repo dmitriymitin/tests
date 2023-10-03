@@ -144,17 +144,27 @@ body {
     gap: 30px;
 }
 
+.admin__test__info__changeKey {
+    display: flex;
+    align-items: center;
+    font-size: 22px;
+    gap: 30px;
+}
+
+.admin__test__info__testKeyWrapper {
+    display: flex;
+    gap: 15px;
+
+    @media screen and (max-width: 650px) {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
 .admin__test__info {
     display: flex;
     flex-direction: column;
     gap: 15px;
-
-    .changeKey {
-        display: flex;
-        align-items: center;
-        font-size: 22px;
-        gap: 30px;
-    }
 
     .keyBlock {
         display: flex;
@@ -178,16 +188,6 @@ body {
             padding: 25px;
             border-radius: 15px;
             background: white;
-        }
-    }
-
-    .testKeyWrapper {
-        display: flex;
-        gap: 15px;
-
-        @media screen and (max-width: 650px) {
-            flex-direction: column;
-            gap: 15px;
         }
     }
 
