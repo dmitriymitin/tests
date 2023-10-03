@@ -50,7 +50,7 @@ const AdminTestInfoTable = ({usersTestInfo, countAnswers, testKey}: AdminTestInf
         let correctAnswers = 'Ключ не установлен'
         if (testKey) {
             const countCorrectAnswers = new Array(countAnswers).fill('1').reduce((acc, _, index) => {
-                if (el.answer[index + 1] !== undefined && el.answer[index + 1].toLowerCase() === testKey[index].toLowerCase()) {
+                if (el.answer !== undefined && el.answer[index + 1] !== undefined && el.answer[index + 1]?.toLowerCase() === testKey[index]?.toLowerCase()) {
                     acc += 1;
                     allCountCorrectAnswers[index + 1] = (allCountCorrectAnswers[index + 1] || 0) + 1
                 }
