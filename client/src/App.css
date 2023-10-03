@@ -184,11 +184,20 @@ body {
     .testKeyWrapper {
         display: flex;
         gap: 15px;
+
+        @media screen and (max-width: 650px) {
+            flex-direction: column;
+            gap: 15px;
+        }
     }
 
     .testKeyInput {
         height: 35px;
         width: 300px;
+
+        @media screen and (max-width: 400px) {
+            width: 200px;
+        }
     }
 
     .title {
@@ -204,6 +213,11 @@ body {
 .admin__form__btns {
     display: flex;
     gap: 15px;
+
+    @media screen and (max-width: 570px) {
+        flex-direction: column;
+        gap: 15px;
+    }
 }
 
 .login__box__header{
@@ -279,6 +293,12 @@ body {
     border-radius: 15px;
     padding: 15px;
 
+    @media screen and (max-width: 1000px) {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
     .title {
         font-size: 20px;
     }
@@ -286,6 +306,11 @@ body {
     .btns {
         display: flex;
         gap: 5px;
+
+        @media screen and (max-width: 570px) {
+            flex-direction: column;
+            gap: 15px;
+        }
     }
 }
 
