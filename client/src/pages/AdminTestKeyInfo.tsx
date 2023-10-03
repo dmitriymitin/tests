@@ -71,7 +71,7 @@ const AdminTestKeyInfo = () => {
                     <h2 className={'title'}>
                         Подробная ифнормация
                     </h2>
-                    <div className={'wrapper'}>
+                    <div className={'keyBlockWrapper'}>
                         {
                             new Array(currentTest.quantityQuestion).fill('1').map((_, index) =>
                                 <div className={'item'}>

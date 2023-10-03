@@ -161,6 +161,12 @@ body {
     }
 }
 
+.keyBlockWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 .admin__test__info {
     display: flex;
     flex-direction: column;
@@ -170,12 +176,6 @@ body {
         display: flex;
         flex-direction: column;
         gap: 15px;
-
-        .wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
 
         .title {
             font-size: 24px;
