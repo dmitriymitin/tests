@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useMutation, useQuery} from "react-query";
 import {getOneTest, getOneUserTest, saveNewTest} from "../api/test";
@@ -21,6 +21,13 @@ const Test = () => {
         mutateAsync: saveAnswerTrigger,
         isLoading: isSaveAnswerLoading
     } = useMutation(saveNewTest)
+
+    useEffect(() => {
+        if (!isTestLoading && !testData) {
+            navigate('/');
+            message.error('Данного теста не существует')
+        }
+    }, [isTestLoading]);
 
     if (!testData || isTestLoading) {
         return <Spin size={'large'}/>
