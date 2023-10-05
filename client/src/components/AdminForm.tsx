@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Button} from "antd";
 import ChangePasswordModalDrawer from "./ChangePasswordModalDrawer";
 import NewTestModalDrawer from "./NewTestModalDrawer";
-import AllAdminTestsList from "./AllAdminTestsList";
+import AllAdminTestsList from "./AllAdminTestsList/AllAdminTestsList";
 import {AuthActionCreators} from "../store/reducers/auth/action-creators";
 import {useDispatch} from "react-redux";
 

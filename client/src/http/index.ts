@@ -1,10 +1,15 @@
 import axios from 'axios'
 import {AuthResponse} from "../models/response/AuthResponse";
 
-
+// для прода использовать url ниже
 export const API_URL = 'https://tests-bzrd.vercel.app/api'
-
+// для дэв использовать url ниже
+// export const API_URL = 'http://localhost:6007/api'
+//
+// для прода использовать url ниже
 export const CLIENT_URL='https://tests-sandy.vercel.app'
+// для дэв использовать url ниже
+// export const CLIENT_URL='http://localhost:3000'
 
 const $api = axios.create({
     baseURL: API_URL

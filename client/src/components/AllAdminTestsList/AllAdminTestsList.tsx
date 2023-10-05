@@ -1,11 +1,11 @@
 import React from 'react';
 import {Button, message, Spin} from "antd";
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {deleteTest, getAdminAllTests, updateAdminStatusTest} from "../api/test";
-import {testStatusType} from "../type/test/type";
+import {deleteTest, getAdminAllTests, updateAdminStatusTest} from "../../api/test";
+import {testStatusType} from "../../type/test/type";
 import {useNavigate} from "react-router-dom";
-import {CLIENT_URL} from "../http";
-
+import {CLIENT_URL} from "../../http";
+import s from './AllAdminTestsList.module.scss'
 
 const getTestStatusText = (status: testStatusType) => {
     switch (status) {
@@ -61,26 +61,22 @@ const AllAdminTestsList = () => {
 
     if (allTestArray.length === 0) {
         return (
-            <div className={"all__tests__list__empty"}>
+            <div className={s.all__tests__list__empty}>
                 Тестов пока нет
             </div>
         )
     }
 
     return (
-        <div className="all__tests__list">
+        <div className={s.all__tests__list}>
             {allTestArray.map(el =>
-                <div key={el._id} className="all__tests__list__wrapper">
-                    <div className={"all__tests__list__test__item"}>
-                        <div className="title">
+                <div key={el._id} className={s.all__tests__list__wrapper}>
+                    <div className={s.all__tests__list__test__item}>
+                        <div className={s.title}>
                             {el.title}
                         </div>
 
-                        <div className={"info"}>
-                            Кол-во вопросов: {el.quantityQuestion}
-                        </div>
-
-                        <div className="btns">
+                        <div className={s.btns}>
                             {
                                 el.status === 'Close' &&
                                 <Button
@@ -113,6 +109,12 @@ const AllAdminTestsList = () => {
                                 Удалить
                             </Button>
                         </div>
+                    </div>
+                    <div className={s.info}>
+                        Кол-во вопросов: {el.quantityQuestion}
+                    </div>
+                    <div>
+                        <p>Статус теста: {el.status}</p>
                     </div>
                     <div>
                         <p>Адрес теста: {CLIENT_URL + `/tests/${el._id}`}</p>
