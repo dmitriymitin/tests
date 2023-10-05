@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import Column from "antd/es/table/Column";
 import {Row, Table} from "antd";
-import {ISaveNewTestResponse} from "../api/test/type";
+import {ISaveNewTestResponse} from "../../api/test/type";
 import {ColumnsType} from "antd/es/table";
 import {useMedia} from "react-use";
+import s from './AdminTestInfoTable.module.scss'
 
 interface DataType {
     // @ts-ignore
@@ -94,7 +95,7 @@ const AdminTestInfoTable = ({usersTestInfo, countAnswers, testKey}: AdminTestInf
                 </Table.Summary>
             )}
         >
-            <Column fixed={'left'} width={FIOWidth()}  title="Ф.И.О Группа" dataIndex="fiogroup" key="fiogroup" />
+            <Column fixed={'left'} width={FIOWidth()} title="Ф.И.О Группа" dataIndex="fiogroup" key="fiogroup" />
             {new Array(countAnswers).fill('1').map((_, index) =>
                 <Column title={`Вопрос ${index + 1}`} dataIndex={index + 1} key={index + 1}/>
             )}

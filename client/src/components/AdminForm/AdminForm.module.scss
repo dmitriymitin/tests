@@ -1,0 +1,26 @@
+.admin__form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  .title__wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    @media screen and (max-width: 570px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}
+
+.admin__form__btns {
+  display: flex;
+  gap: 15px;
+
+  @media screen and (max-width: 570px) {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

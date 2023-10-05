@@ -6,12 +6,18 @@
 
 .all__tests__list__wrapper {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: 20px;
   border: 1px solid rgba(0, 0, 0, 0.07);
   box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.16);
   border-radius: 15px;
   padding: 15px;
+
+  @media screen and (max-width: 700px) {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
 }
 
 .all__tests__list__empty {
@@ -20,28 +26,85 @@
 
 .all__tests__list__test__item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+  width: 50%;
 
-  @media screen and (max-width: 1000px) {
-    align-items: flex-start;
-    gap: 15px;
-    flex-direction: column;
+  @media screen and (max-width: 700px) {
+    width: 100%;
   }
 
   .title {
-    max-width: 20%;
+    max-width: 100%;
     overflow-wrap: break-word;
-    font-size: 20px;
+    font-size: 24px;
   }
 
-  .btns {
-    display: flex;
-    gap: 5px;
+  .info {
+    overflow-wrap: break-word;
+  }
 
-    @media screen and (max-width: 570px) {
-      flex-direction: column;
-      gap: 15px;
+  .deleteBtn {
+    width: 100px;
+  }
+
+  .infoWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    @media screen and (max-width: 700px) {
+      width: 100%;
+    }
+
+    .addressTest {
+      @media screen and (max-width: 700px) {
+        width: 60%;
+      }
+    }
+
+    .wrapperStatus {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .body {
+      max-width: 80%;
+      overflow-wrap: break-word;
+
+      &__status {
+        font-weight: 700;
+        font-size: 18px;
+      }
     }
   }
+}
+
+.btnsWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @media screen and (max-width: 700px) {
+    gap: 15px;
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+.btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+
+  @media screen and (max-width: 700px) {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+.addressCopyButton {
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
 }

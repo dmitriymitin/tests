@@ -1,22 +1,14 @@
 import React, {FC, useState} from 'react';
 import {Button, Form, Input, message, theme} from "antd";
 import {useDispatch} from "react-redux";
-import {AuthActionCreators} from "../store/reducers/auth/action-creators";
-import {useTypedSelector} from "../hooks/useTypedSelector";
-
-export type infoState = {
-    email:  string,
-    password:   string,
-    name: string,
-    surname: string,
-    gender: string,
-    patronymic: string
-}
+import {AuthActionCreators} from "../../store/reducers/auth/action-creators";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import s from './AuthForm.module.scss'
 
 const AuthForm: FC = () => {
     const [password, setPassword] = useState('')
     const dispatch = useDispatch();
-    const {error, isLoading} = useTypedSelector(state => state.auth)
+    const { isLoading} = useTypedSelector(state => state.auth)
 
     const submit = () => {
         try {
@@ -27,13 +19,13 @@ const AuthForm: FC = () => {
     }
 
     return (
-        <div className="login__box">
+        <div className={s.login__box}>
             <Input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={'Введите пароль'}
             />
-            <div className="login__box__content__item">
+            <div className={s.login__box__content__item}>
                 <Button
                     type="primary"
                     htmlType="submit"

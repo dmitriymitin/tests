@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import { useMutation, useQuery} from "react-query";
-import {getOneTestInfo, updateAdminKeyTest} from "../api/test";
+import {getOneTestInfo, updateAdminKeyTest} from "../../api/test";
 import {Button, Input, message, Spin} from "antd";
+import s from './AdminTestKeyInfo.module.scss'
+import clsx from "clsx";
 
 const AdminTestKeyInfo = () => {
     const navigate = useNavigate()
@@ -48,16 +50,16 @@ const AdminTestKeyInfo = () => {
     const dataTestKey = testInfoData.testKey
 
     return (
-        <div className={"admin__test__info container"}>
-            <h1 className={'title'}>
+        <div className={clsx(s.admin__test__info, 'container')}>
+            <h1 className={s.title}>
                 {currentTest.title}
             </h1>
-            <div className={'admin__test__info__testKeyWrapper'}>
-                <p className={'testKey'}>Ключ к тесту</p>
+            <div className={s.admin__test__info__testKeyWrapper}>
+                <p className={s.testKey}>Ключ к тесту</p>
                 <Input
                     maxLength={currentTest.quantityQuestion}
                     placeholder={'Введите ключ'}
-                    className={'testKeyInput'}
+                    className={s.testKeyInput}
                     value={testKey}
                     onChange={(e) => setTestKey(e.target.value)}
                 />
@@ -67,14 +69,14 @@ const AdminTestKeyInfo = () => {
 
             {
                 dataTestKey &&
-                <div className={'keyBlock'}>
-                    <h2 className={'title'}>
+                <div className={s.keyBlock}>
+                    <h2 className={s.title}>
                         Подробная ифнормация
                     </h2>
-                    <div className={'keyBlockWrapper'}>
+                    <div className={s.keyBlockWrapper}>
                         {
                             new Array(currentTest.quantityQuestion).fill('1').map((_, index) =>
-                                <div className={'item'}>
+                                <div className={s.item}>
                                     <div>Вопрос {index + 1}</div>
                                     {dataTestKey[index]}
                                 </div>

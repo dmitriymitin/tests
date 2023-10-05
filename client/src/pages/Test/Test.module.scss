@@ -1,0 +1,31 @@
+.user__test {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 100px;
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 15px;
+  }
+}
+
+.confirmBtnWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirmBtn {
+  width: 200px !important;
+  height: 50px !important;
+}

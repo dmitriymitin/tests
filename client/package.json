@@ -16,6 +16,7 @@
     "@types/redux-thunk": "^2.1.0",
     "antd": "^5.4.7",
     "axios": "^1.4.0",
+    "clsx": "^2.0.0",
     "dayjs": "^1.11.7",
     "framer-motion": "^10.16.4",
     "mongoose": "^7.1.0",

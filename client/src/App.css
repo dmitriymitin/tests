@@ -55,183 +55,8 @@ body {
     cursor: pointer;
 }
 
-.h100{
-    height: calc(100vh - 64px)
-}
-
-.l0{
-    display: flex;
-    /*position: fixed;*/
-    /*left: 0;*/
-    justify-content: start;
-    align-items: start;
-    width: 100%;
-}
-
-.ml10{
-    margin-left: 10px;
-}
-
-.mr10{
-    margin-right: 10px;
-}
-
-.events {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-
-.events .ant-badge-status {
-    width: 100%;
-    overflow: hidden;
-    font-size: 12px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.mt10{
-    margin-top: 10px;
-}
-
-.mb10{
-    margin-bottom: 10px;
-}
-
-.mt-10{
-    margin-top: -10px;
-}
-.mt-20{
-    margin-top: -20px;
-}
-
-.user__test {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding-bottom: 100px;
-
-    .form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .item {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-        background: white;
-        border-radius: 15px;
-    }
-}
-
-.login__box{
-    display: flex;
-    gap: 15px;
-}
-
 .title {
     font-size: 32px;
-}
-
-
-.admin__form {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.admin__test__info__changeKey {
-    display: flex;
-    align-items: center;
-    font-size: 22px;
-    gap: 30px;
-}
-
-.admin__test__info__testKeyWrapper {
-    display: flex;
-    gap: 15px;
-
-    @media screen and (max-width: 650px) {
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
-.keyBlockWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.admin__test__info {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-
-    .keyBlock {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-
-        .title {
-            font-size: 24px;
-        }
-
-        .item {
-            display: flex;
-            gap: 30px;
-            width: 300px;
-            padding: 25px;
-            border-radius: 15px;
-            background: white;
-        }
-    }
-
-    .testKeyInput {
-        height: 35px;
-        width: 300px;
-
-        @media screen and (max-width: 400px) {
-            width: 200px;
-        }
-    }
-
-    .title {
-        font-size: 32px;
-    }
-
-    .testKey {
-        width: 100px;
-        font-size: 16px;
-    }
-}
-
-.admin__form__btns {
-    display: flex;
-    gap: 15px;
-
-    @media screen and (max-width: 570px) {
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
-.login__box__header{
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    font-weight: normal;
-    font-size: 35px;
-}
-
-.login__box__content__item{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
 }
 
 .drawer {
@@ -263,69 +88,18 @@ body {
     }
 }
 
-.all__tests__list__users {
-    padding-top: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-
-    .h1 {
-        font-size: 26px;
-    }
-}
-
-.all__tests__list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.all__tests__list__wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.16);
-    border-radius: 15px;
-    padding: 15px;
-}
-
-.all__tests__list__empty {
-    font-size: 24px;
-}
-
-.all__tests__list__test__item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    @media screen and (max-width: 1000px) {
-        align-items: flex-start;
-        gap: 15px;
-        flex-direction: column;
-    }
-
-    .title {
-        max-width: 20%;
-        overflow-wrap: break-word;
-        font-size: 20px;
-    }
-
-    .btns {
-        display: flex;
-        gap: 5px;
-
-        @media screen and (max-width: 570px) {
-            flex-direction: column;
-            gap: 15px;
-        }
-    }
-}
-
 .testBackground {
     border: 1px solid rgba(0, 0, 0, 0.07);
     box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.16);
     border-radius: 15px;
     padding: 15px;
+}
+
+.statusClose {
+    color: red;
+}
+
+.statusOpen {
+    color: rgb(0, 11, 174);
 }
 

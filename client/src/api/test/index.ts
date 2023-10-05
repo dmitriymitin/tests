@@ -57,6 +57,9 @@ export const updateAdminStatusTest = async (values: ITestUpdateStatusModelReques
         case 'Open':
             newStatus = 'Close'
             break
+        case 'Close':
+            newStatus = 'Open'
+            break
     }
     const {data} = await $api.post('/test/changeStatusOne', { ...values, status: newStatus});
     return data;

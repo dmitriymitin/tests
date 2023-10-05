@@ -1,10 +1,10 @@
 import React from "react";
 import Auth from "../pages/Auth";
-import Test from "../pages/Test";
+import Test from "../pages/Test/Test";
 import Admin from "../pages/Admin";
 import Tests from "../pages/Tests";
-import AdminTestInfo from "../pages/AdminTestInfo";
-import AdminTestKeyInfo from "../pages/AdminTestKeyInfo";
+import AdminTestInfo from "../pages/AdminTestInfo/AdminTestInfo";
+import AdminTestKeyInfo from "../pages/AdminTestKeyInfo/AdminTestKeyInfo";
 
 export interface IRoute {
     path: string;

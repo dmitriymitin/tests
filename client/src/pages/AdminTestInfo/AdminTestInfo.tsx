@@ -1,9 +1,11 @@
 import React from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useQuery} from "react-query";
-import {getOneTestInfo} from "../api/test";
+import {getOneTestInfo} from "../../api/test";
 import {Button, Spin} from "antd";
-import AdminTestInfoTable from "../components/AdminTestInfoTable";
+import AdminTestInfoTable from "../../components/AdminTestInfoTable/AdminTestInfoTable";
+import s from './AdminTestInfo.module.scss'
+import clsx from "clsx";
 
 const AdminTestInfo = () => {
     const navigate = useNavigate();
@@ -24,11 +26,11 @@ const AdminTestInfo = () => {
     const testInfoUsersResult = testInfoData.usersInfo
 
     return (
-        <div className={"admin__test__info container"}>
-            <h1 className={'title'}>
+        <div className={clsx(s.admin__test__info, 'container')}>
+            <h1 className={s.title}>
                 {currentTest.title}
             </h1>
-            <div className={'admin__test__info__changeKey'}>
+            <div className={s.admin__test__info__changeKey}>
                 Ключ {testInfoData.testKey || 'не установлен'}
                 <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/key/${currentTest._id}`)}>Изменить ключ</Button>
             </div>

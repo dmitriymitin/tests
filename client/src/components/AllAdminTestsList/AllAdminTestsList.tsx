@@ -1,20 +1,34 @@
 import React from 'react';
-import {Button, message, Spin} from "antd";
+import {Button, message, Popconfirm, Spin} from "antd";
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {deleteTest, getAdminAllTests, updateAdminStatusTest} from "../../api/test";
 import {testStatusType} from "../../type/test/type";
 import {useNavigate} from "react-router-dom";
 import {CLIENT_URL} from "../../http";
 import s from './AllAdminTestsList.module.scss'
+import clsx from "clsx";
+import {CopyOutlined} from "@ant-design/icons";
+import CustomTooltip from "../CustomTooltip";
+
+const getTestStatusTextForBtn = (status: testStatusType) => {
+    switch (status) {
+        case "Open":
+            return 'Закрыть тест'
+        default:
+            return 'Открыть тест'
+    }
+}
+
+const copyAddress = (value: string) => {
+    navigator.clipboard.writeText(value);
+};
 
 const getTestStatusText = (status: testStatusType) => {
     switch (status) {
-        case "Start":
-            return 'Открыть тест'
         case "Open":
-            return 'Закрыть тест'
-        case "Close":
-            return 'Тест закрыт'
+            return <div className={clsx(s.body__status, 'statusOpen')}>Открыт</div>
+        default:
+            return <div className={clsx(s.body__status, 'statusClose')}>Закрыт</div>
     }
 }
 
@@ -76,48 +90,65 @@ const AllAdminTestsList = () => {
                             {el.title}
                         </div>
 
+                        <div className={s.infoWrapper}>
+                            <p className={s.wrapperStatus}>Статус теста:</p>
+                            {getTestStatusText(el.status)}
+                        </div>
+
+                        <div className={s.infoWrapper}>
+                            <p>Адрес теста:</p>
+                            <div className={clsx(s.body, s.addressTest)}>{CLIENT_URL + `/tests/${el._id}`}</div>
+                            <CustomTooltip text={'Address has been successfully copied'}>
+                                <button
+                                    className={s.addressCopyButton}
+                                    onClick={() => copyAddress(CLIENT_URL + `/tests/${el._id}`)}
+                                >
+                                    <CopyOutlined />
+                                </button>
+                            </CustomTooltip>
+                        </div>
+
+                        <div className={s.infoWrapper}>
+                            <p>Кол-во вопросов:</p>
+                            <div className={s.body}>{el.quantityQuestion}</div>
+                        </div>
+
+                    </div>
+                    <div className={s.btnsWrapper}>
                         <div className={s.btns}>
-                            {
-                                el.status === 'Close' &&
                                 <Button
-                                    type={'primary'}
                                     onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
                                 >
                                     Ввести ключ
                                 </Button>
-                            }
-                            {
-                                el.status === 'Close' &&
                                 <Button
                                     onClick={() => navigate(`/admin/testInfo/${el._id}`)}
                                 >
                                     Результаты
                                 </Button>
-                            }
+                        </div>
+                        <div className={s.btns}>
                             <Button
                                 type={'primary'}
                                 onClick={() => onUpdateStatusTest(el._id, el.status)}
-                                disabled={el.status === 'Close'}
                             >
-                                {getTestStatusText(el.status)}
+                                {getTestStatusTextForBtn(el.status)}
                             </Button>
-                            <Button
-                                type={'primary'}
-                                onClick={() => onDeleteTest(el._id)}
-                                danger
+                            <Popconfirm
+                                title="Удаление теста"
+                                description="Вы уверены, что хотите удалить тест?"
+                                onConfirm={() => onDeleteTest(el._id)}
+                                okText="Да"
+                                cancelText="Нет"
                             >
-                                Удалить
-                            </Button>
+                                <Button
+                                    className={s.deleteBtn}
+                                    danger
+                                >
+                                    Удалить
+                                </Button>
+                            </Popconfirm>
                         </div>
-                    </div>
-                    <div className={s.info}>
-                        Кол-во вопросов: {el.quantityQuestion}
-                    </div>
-                    <div>
-                        <p>Статус теста: {el.status}</p>
-                    </div>
-                    <div>
-                        <p>Адрес теста: {CLIENT_URL + `/tests/${el._id}`}</p>
                     </div>
                 </div>
             )}

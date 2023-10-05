@@ -1,0 +1,49 @@
+.admin__test__info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .keyBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .title {
+      font-size: 24px;
+    }
+
+    .item {
+      display: flex;
+      gap: 30px;
+      width: 300px;
+      padding: 25px;
+      border-radius: 15px;
+      background: white;
+    }
+  }
+
+  .testKeyInput {
+    height: 35px;
+    width: 300px;
+
+    @media screen and (max-width: 400px) {
+      width: 200px;
+    }
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .testKey {
+    width: 100px;
+    font-size: 16px;
+  }
+}
+
+.admin__test__info__changeKey {
+  display: flex;
+  align-items: center;
+  font-size: 22px;
+  gap: 30px;
+}

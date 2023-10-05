@@ -1,0 +1,48 @@
+.all__tests__list__empty {
+  font-size: 24px;
+}
+
+.all__tests__list__users {
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  h1 {
+    font-size: 26px;
+  }
+}
+
+.all__tests__list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.all__tests__list__test__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media screen and (max-width: 1000px) {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  .title {
+    max-width: 60%;
+    overflow-wrap: break-word;
+    font-size: 20px;
+  }
+
+  .btns {
+    display: flex;
+    gap: 5px;
+
+    @media screen and (max-width: 570px) {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+}

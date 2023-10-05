@@ -1,0 +1,10 @@
+.login__box{
+  display: flex;
+  gap: 15px;
+}
+
+.login__box__content__item{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
