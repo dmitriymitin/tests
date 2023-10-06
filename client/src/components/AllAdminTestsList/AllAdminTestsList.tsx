@@ -98,7 +98,7 @@ const AllAdminTestsList = () => {
                         <div className={s.infoWrapper}>
                             <p>Адрес теста:</p>
                             <div className={clsx(s.body, s.addressTest)}>{CLIENT_URL + `/tests/${el._id}`}</div>
-                            <CustomTooltip text={'Address has been successfully copied'}>
+                            <CustomTooltip text={'Адрес теста был успешно скопирован!'}>
                                 <button
                                     className={s.addressCopyButton}
                                     onClick={() => copyAddress(CLIENT_URL + `/tests/${el._id}`)}

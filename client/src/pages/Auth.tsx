@@ -5,7 +5,7 @@ import AuthForm from "../components/AuthForm/AuthForm";
 const Auth: FC = () => {
     return (
         <Layout>
-            <Row justify="center" align="middle" className="h100">
+            <Row justify="center" align="middle" className="auth">
                     <AuthForm/>
             </Row>
         </Layout>

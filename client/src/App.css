@@ -17,6 +17,9 @@ body {
     overflow-x: hidden;
 }
 
+.auth {
+    height: 100vh;
+}
 
 .backGroundColorBlack{
     background: black;
