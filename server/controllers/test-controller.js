@@ -12,10 +12,28 @@ class TestController{
         }
     }
 
+    async createCustom(req, res, next){
+        try {
+            const testData = await TestService.createCustom();
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
     async getAll(req, res, next){
         try{
-            const eventsData = await TestService.getAll();
-            return res.json(eventsData)
+            const testsData = await TestService.getAll();
+            return res.json(testsData)
+        } catch (e){
+            next(e)
+        }
+    }
+
+    async getAllQuestion(req, res, next){
+        try{
+            const questionsData = await TestService.getAllQuestion();
+            return res.json(questionsData)
         } catch (e){
             next(e)
         }
@@ -60,6 +78,27 @@ class TestController{
         }
     }
 
+    async addQuestionCustomTest(req, res, next){
+        try{
+            const {id} = req.params;
+            const {description, answers} = req.body
+            const response = await TestService.addQuestionCustomTest(id, description, answers);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async getOneCustomTestInfo(req, res, next){
+        try{
+            const {id} = req.params;
+            const response = await TestService.getOneCustomInfo(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     async changeStatusOne(req, res, next){
         try{
             const {id, status} = req.body;
@@ -84,6 +123,16 @@ class TestController{
         try{
             const {id} = req.params;
             const response = await TestService.deleteOne(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async deleteOneCustomQuestion(req, res, next){
+        try{
+            const {id, testId} = req.query;
+            const response = await TestService.deleteOneCustomQuestion(id, testId);
             return res.json(response);
         } catch (e) {
             next(e)

@@ -1,7 +1,7 @@
 import {
-    IGetOneTestInfoResponse,
+    IGetOneTestInfoResponse, IGetTestInfoCustomModelResponse,
     ISaveNewTestRequest,
-    ISaveNewTestResponse,
+    ISaveNewTestResponse, ITestCustomModelRequest, ITestCustomModelResponse,
     ITestModelRequest,
     ITestModelResponse,
     ITestUpdateStatusModelRequest
@@ -10,6 +10,21 @@ import $api from "../../http";
 
 export const getOneTest = async (id: string): Promise<ITestModelResponse> => {
     const {data} = await $api.get(`/test/getOne/${id}`);
+    return data;
+};
+
+export const getOneCustomTest = async (id: string): Promise<IGetTestInfoCustomModelResponse> => {
+    const {data} = await $api.get(`/test/getOneInfo/custom/${id}`);
+    return data;
+};
+
+export const addQuestionToCustomTest = async (values: {
+    id: string,
+    question: ITestCustomModelRequest
+}): Promise<ITestCustomModelResponse> => {
+    const {data} = await $api.post(`/test/custom/addQuestion/${values.id}`, {
+        ...values.question
+    });
     return data;
 };
 
@@ -28,12 +43,24 @@ export const createNewTest = async (values: ITestModelRequest): Promise<ITestMod
     return data;
 };
 
+export const onDeleteQuestionCustomTest = async (values: {
+    id: string | null, testId: string | null
+}): Promise<any> => {
+    const {data} = await $api.delete(`/test/custom/deleteOneQuestion?id=${values.id}&testId=${values.testId}`);
+    return data;
+};
+
+export const createNewCustomTest = async (): Promise<ITestCustomModelResponse> => {
+    const {data} = await $api.post('/test/createCustom');
+    return data;
+};
+
 export const saveNewTest = async (values: ISaveNewTestRequest): Promise<ISaveNewTestResponse> => {
     const {data} = await $api.post('/test/saveAnswer', { ...values, status: 'Start'});
     return data;
 };
 
-export const getAdminAllTests = async (): Promise<ITestModelResponse[]> => {
+export const getAdminAllTests = async (): Promise<(ITestModelResponse & ITestCustomModelResponse)[]> => {
     const {data} = await $api.get('/test/all');
     return data;
 };

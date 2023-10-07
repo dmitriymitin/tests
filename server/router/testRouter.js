@@ -11,11 +11,16 @@ router.get('/user/getOne/:id', TestController.getUserOne);
 
 //запросы которые могут отправялть только авторизованные пользователи
 router.post('/create',authMiddleware, TestController.create);
+router.post('/createCustom',authMiddleware, TestController.createCustom);
+router.post('/custom/addQuestion/:id',authMiddleware, TestController.addQuestionCustomTest);
 router.get('/all',authMiddleware, TestController.getAll);
 router.get('/getOneInfo/:id',authMiddleware, TestController.getOneInfo);
 router.get('/getOne/:id',authMiddleware, TestController.getOne);
+router.get('/getOneInfo/custom/:id',authMiddleware, TestController.getOneCustomTestInfo);
 router.post('/changeStatusOne', authMiddleware, TestController.changeStatusOne);
 router.post('/changeKeyOne',authMiddleware, TestController.changeKeyOne);
 router.delete('/deleteOne/:id',authMiddleware, TestController.deleteOne);
+router.delete('/custom/deleteOneQuestion',authMiddleware, TestController.deleteOneCustomQuestion);
+router.get('/getAllQuestion',authMiddleware, TestController.getAllQuestion);
 
 module.exports = router;

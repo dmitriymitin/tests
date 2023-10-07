@@ -1,0 +1,107 @@
+.test__body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  :global(.ant-form-item) {
+    margin-bottom: 10px !important;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .description {
+  }
+
+  .answer__item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.16);
+    border-radius: 15px;
+    padding: 15px;
+
+    .info__wrapper {
+      width: 95%;
+      padding-left: calc(100% - 97%);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .closeWrapper {
+      display: flex;
+      justify-content: flex-end;
+
+      .clearBtn {
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    .value {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+
+      @media screen and (max-width: 500px) {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .text {
+        width: 250px;
+      }
+    }
+  }
+}
+
+.answer__wrapper {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.addAnswerBtn {
+  height: 40px;
+  font-size: 16px;
+}
+
+.answer__block {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.drawer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 40px;
+
+  :global(.ant-drawer-header) {
+    border-bottom: 0;
+  }
+
+  :global(.ant-drawer-header-title) {
+    justify-content: flex-end;
+  }
+}
+
+.drawerWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.btns {
+  margin-top: 40px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}

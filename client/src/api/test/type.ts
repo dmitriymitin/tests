@@ -18,6 +18,46 @@ export interface ITestModelResponse {
     testKey: string | null;
 }
 
+export type TypeCustomTestQuestionAnswer = {
+    name: string,
+    value: string
+}
+
+export interface ICustomTestQuestion {
+    _id: string | null;
+    description: string;
+    answers: {
+        [key: string]: TypeCustomTestQuestionAnswer
+    } | null
+}
+
+export interface ITestCustomModelResponse {
+    _id: string;
+    title: string;
+    questions: ICustomTestQuestion[];
+    status: testStatusType;
+    testKey: string | null;
+}
+
+export interface IGetTestInfoCustomModelResponse {
+    test: {
+        _id: string;
+        title: string;
+        questions: ICustomTestQuestion[];
+        status: testStatusType;
+        testKey: string | null;
+    },
+    usersInfo: ISaveNewTestResponse[],
+    testKey: string | null;
+}
+
+export interface ITestCustomModelRequest {
+    description: string;
+    answers: {
+        [key: string]: TypeCustomTestQuestionAnswer
+    }
+}
+
 export interface IGetOneTestInfoResponse {
     test: ITestModelResponse,
     usersInfo: ISaveNewTestResponse[]

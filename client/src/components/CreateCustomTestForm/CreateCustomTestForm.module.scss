@@ -1,0 +1,32 @@
+.custom__test__form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.test__block {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 15px;
+  }
+}
+
+.action__wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.addBtn {
+  height: 50px;
+  width: 100%;
+  font-size: 16px;
+}

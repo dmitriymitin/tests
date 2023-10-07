@@ -13,9 +13,9 @@ import CustomTooltip from "../CustomTooltip";
 const getTestStatusTextForBtn = (status: testStatusType) => {
     switch (status) {
         case "Open":
-            return 'Закрыть тест'
+            return 'Закрыть тест для всех'
         default:
-            return 'Открыть тест'
+            return 'Открыть тест для всех'
     }
 }
 
@@ -108,14 +108,23 @@ const AllAdminTestsList = () => {
                             </CustomTooltip>
                         </div>
 
+
                         <div className={s.infoWrapper}>
                             <p>Кол-во вопросов:</p>
-                            <div className={s.body}>{el.quantityQuestion}</div>
+                            <div className={s.body}>{el.quantityQuestion || el.questions.length}</div>
                         </div>
 
                     </div>
                     <div className={s.btnsWrapper}>
                         <div className={s.btns}>
+                                {el.questions &&
+                                    <Button
+                                        type={'primary'}
+                                        onClick={() => navigate(`/admin/testInfo/customTest/${el._id}`)}
+                                    >
+                                        Редактировать тест
+                                    </Button>
+                                }
                                 <Button
                                     onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
                                 >
