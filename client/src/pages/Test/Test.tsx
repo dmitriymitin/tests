@@ -121,29 +121,29 @@ const Test = () => {
                                 <Form.Item
                                     name={`${index + 1}`}
                                 >
-                                    <Radio.Group>
-                                        <Space direction="vertical">
-                                            {el.answers
-                                                ? Object.values(el.answers).map((el, index) =>
-                                                        <Radio key={index} value={el.value}>{el.name}</Radio>
-                                                )
-                                                : <Input/>
-                                            }
-                                        </Space>
-                                    </Radio.Group>
+                                    {el.answers && Object.keys(el.answers).length > 0
+                                        ? <Radio.Group>
+                                            <Space direction="vertical">
+                                                {Object.values(el.answers).map((el, index) =>
+                                                    <Radio key={index} value={el.value}>{el.name}</Radio>
+                                                )}
+                                            </Space>
+                                        </Radio.Group>
+                                        : <Input className={s.customQuestionInput}/>
+                                    }
                                 </Form.Item>
                             </div>
                         )
                         : new Array(testData.quantityQuestion).fill('1').map((_, index) =>
-                        <div key={index} className={s.item}>
-                            <div>Вопрос {index + 1}</div>
-                            <Form.Item
-                                name={`${index + 1}`}
-                            >
-                                <Input/>
-                            </Form.Item>
-                        </div>
-                    )
+                            <div key={index} className={s.item}>
+                                <div>Вопрос {index + 1}</div>
+                                <Form.Item
+                                    name={`${index + 1}`}
+                                >
+                                    <Input/>
+                                </Form.Item>
+                            </div>
+                        )
                 }
             </Form>
             <div className={s.confirmBtnWrapper}>

@@ -8,6 +8,7 @@ import {ICustomTestQuestion, TypeCustomTestQuestionAnswer} from "../../../api/te
 import s from "../AddNewQuestionModalDrawer/AddNewQuestionModalDrawer.module.scss";
 import TextArea from "antd/es/input/TextArea";
 import {CloseOutlined} from "@ant-design/icons";
+import {logger} from "react-query/types/react/logger";
 
 interface answersInfoState {
     answers: {
@@ -29,9 +30,9 @@ const ChangeCustomQuestion = ({refetchTest, testId, question, open, setOpen}: Ch
     })
 
     useEffect(() => {
+        form.setFieldValue('description', question.description)
         if (!question.answers)
             return
-        form.setFieldValue('description', question.description)
         setAnswersInfo({answers: question.answers})
     }, [question]);
 
@@ -56,9 +57,9 @@ const ChangeCustomQuestion = ({refetchTest, testId, question, open, setOpen}: Ch
             refetchTest();
             setOpen(false)
             setAnswersInfo({answers: {}})
-            message.success(question.name + ' был успешно добавлен!')
+            message.success(question.name + ' был успешно изменен!')
         } catch (e) {
-            message.error('Ошибка при добавлении ' + question.name)
+            message.error('Ошибка при изменении ' + question.name)
         }
     }
 
