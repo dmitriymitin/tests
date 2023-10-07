@@ -9,6 +9,7 @@ import s from './AllAdminTestsList.module.scss'
 import clsx from "clsx";
 import {CopyOutlined} from "@ant-design/icons";
 import CustomTooltip from "../CustomTooltip";
+import ChangeAllTestFirstQuestion from "./ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
     switch (status) {
@@ -38,8 +39,11 @@ const AllAdminTestsList = () => {
     const {
         data: allTest,
         isLoading: isAllTestLoading,
-        isFetching
-    } = useQuery('allTests', getAdminAllTests);
+        isFetching,
+        refetch: allTestRefetch
+    } = useQuery('allTests', getAdminAllTests, {
+        refetchOnWindowFocus: false
+    });
 
     const {
         mutateAsync: deleteTestTrigger
@@ -83,6 +87,8 @@ const AllAdminTestsList = () => {
 
     return (
         <div className={s.all__tests__list}>
+            <ChangeAllTestFirstQuestion refetch={allTestRefetch} title={allTestArray[0].firstQuestionTitle || 'Фамилия, номер группы'}/>
+            <h2>Список всех тестов</h2>
             {allTestArray.map(el =>
                 <div key={el._id} className={s.all__tests__list__wrapper}>
                     <div className={s.all__tests__list__test__item}>
@@ -119,7 +125,6 @@ const AllAdminTestsList = () => {
                         <div className={s.btns}>
                                 {el.questions &&
                                     <Button
-                                        type={'primary'}
                                         onClick={() => navigate(`/admin/testInfo/customTest/${el._id}`)}
                                     >
                                         Редактировать тест

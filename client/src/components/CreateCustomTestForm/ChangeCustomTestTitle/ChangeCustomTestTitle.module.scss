@@ -1,0 +1,50 @@
+.title__block {
+  display: flex;
+  padding: 15px;
+  background: white;
+  border-radius: 15px;
+  flex-direction: column;
+
+  .title {
+    font-size: 30px;
+  }
+}
+
+.title__wrapper {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.test__title {
+  width: 100%;
+  font-size: 28px;
+  overflow-wrap: break-word;
+}
+
+.btnWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.formTestTitle {
+  overflow-wrap: break-word;
+  width: 100%;
+}
+
+.clearBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  box-shadow: none;
+  background-color: transparent;
+  width: 16px;
+  height: 20px;
+}
+
+.text__area__title {
+  border-radius: 12px;
+}

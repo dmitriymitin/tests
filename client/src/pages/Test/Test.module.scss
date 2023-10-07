@@ -17,7 +17,21 @@
     padding: 15px;
     background: white;
     border-radius: 15px;
+
+    .title {
+      font-size: 20px;
+      font-weight: 500;
+      overflow-wrap: break-word;
+    }
   }
+}
+
+.spin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  width: 100%;
 }
 
 .confirmBtnWrapper {

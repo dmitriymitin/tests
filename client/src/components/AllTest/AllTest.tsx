@@ -13,7 +13,9 @@ const AllTest = () => {
         data: allTest,
         isLoading: isAllTestLoading,
         isFetching
-    } = useQuery('allUsersTests', getUsersAllTests);
+    } = useQuery('allUsersTests', getUsersAllTests, {
+        refetchOnWindowFocus: false
+    });
 
 
     if (!allTest || isAllTestLoading || isFetching) {

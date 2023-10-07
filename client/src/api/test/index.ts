@@ -1,10 +1,11 @@
 import {
+    ICustomTestQuestion,
     IGetOneTestInfoResponse, IGetTestInfoCustomModelResponse,
     ISaveNewTestRequest,
     ISaveNewTestResponse, ITestCustomModelRequest, ITestCustomModelResponse,
     ITestModelRequest,
     ITestModelResponse,
-    ITestUpdateStatusModelRequest
+    ITestUpdateStatusModelRequest, TypeCustomTestQuestionAnswer
 } from "./type";
 import $api from "../../http";
 
@@ -50,6 +51,28 @@ export const onDeleteQuestionCustomTest = async (values: {
     return data;
 };
 
+export const onUpdateCustomTestTitle = async (values: {
+    testId: string | null
+    title: string;
+}): Promise<any> => {
+    const {data} = await $api.post(`/test/custom/updateTitle?id=${values.testId}`, {
+        title: values.title,
+    });
+    return data;
+};
+
+export const onUpdateQuestionCustomTest = async (values: {
+    id: string | null,
+    testId: string | null
+    question: Omit<ICustomTestQuestion, '_id'>
+}): Promise<any> => {
+    const {data} = await $api.post(`/test/custom/updateOneQuestion?id=${values.id}&testId=${values.testId}`, {
+        description: values.question.description,
+        answers: values.question.answers
+    });
+    return data;
+};
+
 export const createNewCustomTest = async (): Promise<ITestCustomModelResponse> => {
     const {data} = await $api.post('/test/createCustom');
     return data;
@@ -67,6 +90,23 @@ export const getAdminAllTests = async (): Promise<(ITestModelResponse & ITestCus
 
 export const getUsersAllTests = async (): Promise<ITestModelResponse[]> => {
     const {data} = await $api.get('/test/users/all');
+    return data;
+};
+
+export const getCustomTestQuestion = async (id: string): Promise<ICustomTestQuestion> => {
+    const {data} = await $api.get(`/test/custom/getOneQuestionCustomInfo/${id}`);
+    return data;
+};
+
+export const clearTestResults = async (id: string): Promise<any> => {
+    const {data} = await $api.delete(`/test/clearResults/${id}`);
+    return data;
+};
+
+export const updateTitleFirstQuestion = async (title: string): Promise<any> => {
+    const {data} = await $api.post(`/test/updateFirstQuestion`, {
+        title
+    });
     return data;
 };
 

@@ -9,6 +9,8 @@ import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useMutation} from "react-query";
 import {createNewCustomTest} from "../../api/test";
+import ChangeCustomTestTitle from "../CreateCustomTestForm/ChangeCustomTestTitle/ChangeCustomTestTitle";
+import ChangeAllTestFirstQuestion from "../AllAdminTestsList/ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
 
 const AdminForm = () => {
     const navigate = useNavigate()
@@ -17,13 +19,13 @@ const AdminForm = () => {
     const [newTestOpen, setNewTestOpen] = useState(false)
     const {
         mutateAsync: createCustomTestTrigger,
-        isLoading: createCustomTestLoading
+        isLoading: createCustomTestLoading,
     } = useMutation(createNewCustomTest)
 
     const handleCreateCustomTest = async () => {
         try {
             const res = await createCustomTestTrigger();
-            navigate('/test/createCustom')
+            navigate(`/admin/testInfo/customTest/${res._id}`)
         } catch (e) {
             message.error('Ошибка при создании теста')
         }
@@ -50,7 +52,6 @@ const AdminForm = () => {
                         Создать новый тест со своими вопросами
                     </Button>
                 </div>
-                <h2>Список всех тестов</h2>
                 <AllAdminTestsList/>
                 <ChangePasswordModalDrawer open={changePasswordOpen} setOpen={setChangePasswordModal}/>
                 <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>

@@ -2,10 +2,11 @@ import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useMutation, useQuery} from "react-query";
 import {getOneTest, getOneUserTest, saveNewTest} from "../../api/test";
-import {Button, Form, Input, message, Popconfirm, Spin} from "antd";
+import {Button, Form, Input, message, Popconfirm, Radio, Space, Spin} from "antd";
 import {useForm} from "antd/es/form/Form";
 import s from './Test.module.scss'
 import clsx from "clsx";
+import {ICustomTestQuestion} from "../../api/test/type";
 
 const Test = () => {
     const navigate = useNavigate()
@@ -16,23 +17,28 @@ const Test = () => {
 
     const {
         data: testData,
-        isLoading: isTestLoading
-    } = useQuery(['test', testId], () => getOneUserTest(testId))
+        isLoading: isTestLoading,
+        isFetching: isTestFetching
+    } = useQuery(['test', testId], () => getOneUserTest(testId), {
+        refetchOnWindowFocus: false
+    })
 
     const {
         mutateAsync: saveAnswerTrigger,
         isLoading: isSaveAnswerLoading
     } = useMutation(saveNewTest)
 
-    useEffect(() => {
-        if (!isTestLoading && !testData) {
-            navigate('/');
-            message.error('Данного теста не существует')
-        }
-    }, [isTestLoading]);
 
-    if (!testData || isTestLoading) {
-        return <Spin size={'large'}/>
+    if (isTestLoading || isTestFetching) {
+        return <div className={s.spin}>
+            <Spin size={'large'}/>
+        </div>
+    }
+
+    if (!testData) {
+        navigate('/');
+        message.error('Данного теста не существует')
+        return null
     }
 
     if (testData.status === 'Start' || testData.status === 'Close') {
@@ -52,7 +58,7 @@ const Test = () => {
         try {
             await form.validateFields()
         } catch (e) {
-            message.error('Введите Ф.И.О и номер группы')
+            message.error('Заполните все обязательный поля!')
             return
         }
 
@@ -76,14 +82,13 @@ const Test = () => {
             message.success('Ваши ответы сохранены!')
             navigate('/')
         } catch (e) {
-            // @ts-ignore
             message.error('Ошибка при отправке формы')
         }
     }
 
     return (
         <div className={clsx(s.user__test, 'container')}>
-            <h1 className={s.title}>
+            <h1 className="title">
                 {testData.title}
             </h1>
             <Form
@@ -92,13 +97,13 @@ const Test = () => {
                 layout={'vertical'}
             >
                 <div className={s.item}>
-                    <div>Ф.И.О Группа</div>
+                    <div className={s.title}>{testData.firstQuestionTitle || 'Фамилия, номер группы'}</div>
                     <Form.Item
                         name={"FIOGroup"}
                         rules={[
                             {
                                 required: true,
-                                message: 'Введите Ф.И.О и номер группы'
+                                message: 'Обязательный вопрос'
                             }
                         ]}
                     >
@@ -106,7 +111,30 @@ const Test = () => {
                     </Form.Item>
                 </div>
                 {
-                    new Array(testData.quantityQuestion).fill('1').map((_, index) =>
+                    testData.questions
+                        ? testData.questions.map((el, index) =>
+                            <div key={el._id} className={s.item}>
+                                <div className={s.title}>Вопрос {index + 1}</div>
+                                <div className={s.description}>
+                                    {el.description}
+                                </div>
+                                <Form.Item
+                                    name={`${index + 1}`}
+                                >
+                                    <Radio.Group>
+                                        <Space direction="vertical">
+                                            {el.answers
+                                                ? Object.values(el.answers).map((el, index) =>
+                                                        <Radio key={index} value={el.value}>{el.name}</Radio>
+                                                )
+                                                : <Input/>
+                                            }
+                                        </Space>
+                                    </Radio.Group>
+                                </Form.Item>
+                            </div>
+                        )
+                        : new Array(testData.quantityQuestion).fill('1').map((_, index) =>
                         <div key={index} className={s.item}>
                             <div>Вопрос {index + 1}</div>
                             <Form.Item

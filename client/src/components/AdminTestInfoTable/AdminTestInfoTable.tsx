@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Column from "antd/es/table/Column";
-import {Row, Table} from "antd";
-import {ISaveNewTestResponse} from "../../api/test/type";
+import {Button, Row, Table} from "antd";
+import {ICustomTestQuestion, ISaveNewTestResponse, TypeCustomTestQuestionAnswer} from "../../api/test/type";
 import {ColumnsType} from "antd/es/table";
 import {useMedia} from "react-use";
 import s from './AdminTestInfoTable.module.scss'
@@ -12,16 +12,22 @@ interface DataType {
     fiogroup: string;
     // @ts-ignore
     correctAnswers: string;
-    [key: string]: string;
+    [key: string]: string | JSX.Element;
 }
 
 interface AdminTestInfoTableProps {
+    firstQuestionTitle: string
     usersTestInfo: ISaveNewTestResponse[];
+    questions?: ICustomTestQuestion[];
+    setCurrentQuestion: (val: {
+        openModal: boolean,
+        question: ICustomTestQuestion & { name: string }
+    }) => void,
     countAnswers: number;
     testKey: string | null;
 }
 
-const AdminTestInfoTable = ({usersTestInfo, countAnswers, testKey}: AdminTestInfoTableProps) => {
+const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCurrentQuestion, countAnswers, testKey}: AdminTestInfoTableProps) => {
     const isMedia768 = useMedia('(max-width: 768px');
     const isMedia576 = useMedia('(max-width: 576px');
     const getSize = () => {
@@ -51,7 +57,7 @@ const AdminTestInfoTable = ({usersTestInfo, countAnswers, testKey}: AdminTestInf
         let correctAnswers = 'Ключ не установлен'
         if (testKey) {
             const countCorrectAnswers = new Array(countAnswers).fill('1').reduce((acc, _, index) => {
-                if (el.answer !== undefined && el.answer[index + 1] !== undefined && el.answer[index + 1]?.toLowerCase() === testKey[index]?.toLowerCase()) {
+                if (el.answer !== undefined && el.answer[index + 1] !== undefined && el.answer[index + 1]?.toString().toLowerCase() === testKey[index]?.toString().toLowerCase()) {
                     acc += 1;
                     allCountCorrectAnswers[index + 1] = (allCountCorrectAnswers[index + 1] || 0) + 1
                 }
@@ -61,12 +67,12 @@ const AdminTestInfoTable = ({usersTestInfo, countAnswers, testKey}: AdminTestInf
             correctAnswers = countCorrectAnswers.toString();
         }
 
-        return {
-            key: el._id,
-            fiogroup: el.FIOGroup,
-            correctAnswers,
-            ...el.answer
-        }
+            return {
+                key: el._id,
+                fiogroup: el.FIOGroup,
+                correctAnswers,
+                ...el.answer
+            }
     })
 
     const FIOWidth = () => {
@@ -89,16 +95,47 @@ const AdminTestInfoTable = ({usersTestInfo, countAnswers, testKey}: AdminTestInf
                     <Table.Summary.Row>
                         <Table.Summary.Cell index={0}>Кол-во неверных ответов на вопрос</Table.Summary.Cell>
                         {new Array(countAnswers).fill('1').map((_, index) =>
-                            <Table.Summary.Cell index={index + 1}>{(100 - 100 * allCountCorrectAnswers[index + 1] / usersTestInfo.length).toFixed(0)}%</Table.Summary.Cell>
+                            <Table.Summary.Cell key={index + 1} index={index + 1}>
+                                {(100 - 100 * allCountCorrectAnswers[index + 1] / usersTestInfo.length).toFixed(0)}%
+                            </Table.Summary.Cell>
                         )}
                     </Table.Summary.Row>
                 </Table.Summary>
             )}
         >
-            <Column fixed={'left'} width={FIOWidth()} title="Ф.И.О Группа" dataIndex="fiogroup" key="fiogroup" />
-            {new Array(countAnswers).fill('1').map((_, index) =>
-                <Column title={`Вопрос ${index + 1}`} dataIndex={index + 1} key={index + 1}/>
-            )}
+            <Column fixed={'left'} width={FIOWidth()} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
+            {questions
+                ? questions.map((el, index) => (
+                            <Column
+                                title={<Button
+                                    onClick={() => {
+                                        setCurrentQuestion({
+                                            openModal: true,
+                                            question: {
+                                                _id: el._id,
+                                                description: el.description,
+                                                answers: el.answers,
+                                                name: `Вопрос ${index + 1}`,
+                                            }
+                                        })
+                                    }}
+                                >
+                                    Вопрос {index + 1}
+                                </Button>}
+                                dataIndex={index + 1}
+                                key={index + 1}
+                            />
+                        )
+                )
+                : new Array(countAnswers).fill('1').map((_, index) => (
+                            <Column
+                                title={`Вопрос ${index + 1}`}
+                                dataIndex={index + 1}
+                                key={index + 1}
+                            />
+                        )
+                )
+            }
             <Column fixed={'right'} width={100} title="Кол-во верных ответов" dataIndex="correctAnswers" key="correctAnswers" />
         </Table>
     );

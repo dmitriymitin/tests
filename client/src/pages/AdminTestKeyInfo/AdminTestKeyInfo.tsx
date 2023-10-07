@@ -28,9 +28,24 @@ const AdminTestKeyInfo = () => {
         setTestKey(testInfoData?.test?.testKey || '')
     }, [testInfoData]);
 
+
+    if (isTestInfoLoading || isTestInfoFetching) {
+        return <Spin size={'large'}/>
+    }
+
+    if (!testInfoData) {
+        navigate('/admin');
+        message.error('Тест не найден')
+        return null
+    }
+
+    const quantityQuestion = testInfoData?.test?.quantityQuestion || testInfoData?.test?.questions?.length
+    const currentTest = testInfoData.test
+    const dataTestKey = testInfoData.testKey
+
     const handleSaveKey = async () => {
-        if (testKey.length !== testInfoData?.test?.quantityQuestion) {
-            message.error(`Необходимо ввести ключ размером ${testInfoData?.test?.quantityQuestion}`)
+        if (testKey.length !== quantityQuestion) {
+            message.error(`Необходимо ввести ключ размером ${quantityQuestion}`)
             return
         }
         try {
@@ -41,23 +56,15 @@ const AdminTestKeyInfo = () => {
         }
     }
 
-
-    if (!testInfoData || isTestInfoLoading || isTestInfoFetching) {
-        return <Spin size={'large'}/>
-    }
-
-    const currentTest = testInfoData.test
-    const dataTestKey = testInfoData.testKey
-
     return (
         <div className={clsx(s.admin__test__info, 'container')}>
-            <h1 className={s.title}>
+            <h1 className={"title"}>
                 {currentTest.title}
             </h1>
             <div className={s.admin__test__info__testKeyWrapper}>
                 <p className={s.testKey}>Ключ к тесту</p>
                 <Input
-                    maxLength={currentTest.quantityQuestion}
+                    maxLength={quantityQuestion}
                     placeholder={'Введите ключ'}
                     className={s.testKeyInput}
                     value={testKey}
@@ -75,8 +82,8 @@ const AdminTestKeyInfo = () => {
                     </h2>
                     <div className={s.keyBlockWrapper}>
                         {
-                            new Array(currentTest.quantityQuestion).fill('1').map((_, index) =>
-                                <div className={s.item}>
+                            new Array(quantityQuestion).fill('1').map((_, index) =>
+                                <div key={index} className={s.item}>
                                     <div>Вопрос {index + 1}</div>
                                     {dataTestKey[index]}
                                 </div>

@@ -10,10 +10,21 @@ export interface ITestUpdateStatusModelRequest {
     status: testStatusType
 }
 
+export interface ICustomTestQuestion {
+    _id: string | null;
+    description: string;
+    answers: {
+        [key: string]: TypeCustomTestQuestionAnswer
+    } | null
+}
+
+
 export interface ITestModelResponse {
+    firstQuestionTitle: string | null;
     _id: string,
     title: string;
     quantityQuestion: number;
+    questions: ICustomTestQuestion[] | null
     status: testStatusType;
     testKey: string | null;
 }
@@ -23,15 +34,8 @@ export type TypeCustomTestQuestionAnswer = {
     value: string
 }
 
-export interface ICustomTestQuestion {
-    _id: string | null;
-    description: string;
-    answers: {
-        [key: string]: TypeCustomTestQuestionAnswer
-    } | null
-}
-
 export interface ITestCustomModelResponse {
+    firstQuestionTitle: string | null,
     _id: string;
     title: string;
     questions: ICustomTestQuestion[];
@@ -59,7 +63,7 @@ export interface ITestCustomModelRequest {
 }
 
 export interface IGetOneTestInfoResponse {
-    test: ITestModelResponse,
+    test: ITestModelResponse & ITestCustomModelResponse,
     usersInfo: ISaveNewTestResponse[]
     testKey: string | null;
 }

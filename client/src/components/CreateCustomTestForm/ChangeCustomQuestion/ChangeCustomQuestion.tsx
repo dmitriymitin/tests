@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useMutation} from "react-query";
-import {addQuestionToCustomTest} from "../../../api/test";
+import {addQuestionToCustomTest, onUpdateQuestionCustomTest} from "../../../api/test";
 import {useForm} from "antd/es/form/Form";
 import {useMedia} from "react-use";
 import {Button, Drawer, Form, Input, message, Modal} from "antd";
@@ -36,17 +36,18 @@ const ChangeCustomQuestion = ({refetchTest, testId, question, open, setOpen}: Ch
     }, [question]);
 
     const {
-        mutateAsync: addQuestionToCustomTestTrigger,
-        isLoading: addQuestionToCustomTestLoading
-    } = useMutation(addQuestionToCustomTest)
+        mutateAsync: updateQuestionCustomTestTrigger,
+        isLoading: updateQuestionCustomTestLoading
+    } = useMutation(onUpdateQuestionCustomTest)
 
     const [form] = useForm()
     const isPC = useMedia('(min-width: 768px)');
 
     const onOk = async () => {
         try {
-            await addQuestionToCustomTestTrigger({
-                id: testId,
+            await updateQuestionCustomTestTrigger({
+                testId: testId,
+                id: question._id,
                 question: {
                     description: form.getFieldValue('description'),
                     answers: answersInfo.answers

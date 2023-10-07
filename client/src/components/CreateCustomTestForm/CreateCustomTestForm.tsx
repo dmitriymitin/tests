@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import s from "./CreateCustomTestForm.module.scss";
 import TextArea from "antd/es/input/TextArea";
-import {Button, message, Popconfirm, Spin} from "antd";
+import {Button, Form, message, Popconfirm, Radio, Space, Spin} from "antd";
 import {useMutation, useQuery} from "react-query";
 import {getOneCustomTest, getOneTestInfo, onDeleteQuestionCustomTest} from "../../api/test";
 import {useNavigate} from "react-router-dom";
@@ -9,6 +9,9 @@ import {ICustomTestQuestion, TypeCustomTestQuestionAnswer} from "../../api/test/
 import AddNewQuestionModalDrawer from "./AddNewQuestionModalDrawer/AddNewQuestionModalDrawer";
 import ChangePasswordModalDrawer from "../ChangePasswordModalDrawer";
 import ChangeCustomQuestion from "./ChangeCustomQuestion/ChangeCustomQuestion";
+import {EditOutlined} from "@ant-design/icons";
+import ChangeCustomTestTitle from "./ChangeCustomTestTitle/ChangeCustomTestTitle";
+import {useForm} from "antd/es/form/Form";
 
 
 interface CreateCustomTestFormProps {
@@ -17,6 +20,7 @@ interface CreateCustomTestFormProps {
 
 const CreateCustomTestForm = ({testId}:CreateCustomTestFormProps) => {
     const navigate = useNavigate();
+    const [form] = useForm()
 
     const [questionForAdd, setQuestionForAdd] = useState<{
         openModal: boolean,
@@ -49,7 +53,10 @@ const CreateCustomTestForm = ({testId}:CreateCustomTestFormProps) => {
     })
 
     if (customTestLoading || customTestFetching)
-        return <Spin size={'large'}/>
+        return <div className={s.spin}>
+            <Spin size={'large'}/>
+        </div>
+
 
     if (!customTestData) {
         message.error('произошла ошибка при получении информации о тесте')
@@ -80,24 +87,48 @@ const CreateCustomTestForm = ({testId}:CreateCustomTestFormProps) => {
         }))
     }
 
+    const getFieldTestTitle = (): string => {
+        return form.getFieldValue('testTitle')
+    }
+
     return (
         <>
-            <div className={s.custom__test__form}>
+            <Form
+                form={form}
+                className={s.custom__test__form}
+                initialValues={{ testTitle: customTestData.test.title }}
+            >
                 <h1 className="title">
                     Страница создания теста со своими вопросами
                 </h1>
 
+                <div className={s.btns}>
+                    <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/key/${testId}`)}>Ввести ключ</Button>
+                    <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/${testId}`)}>Перейти к результатам</Button>
+                </div>
+
                 <div className={s.test__block}>
-                    <TextArea
-                        className={s.item}
-                        rows={2}
-                        placeholder={'Введите название теста'}
+                    <ChangeCustomTestTitle
+                        testId={testId}
+                        refetch={refetchCustomTestData}
+                        getFieldTestTitle={getFieldTestTitle}
+                        title={customTestData.test.title}
                     />
                     {customTestData.test.questions?.length > 0 &&
                         customTestData.test.questions.map((el, index) =>
                             <div key={index} className={s.item}>
-                                <p>Вопрос {index + 1}</p>
-                                <div> {el.description} </div>
+                                <p className={s.title}>Вопрос {index + 1}</p>
+                                <div className={s.description}> {el.description} </div>
+                                {el.answers
+                                    ? <Radio.Group>
+                                        <Space direction="vertical">
+                                            {Object.values(el.answers).map((el, index) =>
+                                                    <Radio key={index} value={el.value}>({el.value}) {el.name}</Radio>
+                                            )}
+                                        </Space >
+                                    </Radio.Group>
+                                    : 'Нет ответов'
+                                }
                                 <div className={s.action__wrapper}>
                                     <Button
                                         onClick={() =>
@@ -105,7 +136,7 @@ const CreateCustomTestForm = ({testId}:CreateCustomTestFormProps) => {
                                                 openModal: true,
                                                 question: {
                                                     _id: el._id,
-                                                    name: `Вопрос ${(customTestData.test.questions?.length || 0) + 1}`,
+                                                    name: `Вопрос ${index + 1}`,
                                                     description: el.description,
                                                     answers: el.answers
                                                 }
@@ -113,7 +144,7 @@ const CreateCustomTestForm = ({testId}:CreateCustomTestFormProps) => {
                                         }
                                         type={'primary'}
                                     >
-                                        Изменить
+                                        Редактировать
                                     </Button>
                                     <Popconfirm
                                         title="Удаление вопроса"
@@ -143,7 +174,7 @@ const CreateCustomTestForm = ({testId}:CreateCustomTestFormProps) => {
                         </Button>
                     </div>
                 </div>
-            </div>
+            </Form>
             <AddNewQuestionModalDrawer
                 refetchTest={refetchCustomTestData}
                 testId={testId}

@@ -39,9 +39,9 @@ class TestController{
         }
     }
 
-    async getUsersAll(req, res, next){
+    async getUsersTestsAll(req, res, next){
         try{
-            const eventsData = await TestService.getUsersAll();
+            const eventsData = await TestService.getUsersTestsAll();
             return res.json(eventsData)
         } catch (e){
             next(e)
@@ -72,6 +72,16 @@ class TestController{
         try{
             const {id} = req.params;
             const response = await TestService.getOneInfo(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async getOneQuestionCustomInfo(req, res, next){
+        try{
+            const {id} = req.params;
+            const response = await TestService.getOneQuestionCustomInfo(id);
             return res.json(response);
         } catch (e) {
             next(e)
@@ -119,6 +129,16 @@ class TestController{
         }
     }
 
+    async updateFirstQuestion(req, res, next){
+        try{
+            const {title} = req.body;
+            const response = await TestService.updateFirstQuestion(title);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     async deleteOne(req, res, next){
         try{
             const {id} = req.params;
@@ -129,10 +149,42 @@ class TestController{
         }
     }
 
+    async clearResults(req, res, next){
+        try{
+            const {id} = req.params;
+            const response = await TestService.clearResults(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     async deleteOneCustomQuestion(req, res, next){
         try{
             const {id, testId} = req.query;
             const response = await TestService.deleteOneCustomQuestion(id, testId);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async updateTitleCustomTest(req, res, next){
+        try{
+            const {id} = req.query;
+            const {title} = req.body;
+            const response = await TestService.updateTitleCustomTest(id, title);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async updateQuestionCustomTest(req, res, next){
+        try{
+            const {id, testId} = req.query;
+            const {description, answers} = req.body;
+            const response = await TestService.updateQuestionCustomTest(id,testId, description, answers);
             return res.json(response);
         } catch (e) {
             next(e)

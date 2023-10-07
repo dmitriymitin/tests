@@ -41,9 +41,22 @@
   }
 }
 
+.spin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  width: 100%;
+}
+
 .admin__test__info__changeKey {
   display: flex;
   align-items: center;
   font-size: 22px;
   gap: 30px;
+
+  @media screen and (max-width: 500px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
