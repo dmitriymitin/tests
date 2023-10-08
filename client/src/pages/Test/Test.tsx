@@ -58,7 +58,7 @@ const Test = () => {
         try {
             await form.validateFields()
         } catch (e) {
-            message.error('Заполните все обязательный поля!')
+            message.error('Заполните все обязательные поля!')
             return
         }
 

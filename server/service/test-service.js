@@ -18,7 +18,7 @@ class TestService {
             return {
                 _id: test._id,
                 firstQuestionTitle: test.firstQuestionTitle,
-                quantityQuestion: test.firstQuestionTitle,
+                quantityQuestion: test.quantityQuestion,
                 status: test.status,
                 title: test.title
             }
