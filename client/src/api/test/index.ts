@@ -14,11 +14,6 @@ export const getOneTest = async (id: string): Promise<ITestModelResponse> => {
     return data;
 };
 
-export const downloadTest = async (): Promise<ITestModelResponse> => {
-    const {data} = await $api.get(`/test/downloadTest`);
-    return data;
-};
-
 export const getOneCustomTest = async (id: string): Promise<IGetTestInfoCustomModelResponse> => {
     const {data} = await $api.get(`/test/getOneInfo/custom/${id}`);
     return data;

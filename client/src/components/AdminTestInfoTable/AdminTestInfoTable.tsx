@@ -96,7 +96,7 @@ const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCu
                         <Table.Summary.Cell index={0}>Кол-во неверных ответов на вопрос</Table.Summary.Cell>
                         {new Array(countAnswers).fill('1').map((_, index) =>
                             <Table.Summary.Cell key={index + 1} index={index + 1}>
-                                {(100 - 100 * allCountCorrectAnswers[index + 1] / usersTestInfo.length).toFixed(0)}%
+                                {(100 - 100 * (allCountCorrectAnswers[index + 1] || 0) / usersTestInfo.length).toFixed(0)}%
                             </Table.Summary.Cell>
                         )}
                     </Table.Summary.Row>

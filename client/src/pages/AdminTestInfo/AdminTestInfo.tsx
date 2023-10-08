@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useMutation, useQuery} from "react-query";
-import {clearTestResults, downloadTest, getOneTestInfo} from "../../api/test";
+import {clearTestResults, getOneTestInfo} from "../../api/test";
 import {Button, message, Popconfirm, Spin} from "antd";
 import AdminTestInfoTable from "../../components/AdminTestInfoTable/AdminTestInfoTable";
 import s from './AdminTestInfo.module.scss'
 import clsx from "clsx";
 import ChangeCustomQuestion from "../../components/CreateCustomTestForm/ChangeCustomQuestion/ChangeCustomQuestion";
 import {ICustomTestQuestion} from "../../api/test/type";
-import {DownloadOutlined, FileDoneOutlined} from "@ant-design/icons";
+import {DownloadOutlined} from "@ant-design/icons";
 import {API_URL} from "../../http";
 
 const AdminTestInfo = () => {
@@ -24,15 +24,13 @@ const AdminTestInfo = () => {
     })
 
     const {
-    		mutateAsync: downloadTestTrigger,
-    		isLoading: downloadTestLoading,
-    	} = useMutation(downloadTest)
-
-    const {
         data: testInfoData,
         isLoading: isTestInfoLoading,
+        isFetching: isTestInfoFetching,
         refetch
-    } = useQuery(['adminTestInfo', testId], () => getOneTestInfo(testId))
+    } = useQuery(['adminTestInfo', testId], () => getOneTestInfo(testId), {
+        refetchOnWindowFocus: false
+    })
 
     const {
         mutateAsync: clearTestResultsTrigger,
@@ -40,12 +38,17 @@ const AdminTestInfo = () => {
     } = useMutation(clearTestResults)
 
 
-    if (!testInfoData || isTestInfoLoading) {
+    if (isTestInfoLoading || isTestInfoFetching) {
         return <div className={s.spin}>
             <Spin size={'large'}/>
         </div>
     }
 
+    if (!testInfoData) {
+        message.error('Ошибка при получении теста')
+        navigate('/admin')
+        return null
+    }
     const setModal = (val: boolean) => {
         setCurrentQuestion(prev => ({...prev, openModal: val}))
     }
@@ -96,7 +99,7 @@ const AdminTestInfo = () => {
                     :  <div className={s.test__info__wrapper}>
                         <div className={s.downloadBtnWrapper}>
                             <Link
-                                to={`${API_URL}/test/downloadTest`}
+                                to={`${API_URL}/test/downloadTest/${testId}`}
                                 className={s.downloadBtn}
                             ><DownloadOutlined/></Link>
                         </div>
@@ -104,7 +107,7 @@ const AdminTestInfo = () => {
                             firstQuestionTitle={currentTest.firstQuestionTitle || 'Фамилия, номер группы'}
                             usersTestInfo={testInfoUsersResult}
                             questions={currentTest.questions}
-                            countAnswers={currentTest.quantityQuestion}
+                            countAnswers={currentTest.quantityQuestion || currentTest.questions.length}
                             setCurrentQuestion={setCurrentQuestion}
                             testKey={testInfoData.testKey}
                         />

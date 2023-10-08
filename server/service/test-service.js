@@ -37,38 +37,99 @@ class TestService {
         }
     }
 
+    async downloadTest(id) {
+        const testModel = await TestModel.findOne({_id: new ObjectId(id)})
+        const testUserModel = await TestUserModel.find({testId: new ObjectId(id)})
+        let noCorrectAnswer = {}
+        const workbook = new excel.Workbook();
+        let countQuestion = 0;
+        let title = ''
+        let firstQuestionTitle = ''
+        let testKey = ''
+
+        if (testModel) {
+            countQuestion = testModel.quantityQuestion
+            title = testModel.title
+            firstQuestionTitle = testModel.firstQuestionTitle
+            testKey = testModel.testKey
+        } else {
+            const customTestModel = await TestCustomModel.findOne({_id: new ObjectId(id)})
+            countQuestion = customTestModel.questions.length
+            title = customTestModel.title
+            firstQuestionTitle = customTestModel.firstQuestionTitle
+            testKey = customTestModel.testKey
+        }
+
+        const worksheet = workbook.addWorksheet(title);
+        worksheet.cell(1, 1).string(firstQuestionTitle);
+        let indexCell = 1;
+        const arrayQuestion = new Array(countQuestion).fill('1')
+
+        // Строка с вопросами
+        arrayQuestion.forEach((_, index) => {
+            indexCell++;
+            worksheet.cell(1, indexCell).string(`Вопрос ${index + 1}`);
+        })
+        worksheet.cell(1, indexCell + 1).string(`Кол-во верных ответов`);
+
+        // Строка ответов студента
+        let indexUserCell = 1;
+        testUserModel.forEach((el, index) => {
+            indexUserCell++;
+            worksheet.cell(indexUserCell, 1).string(el.FIOGroup)
+            let indexUserAnswerCell = 1;
+            let countCorrectAnswer = 0;
+            arrayQuestion.forEach((_, index) => {
+                indexUserAnswerCell++;
+                const answer = el.answer ? el.answer[index + 1] || '' : ''
+                if (testKey[index] && answer === testKey[index]) {
+                    countCorrectAnswer++;
+                } else {
+                    noCorrectAnswer[index] = (noCorrectAnswer[index] || 0) + 1
+                }
+                worksheet.cell(indexUserCell, indexUserAnswerCell).string(answer)
+            })
+            worksheet.cell(indexUserCell, indexUserAnswerCell + 1).number(countCorrectAnswer)
+        })
+
+        // Строка с правильными ответами
+        let correctAnswerRowIndex = indexUserCell + 1
+        worksheet.cell(correctAnswerRowIndex, 1).string('Правильные ответы')
+        let indexKey = 1
+        arrayQuestion.forEach((_, index) => {
+            indexKey++;
+            const key = testKey[index] || '';
+            worksheet.cell(correctAnswerRowIndex, indexKey).string(key);
+        })
+
+        // Строка с неверными ответами
+        let noCorrectAnswerRowIndex = indexUserCell + 2
+        worksheet.cell(noCorrectAnswerRowIndex, 1).string('Кол-во неверных ответов на вопрос')
+        let noCorrectAnswerCell = 1;
+        arrayQuestion.forEach((_, index) => {
+            noCorrectAnswerCell++;
+            const noCorrectAns = noCorrectAnswer[index] || 0
+            const result = 100 * noCorrectAns / testUserModel.length
+            worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result.toFixed(0)}%`)
+        })
+
+        await workbook.write('Excel.xlsx');
+    }
+
+    async generateFilePathTest() {
+        const filePath = path.join(__dirname, '../Excel.xlsx');
+        return filePath;
+    }
+
     async getOneInfo(id){
         const testModel  = await TestModel.findOne({_id: new ObjectId(id)})
         const testUserModel  = await TestUserModel.find({testId: new ObjectId(id)})
-
-        const workbook = new excel.Workbook();
-
-        const worksheet = workbook.addWorksheet('Sheet 1');
-
-        const style = workbook.createStyle({
-            font: {
-                color: '#FF0800',
-                size: 12
-            },
-            numberFormat: '$#,##0.00; ($#,##0.00); -'
-        });
-
-        worksheet.cell(1,1).number(100).style(style);
-
-        worksheet.cell(1,2).number(200).style(style);
-
-        worksheet.cell(1,3).formula('A1 + B1').style(style);
-
-        worksheet.cell(2,1).string('string').style(style);
-
-        worksheet.cell(3,1).bool(true).style(style).style({font: {size: 14}});
-
-        workbook.write('Excel.xlsx');
-
-        if (testModel) return {
-            test: testModel,
-            usersInfo: testUserModel,
-            testKey: testModel.testKey
+        if (testModel) {
+            return {
+                test: testModel,
+                usersInfo: testUserModel,
+                testKey: testModel.testKey
+            }
         }
         const customTestModel = await TestCustomModel.findOne({_id: new ObjectId(id)})
         return {
@@ -167,11 +228,6 @@ class TestService {
                 ...testsAll,
                 ...testsCustom
         ]
-    }
-
-    async downloadTest() {
-        const filePath = path.join(__dirname, '../Excel.xlsx');
-        return filePath;
     }
 
     async getAllQuestion(){

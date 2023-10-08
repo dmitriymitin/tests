@@ -32,7 +32,8 @@ class TestController{
 
     async downloadTest(req, res, next){
         try{
-            const filePath = await TestService.downloadTest();
+            const {id} = req.params;
+            const filePath = await TestService.generateFilePathTest();
             res.download(filePath, (err) => {
                 if (err) {
                     res.status(500).send('Ошибка при загрузке файла');
@@ -82,8 +83,9 @@ class TestController{
     }
 
     async getOneInfo(req, res, next){
-        try{
+        try {
             const {id} = req.params;
+            await TestService.downloadTest(id);
             const response = await TestService.getOneInfo(id);
             return res.json(response);
         } catch (e) {
