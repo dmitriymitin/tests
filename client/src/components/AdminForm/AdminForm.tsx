@@ -31,6 +31,15 @@ const AdminForm = () => {
         }
     }
 
+    const handleCreateCustomTestWithDescription = async () => {
+        try {
+            const res = await createCustomTestTrigger();
+            navigate(`/admin/testInfo/customTest/description/${res._id}`)
+        } catch (e) {
+            message.error('Ошибка при создании теста')
+        }
+    }
+
     return (
         <>
             <div className={s.admin__form}>
@@ -42,14 +51,35 @@ const AdminForm = () => {
                 </div>
 
                 <div className={s.admin__form__btns}>
-                    <Button type={"primary"} onClick={() => setChangePasswordModal(true)}>Изменить пароль</Button>
-                    <Button type={"primary"} onClick={() => setNewTestOpen(true)}>Создать новый тест</Button>
                     <Button
+                        className={s.btn}
+                        type={"primary"}
+                        onClick={() => setChangePasswordModal(true)}
+                    >
+                        Изменить пароль
+                    </Button>
+                    <Button
+                        className={s.btn}
+                        type={"primary"}
+                        onClick={() => setNewTestOpen(true)}
+                    >
+                        Создать новый тест
+                    </Button>
+                    <Button
+                        className={s.btn}
                         loading={createCustomTestLoading}
                         type={"primary"}
                         onClick={handleCreateCustomTest}
                     >
                         Создать новый тест со своими вопросами
+                    </Button>
+                    <Button
+                        className={s.btn}
+                        loading={createCustomTestLoading}
+                        type={"primary"}
+                        onClick={handleCreateCustomTestWithDescription}
+                    >
+                        Создать новый тест только с описанием
                     </Button>
                 </div>
                 <AllAdminTestsList/>

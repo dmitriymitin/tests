@@ -6,6 +6,7 @@ import Tests from "../pages/Tests";
 import AdminTestInfo from "../pages/AdminTestInfo/AdminTestInfo";
 import AdminTestKeyInfo from "../pages/AdminTestKeyInfo/AdminTestKeyInfo";
 import CreateCustomTest from "../pages/CreateCustomTest/CreateCustomTest";
+import CreateCustomTestDescription from "../pages/CreateCustomTestDescription/CreateCustomTestDescription";
 
 export interface IRoute {
     path: string;
@@ -17,6 +18,7 @@ export enum RouteNames {
     TESTS = '/',
     TEST = "/tests/:testId",
     CREATE_CUSTOM_TEST = "/admin/testInfo/customTest/:testId",
+    CREATE_CUSTOM_TEST_DESCRIPTION = '/admin/testInfo/customTest/description/:testId',
     ADMIN = '/admin',
     ADMIN_TEST_INFO = "/admin/testInfo/:testId",
     ADMIN_TEST_KEY_INFO = "/admin/testInfo/key/:testId"
@@ -57,6 +59,10 @@ export const privateRoutes : IRoute[] = [
     {
         path: RouteNames.ADMIN_TEST_KEY_INFO,
         component: AdminTestKeyInfo
+    },
+    {
+        path: RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION,
+        component: CreateCustomTestDescription
     },
     {
         path: RouteNames.CREATE_CUSTOM_TEST,

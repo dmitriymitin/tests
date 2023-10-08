@@ -3,8 +3,11 @@ const TestUserModel = require('../models/test-user-model')
 const TestCustomModel = require('../models/test-custom-model')
 const TestCustomQuestionModel = require('../models/test-custom-question-model')
 
+const path = require('path');
+const excel = require('excel4node');
 const {ObjectId} = require("mongodb");
 const ApiError = require("../exceptions/api-error");
+const {Workbook} = require("excel4node");
 
 class TestService {
     async getOne(id){
@@ -37,6 +40,31 @@ class TestService {
     async getOneInfo(id){
         const testModel  = await TestModel.findOne({_id: new ObjectId(id)})
         const testUserModel  = await TestUserModel.find({testId: new ObjectId(id)})
+
+        const workbook = new excel.Workbook();
+
+        const worksheet = workbook.addWorksheet('Sheet 1');
+
+        const style = workbook.createStyle({
+            font: {
+                color: '#FF0800',
+                size: 12
+            },
+            numberFormat: '$#,##0.00; ($#,##0.00); -'
+        });
+
+        worksheet.cell(1,1).number(100).style(style);
+
+        worksheet.cell(1,2).number(200).style(style);
+
+        worksheet.cell(1,3).formula('A1 + B1').style(style);
+
+        worksheet.cell(2,1).string('string').style(style);
+
+        worksheet.cell(3,1).bool(true).style(style).style({font: {size: 14}});
+
+        workbook.write('Excel.xlsx');
+
         if (testModel) return {
             test: testModel,
             usersInfo: testUserModel,
@@ -119,11 +147,17 @@ class TestService {
     }
 
     async create(title, quantityQuestion){
-        return await TestModel.create({firstQuestionTitle: 'Фамилия, номер группы', title, quantityQuestion})
+        const firstTest = await TestModel.findOne()
+        const firstCustomTest = await TestCustomModel.findOne()
+        const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
+        return await TestModel.create({firstQuestionTitle, title, quantityQuestion})
     }
 
     async createCustom(){
-        return await TestCustomModel.create({firstQuestionTitle: 'Фамилия, номер группы', title: 'Название теста', questions: []})
+        const firstTest = await TestModel.findOne()
+        const firstCustomTest = await TestCustomModel.findOne()
+        const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
+        return await TestCustomModel.create({firstQuestionTitle, title: 'Название теста', questions: []})
     }
 
     async getAll(){
@@ -133,6 +167,11 @@ class TestService {
                 ...testsAll,
                 ...testsCustom
         ]
+    }
+
+    async downloadTest() {
+        const filePath = path.join(__dirname, '../Excel.xlsx');
+        return filePath;
     }
 
     async getAllQuestion(){

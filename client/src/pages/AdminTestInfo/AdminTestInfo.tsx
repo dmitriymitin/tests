@@ -1,13 +1,15 @@
 import React, {useState} from 'react';
-import {useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useMutation, useQuery} from "react-query";
-import {clearTestResults, getOneTestInfo} from "../../api/test";
+import {clearTestResults, downloadTest, getOneTestInfo} from "../../api/test";
 import {Button, message, Popconfirm, Spin} from "antd";
 import AdminTestInfoTable from "../../components/AdminTestInfoTable/AdminTestInfoTable";
 import s from './AdminTestInfo.module.scss'
 import clsx from "clsx";
 import ChangeCustomQuestion from "../../components/CreateCustomTestForm/ChangeCustomQuestion/ChangeCustomQuestion";
 import {ICustomTestQuestion} from "../../api/test/type";
+import {DownloadOutlined, FileDoneOutlined} from "@ant-design/icons";
+import {API_URL} from "../../http";
 
 const AdminTestInfo = () => {
     const navigate = useNavigate();
@@ -21,6 +23,10 @@ const AdminTestInfo = () => {
         question: {} as ICustomTestQuestion & { name: string }
     })
 
+    const {
+    		mutateAsync: downloadTestTrigger,
+    		isLoading: downloadTestLoading,
+    	} = useMutation(downloadTest)
 
     const {
         data: testInfoData,
@@ -68,7 +74,14 @@ const AdminTestInfo = () => {
                 okText="Да"
                 cancelText="Нет"
             >
-                <Button style={{width: 200}} type={'primary'} danger>Очистить результаты</Button>
+                <Button
+                    loading={clearTestResultsLoading}
+                    style={{width: 200}}
+                    type={'primary'}
+                    danger
+                >
+                    Очистить результаты
+                </Button>
             </Popconfirm>
             <div className={s.admin__test__info__changeKey}>
                 Ключ {testInfoData.testKey || 'не установлен'}
@@ -80,14 +93,22 @@ const AdminTestInfo = () => {
             {
                 testInfoUsersResult.length === 0
                     ? <p>Результов по тесту нет</p>
-                    :  <AdminTestInfoTable
-                        firstQuestionTitle={currentTest.firstQuestionTitle || 'Фамилия, номер группы'}
-                        usersTestInfo={testInfoUsersResult}
-                        questions={currentTest.questions}
-                        countAnswers={currentTest.quantityQuestion}
-                        setCurrentQuestion={setCurrentQuestion}
-                        testKey={testInfoData.testKey}
-                    />
+                    :  <div className={s.test__info__wrapper}>
+                        <div className={s.downloadBtnWrapper}>
+                            <Link
+                                to={`${API_URL}/test/downloadTest`}
+                                className={s.downloadBtn}
+                            ><DownloadOutlined/></Link>
+                        </div>
+                        <AdminTestInfoTable
+                            firstQuestionTitle={currentTest.firstQuestionTitle || 'Фамилия, номер группы'}
+                            usersTestInfo={testInfoUsersResult}
+                            questions={currentTest.questions}
+                            countAnswers={currentTest.quantityQuestion}
+                            setCurrentQuestion={setCurrentQuestion}
+                            testKey={testInfoData.testKey}
+                        />
+                    </div>
             }
             {testInfoData.test.questions &&
                 <ChangeCustomQuestion

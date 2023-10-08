@@ -136,7 +136,7 @@ const Test = () => {
                         )
                         : new Array(testData.quantityQuestion).fill('1').map((_, index) =>
                             <div key={index} className={s.item}>
-                                <div>Вопрос {index + 1}</div>
+                                <div className={s.title}>Вопрос {index + 1}</div>
                                 <Form.Item
                                     name={`${index + 1}`}
                                 >

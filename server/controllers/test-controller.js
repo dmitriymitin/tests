@@ -30,6 +30,19 @@ class TestController{
         }
     }
 
+    async downloadTest(req, res, next){
+        try{
+            const filePath = await TestService.downloadTest();
+            res.download(filePath, (err) => {
+                if (err) {
+                    res.status(500).send('Ошибка при загрузке файла');
+                }
+            });
+        } catch (e){
+            next(e)
+        }
+    }
+
     async getAllQuestion(req, res, next){
         try{
             const questionsData = await TestService.getAllQuestion();

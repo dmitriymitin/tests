@@ -125,17 +125,20 @@ const AllAdminTestsList = () => {
                         <div className={s.btns}>
                                 {el.questions &&
                                     <Button
+                                        className={s.btn}
                                         onClick={() => navigate(`/admin/testInfo/customTest/${el._id}`)}
                                     >
                                         Редактировать тест
                                     </Button>
                                 }
                                 <Button
+                                    className={s.btn}
                                     onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
                                 >
                                     Ввести ключ
                                 </Button>
                                 <Button
+                                    className={s.btn}
                                     onClick={() => navigate(`/admin/testInfo/${el._id}`)}
                                 >
                                     Результаты
@@ -143,6 +146,7 @@ const AllAdminTestsList = () => {
                         </div>
                         <div className={s.btns}>
                             <Button
+                                className={s.btn}
                                 type={'primary'}
                                 onClick={() => onUpdateStatusTest(el._id, el.status)}
                             >
@@ -156,7 +160,7 @@ const AllAdminTestsList = () => {
                                 cancelText="Нет"
                             >
                                 <Button
-                                    className={s.deleteBtn}
+                                    className={clsx(s.deleteBtn, s.btn)}
                                     danger
                                 >
                                     Удалить
