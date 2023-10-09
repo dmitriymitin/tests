@@ -3,6 +3,8 @@ import React, {FC, memo} from "react";
 import {useLocation} from "react-router-dom";
 import {Layout} from "antd";
 import CreateCustomTestForm from "../../components/CreateCustomTestForm/CreateCustomTestForm";
+import CreateCustomTestDescriptionForm
+    from "../../components/CreateCustomTestDescriptionForm/CreateCustomTestDescriptionForm";
 
 interface CreateCustomTestDescriptionProps {}
 
@@ -15,7 +17,7 @@ const CreateCustomTestDescription: FC<CreateCustomTestDescriptionProps> = ({}) =
                 <h1 className="title">
                     Страница создания теста только с описанием
                 </h1>
-                {/*<CreateCustomTestForm testId={testId}/>*/}
+                <CreateCustomTestDescriptionForm id={testId}/>
             </div>
         </Layout>
     );

@@ -109,3 +109,38 @@ body {
     color: rgb(0, 11, 174);
 }
 
+/* styling button */
+#toggle-edit-btn {
+    background-color: #4267b2;
+    border: 1px solid #4267b2;
+    border-radius: 0.3rem;
+    color: #fff;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    margin: 2rem auto;
+}
+
+#toggle-edit-btn:focus,
+#toggle-edit-btn:hover {
+    cursor: pointer;
+}
+
+/* styling app content container */
+.app-content {
+    margin: 1rem auto;
+    width: 80%;
+    padding: 5%;
+    background-color: #f4f5f9;
+}
+
+/* styling alert text when edit mode is enabled */
+.edit-mode-alert {
+    text-decoration: underline;
+    color: #c80000;
+}
+
+/* styling text parsed */
+.text-container > *,
+.editor-container > * {
+    text-align: left;
+}
