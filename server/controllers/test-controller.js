@@ -33,6 +33,7 @@ class TestController{
     async downloadTest(req, res, next){
         try{
             const {id} = req.params;
+            await TestService.downloadTest(id);
             const bufferFile = await TestService.generateFilePathTest(id);
             res.setHeader('Content-Disposition', 'attachment; filename=TestTable.xlsx');
             res.send(bufferFile)
@@ -83,7 +84,6 @@ class TestController{
         try {
             const {id} = req.params;
             const response = await TestService.getOneInfo(id);
-            await TestService.downloadTest(id);
             return res.json(response);
         } catch (e) {
             next(e)
