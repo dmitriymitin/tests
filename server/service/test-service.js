@@ -113,7 +113,9 @@ class TestService {
             worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result.toFixed(0)}%`)
         })
 
-        await workbook.write('./service/Excel.xlsx');
+        const filePath = path.join(__dirname, 'Excel.xlsx');
+
+        await workbook.write(filePath);
     }
 
     async generateFilePathTest() {
