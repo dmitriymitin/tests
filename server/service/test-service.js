@@ -114,20 +114,19 @@ class TestService {
             worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result.toFixed(0)}%`)
         })
 
-        workbook.writeToBuffer().then(async buffer => {
-            const exelFile = await ExelFileModel.findOne({testId: id})
-            const base64String = buffer.toString('base64');
-            if (!exelFile) {
-                await ExelFileModel.create({file: base64String, testId: id});
-            } else {
-                exelFile.file = base64String;
-                await exelFile.save();
-            }
+        const buffer = await workbook.writeToBuffer();
+        const exelFile = await ExelFileModel.findOne({testId: id})
+        const base64String = buffer.toString('base64');
+        if (!exelFile) {
+            await ExelFileModel.create({file: base64String, testId: id});
+        } else {
+            exelFile.file = base64String;
+            await exelFile.save();
+        }
 
-            return {
-                ...exelFile
-            }
-        });
+        return {
+            ...exelFile
+        }
     }
 
     async generateFilePathTest(id) {
