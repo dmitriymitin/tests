@@ -73,14 +73,14 @@ const AdminForm = () => {
                     >
                         Создать новый тест со своими вопросами
                     </Button>
-                    <Button
-                        className={s.btn}
-                        loading={createCustomTestLoading}
-                        type={"primary"}
-                        onClick={handleCreateCustomTestWithDescription}
-                    >
-                        Создать новый тест только с описанием
-                    </Button>
+                    {/*<Button*/}
+                    {/*    className={s.btn}*/}
+                    {/*    loading={createCustomTestLoading}*/}
+                    {/*    type={"primary"}*/}
+                    {/*    onClick={handleCreateCustomTestWithDescription}*/}
+                    {/*>*/}
+                    {/*    Создать новый тест только с описанием*/}
+                    {/*</Button>*/}
                 </div>
                 <AllAdminTestsList/>
                 <ChangePasswordModalDrawer open={changePasswordOpen} setOpen={setChangePasswordModal}/>
