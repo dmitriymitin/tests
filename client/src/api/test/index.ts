@@ -1,4 +1,5 @@
 import {
+    EditorDescriptionTest,
     ICustomTestQuestion,
     IGetOneTestInfoResponse, IGetTestInfoCustomModelResponse,
     ISaveNewTestRequest,
@@ -8,6 +9,7 @@ import {
     ITestUpdateStatusModelRequest, TypeCustomTestQuestionAnswer
 } from "./type";
 import $api from "../../http";
+import exampleData from "../../components/CreateCustomTestDescriptionForm/Editor/exampleData";
 
 export const getOneTest = async (id: string): Promise<ITestModelResponse> => {
     const {data} = await $api.get(`/test/getOne/${id}`);
@@ -44,6 +46,21 @@ export const createNewTest = async (values: ITestModelRequest): Promise<ITestMod
     return data;
 };
 
+export const createNewTestWithDescription = async (values: ITestModelRequest): Promise<ITestModelResponse> => {
+    const {data} = await $api.post('/test/create', { ...values, description: exampleData, status: 'Start'});
+    return data;
+};
+
+export const updateTestDescriptionEditor = async (values: {
+    id: string,
+    description: EditorDescriptionTest
+}) => {
+    const {data} = await $api.post(`/test/description/updateDescription/${values.id}`, {
+        description: values.description
+    })
+    return data;
+}
+
 export const onDeleteQuestionCustomTest = async (values: {
     id: string | null, testId: string | null
 }): Promise<any> => {
@@ -57,6 +74,18 @@ export const onUpdateCustomTestTitle = async (values: {
 }): Promise<any> => {
     const {data} = await $api.post(`/test/custom/updateTitle?id=${values.testId}`, {
         title: values.title,
+    });
+    return data;
+};
+
+export const onUpdateTestInfo = async (values: {
+    testId: string | null
+    title?: string;
+    quantityQuestion?: number;
+}): Promise<any> => {
+    const {data} = await $api.post(`/test/changeInfoTest?id=${values.testId}`, {
+        title: values.title,
+        quantityQuestion: values.quantityQuestion
     });
     return data;
 };

@@ -1,23 +1,25 @@
-import {useState} from "react";
+import {FC, memo} from "react";
 import {useMedia} from "react-use";
-import {Button, Drawer, Form, Input, message, Modal} from "antd";
-import {useForm} from "antd/es/form/Form";
 import {useMutation, useQueryClient} from "react-query";
-import {createNewTest} from "../api/test";
+import {createNewTest, createNewTestWithDescription} from "../api/test";
+import {useForm} from "antd/es/form/Form";
+import {Button, Drawer, Form, Input, message, Modal} from "antd";
+import {useNavigate} from "react-router-dom";
 
-interface NewTestModalDrawerProps {
+interface NewTestModalDrawerWithDescriptionProps {
     open: boolean;
     setOpen: (val: boolean) => void;
 }
 
-const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
+const NewTestModalDrawerWithDescription: FC<NewTestModalDrawerWithDescriptionProps> = ({open, setOpen}) => {
     const isPC = useMedia('(min-width: 768px)');
     const queryClient = useQueryClient()
+    const navigate = useNavigate()
 
     const {
         mutateAsync: createNewTestTrigger,
         isLoading: isCreateNewTestLoading
-    } = useMutation(createNewTest);
+    } = useMutation(createNewTestWithDescription);
 
     const [form] = useForm()
 
@@ -26,10 +28,11 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
             await form.validateFields();
             const testName = form.getFieldValue('testName')
             const testQuestionNumber = form.getFieldValue('testQuestionNumber')
-            await createNewTestTrigger({
+            const res = await createNewTestTrigger({
                 title: testName,
-                quantityQuestion: testQuestionNumber
-            })
+                quantityQuestion: testQuestionNumber,
+            });
+            navigate(`/admin/testInfo/customTest/description/${res._id}`)
             await queryClient.invalidateQueries({ queryKey: ['allTests'] })
             setOpen(false)
         } catch (e) {
@@ -62,7 +65,7 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
                         required: true,
                         message: 'Введите кол-во вопросов'
                     }
-                    ]}
+                ]}
                 name={'testQuestionNumber'}
             >
                 <Input type={'number'}/>
@@ -75,7 +78,7 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
             {isPC &&
                 <Modal
                     open={open}
-                    title="Создание нового теста"
+                    title="Создание нового теста с описанием"
                     onCancel={() => setOpen(false)}
                     onOk={onOk}
                     className={"modalWrapper"}
@@ -113,5 +116,4 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
     )
 };
 
-export default NewTestModalDrawer;
-
+export default memo(NewTestModalDrawerWithDescription);

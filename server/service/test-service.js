@@ -21,6 +21,7 @@ class TestService {
         if (test) {
             return {
                 _id: test._id,
+                descriptionEditor: test.descriptionEditor,
                 firstQuestionTitle: test.firstQuestionTitle,
                 quantityQuestion: test.quantityQuestion,
                 status: test.status,
@@ -222,11 +223,11 @@ class TestService {
         return
     }
 
-    async create(title, quantityQuestion){
+    async create(title, quantityQuestion, description){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()
         const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
-        return await TestModel.create({firstQuestionTitle, title, quantityQuestion})
+        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description})
     }
 
     async createCustom(){
@@ -314,6 +315,37 @@ class TestService {
         testCustomModel.save()
         return {
             ...testCustomModel
+        }
+    }
+
+    async changeInfoTest(id, title, quantityQuestion){
+        const testModel  = await TestModel.findOne({_id: new ObjectId(id)})
+        if (title) {
+            testModel.title = title;
+        }
+        if (quantityQuestion) {
+            testModel.quantityQuestion = quantityQuestion;
+        }
+        testModel.save()
+        return {
+            ...testModel
+        }
+    }
+
+    async updateDescription(testId, description){
+        try {
+            const testModel  = await TestModel.findOne({_id: new ObjectId(testId)})
+            if (!testModel) {
+                throw ApiError.BadRequest(`Что-то пошло не так...`)
+            }
+
+            testModel.descriptionEditor = description;
+            await testModel.save()
+            return {
+                ...testModel
+            }
+        } catch (e) {
+            throw ApiError.BadRequest(`Что-то пошло не так...`)
         }
     }
 

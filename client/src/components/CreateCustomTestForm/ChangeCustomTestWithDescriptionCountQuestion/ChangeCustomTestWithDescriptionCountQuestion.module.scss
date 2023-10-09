@@ -33,7 +33,6 @@
 
 .formTestTitle {
   overflow-wrap: break-word;
-  width: 100%;
 }
 
 .clearBtn {
@@ -48,5 +47,10 @@
 }
 
 .text__area__title {
+  display: flex;
+  align-items: center;
   border-radius: 12px;
+  width: 200px;
+  height: 50px;
+  font-size: 20px;
 }

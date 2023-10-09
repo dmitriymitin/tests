@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, message, Popconfirm, Spin} from "antd";
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {deleteTest, getAdminAllTests, updateAdminStatusTest} from "../../api/test";
@@ -10,6 +10,7 @@ import clsx from "clsx";
 import {CopyOutlined} from "@ant-design/icons";
 import CustomTooltip from "../CustomTooltip";
 import ChangeAllTestFirstQuestion from "./ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
+import ChangeTitleOrQuestionCountModalDrawer from "../ChangeTitleOrQuestionCountModalDrawer";
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
     switch (status) {
@@ -36,6 +37,12 @@ const getTestStatusText = (status: testStatusType) => {
 const AllAdminTestsList = () => {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+    const [currentDefaultTestData, setCurrentDefaultTestData] = useState({
+        testId: '',
+        title: '',
+        quantityQuestion: 0,
+        openModal: false,
+    })
     const {
         data: allTest,
         isLoading: isAllTestLoading,
@@ -56,7 +63,7 @@ const AllAdminTestsList = () => {
     const onDeleteTest = async (id: string) => {
         try {
             await deleteTestTrigger(id)
-            await queryClient.invalidateQueries({ queryKey: ['allTests'] })
+            await queryClient.invalidateQueries({queryKey: ['allTests']})
         } catch (e) {
             message.error('Ошибка при удалении теста')
         }
@@ -65,7 +72,7 @@ const AllAdminTestsList = () => {
     const onUpdateStatusTest = async (id: string, status: testStatusType) => {
         try {
             await updateStatusTestTrigger({id, status})
-            await queryClient.invalidateQueries({ queryKey: ['allTests'] })
+            await queryClient.invalidateQueries({queryKey: ['allTests']})
         } catch (e) {
             message.error('Ошибка при обвнолении статуса теста')
         }
@@ -85,9 +92,17 @@ const AllAdminTestsList = () => {
         )
     }
 
+    const handleOpenChangeInfoTest = (val: boolean) => {
+        setCurrentDefaultTestData(prevState => ({
+            ...prevState,
+            openModal: val
+        }))
+    }
+
     return (
         <div className={s.all__tests__list}>
-            <ChangeAllTestFirstQuestion refetch={allTestRefetch} title={allTestArray[0].firstQuestionTitle || 'Фамилия, номер группы'}/>
+            <ChangeAllTestFirstQuestion refetch={allTestRefetch}
+                                        title={allTestArray[0].firstQuestionTitle || 'Фамилия, номер группы'}/>
             <h2>Список всех тестов</h2>
             {allTestArray.map(el =>
                 <div key={el._id} className={s.all__tests__list__wrapper}>
@@ -102,6 +117,15 @@ const AllAdminTestsList = () => {
                         </div>
 
                         <div className={s.infoWrapper}>
+                            <p>Тип теста:</p>
+                            <div className={s.body}>
+                                {!!el.quantityQuestion && !el.descriptionEditor && 'Обычный тест'}
+                                {!!el.questions && 'Тест со своими вопросами'}
+                                {!!el.descriptionEditor && 'Тест с описанием'}
+                            </div>
+                        </div>
+
+                        <div className={s.infoWrapper}>
                             <p>Адрес теста:</p>
                             <div className={clsx(s.body, s.addressTest)}>{CLIENT_URL + `/tests/${el._id}`}</div>
                             <CustomTooltip text={'Адрес теста был успешно скопирован!'}>
@@ -109,40 +133,59 @@ const AllAdminTestsList = () => {
                                     className={s.addressCopyButton}
                                     onClick={() => copyAddress(CLIENT_URL + `/tests/${el._id}`)}
                                 >
-                                    <CopyOutlined />
+                                    <CopyOutlined/>
                                 </button>
                             </CustomTooltip>
                         </div>
 
-
                         <div className={s.infoWrapper}>
                             <p>Кол-во вопросов:</p>
-                            <div className={s.body}>{el.quantityQuestion || el.questions.length}</div>
+                            <div
+                                className={s.body}>{el.quantityQuestion || (el.questions && el.questions.length) || 0}</div>
                         </div>
 
                     </div>
                     <div className={s.btnsWrapper}>
                         <div className={s.btns}>
-                                {el.questions &&
-                                    <Button
-                                        className={s.btn}
-                                        onClick={() => navigate(`/admin/testInfo/customTest/${el._id}`)}
-                                    >
-                                        Редактировать тест
-                                    </Button>
-                                }
-                                <Button
-                                    className={s.btn}
-                                    onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
-                                >
-                                    Ввести ключ
-                                </Button>
-                                <Button
-                                    className={s.btn}
-                                    onClick={() => navigate(`/admin/testInfo/${el._id}`)}
-                                >
-                                    Результаты
-                                </Button>
+                            <Button
+                                className={s.btn}
+                                onClick={() => {
+                                    //Обычный тест
+                                    if (!!el.quantityQuestion && !el.descriptionEditor) {
+                                        setCurrentDefaultTestData({
+                                            testId: el._id,
+                                            title: el.title,
+                                            quantityQuestion: el.quantityQuestion,
+                                            openModal: true
+                                        })
+                                        return
+                                    }
+                                    //Тест со своими вопросами
+                                    if (el.questions) {
+                                        navigate(`/admin/testInfo/customTest/${el._id}`)
+                                        return
+                                    }
+
+                                    if (!!el.descriptionEditor) {
+                                        navigate(`/admin/testInfo/customTest/description/${el._id}`)
+                                        return
+                                    }
+                                }}
+                            >
+                                Редактировать тест
+                            </Button>
+                            <Button
+                                className={s.btn}
+                                onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
+                            >
+                                Ввести ключ
+                            </Button>
+                            <Button
+                                className={s.btn}
+                                onClick={() => navigate(`/admin/testInfo/${el._id}`)}
+                            >
+                                Результаты
+                            </Button>
                         </div>
                         <div className={s.btns}>
                             <Button
@@ -170,6 +213,16 @@ const AllAdminTestsList = () => {
                     </div>
                 </div>
             )}
+            {currentDefaultTestData.testId &&
+                <ChangeTitleOrQuestionCountModalDrawer
+                    refetch={allTestRefetch}
+                    testId={currentDefaultTestData.testId}
+                    title={currentDefaultTestData.title}
+                    quantityQuestion={currentDefaultTestData.quantityQuestion}
+                    open={currentDefaultTestData.openModal}
+                    setOpen={handleOpenChangeInfoTest}
+                />
+            }
         </div>
     );
 };

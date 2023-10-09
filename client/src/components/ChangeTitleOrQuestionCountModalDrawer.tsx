@@ -1,23 +1,29 @@
-import {useState} from "react";
+import {FC, memo} from "react";
 import {useMedia} from "react-use";
-import {Button, Drawer, Form, Input, message, Modal} from "antd";
-import {useForm} from "antd/es/form/Form";
 import {useMutation, useQueryClient} from "react-query";
-import {createNewTest} from "../api/test";
+import {createNewTest, createNewTestWithDescription, onUpdateTestInfo} from "../api/test";
+import {useForm} from "antd/es/form/Form";
+import {Button, Drawer, Form, Input, message, Modal} from "antd";
+import {useNavigate} from "react-router-dom";
 
-interface NewTestModalDrawerProps {
+interface ChangeTitleOrQuestionCountModalDrawerProps {
+    refetch: () => void;
     open: boolean;
+    testId: string,
+    title: string,
+    quantityQuestion: number,
     setOpen: (val: boolean) => void;
 }
 
-const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
+const ChangeTitleOrQuestionCountModalDrawer: FC<ChangeTitleOrQuestionCountModalDrawerProps> = ({refetch, open, quantityQuestion, title, testId, setOpen}) => {
     const isPC = useMedia('(min-width: 768px)');
     const queryClient = useQueryClient()
+    const navigate = useNavigate()
 
     const {
-        mutateAsync: createNewTestTrigger,
-        isLoading: isCreateNewTestLoading
-    } = useMutation(createNewTest);
+        mutateAsync: onUpdateCustomTestTitleTrigger,
+        isLoading: onUpdateCustomTestTitleLoading
+    } = useMutation(onUpdateTestInfo)
 
     const [form] = useForm()
 
@@ -26,14 +32,15 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
             await form.validateFields();
             const testName = form.getFieldValue('testName')
             const testQuestionNumber = form.getFieldValue('testQuestionNumber')
-            await createNewTestTrigger({
+            await onUpdateCustomTestTitleTrigger({
+                testId,
                 title: testName,
-                quantityQuestion: testQuestionNumber
-            })
-            await queryClient.invalidateQueries({ queryKey: ['allTests'] })
+                quantityQuestion: testQuestionNumber,
+            });
+            refetch()
             setOpen(false)
         } catch (e) {
-            message.error('Ошибка при создании теста')
+            message.error('Ошибка при обновлении информации о тесте')
         }
     }
 
@@ -42,6 +49,10 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
             form={form}
             autoComplete='off'
             layout={'vertical'}
+            initialValues={{
+                testName: title,
+                testQuestionNumber: quantityQuestion
+            }}
         >
             <Form.Item
                 label={'Введите название теста'}
@@ -62,7 +73,7 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
                         required: true,
                         message: 'Введите кол-во вопросов'
                     }
-                    ]}
+                ]}
                 name={'testQuestionNumber'}
             >
                 <Input type={'number'}/>
@@ -75,14 +86,14 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
             {isPC &&
                 <Modal
                     open={open}
-                    title="Создание нового теста"
+                    title="Изменение информации о тесте"
                     onCancel={() => setOpen(false)}
                     onOk={onOk}
                     className={"modalWrapper"}
                     footer={(
                         <>
                             <Button onClick={() => setOpen(false)}>Отмена</Button>
-                            <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
+                            <Button loading={onUpdateCustomTestTitleLoading} type={'primary'} onClick={onOk}>Изменить</Button>
                         </>
                     )}
                 >
@@ -104,7 +115,7 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
                         {content}
                         <div className={'btns'}>
                             <Button onClick={() => setOpen(false)}>Отмена</Button>
-                            <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
+                            <Button loading={onUpdateCustomTestTitleLoading} type={'primary'} onClick={onOk}>Изменить</Button>
                         </div>
                     </div>
                 </Drawer>
@@ -113,5 +124,4 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
     )
 };
 
-export default NewTestModalDrawer;
-
+export default memo(ChangeTitleOrQuestionCountModalDrawer);

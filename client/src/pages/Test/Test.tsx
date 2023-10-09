@@ -7,6 +7,10 @@ import {useForm} from "antd/es/form/Form";
 import s from './Test.module.scss'
 import clsx from "clsx";
 import {ICustomTestQuestion} from "../../api/test/type";
+import edjsHTML from "editorjs-html";
+import parse from "html-react-parser";
+
+const edjsParser = edjsHTML();
 
 const Test = () => {
     const navigate = useNavigate()
@@ -54,6 +58,8 @@ const Test = () => {
         )
     }
 
+    const isTestWithDescription = !!testData.descriptionEditor
+
     const onSendForm = async () => {
         try {
             await form.validateFields()
@@ -65,20 +71,36 @@ const Test = () => {
         try {
             const formData = await form.getFieldsValue();
             const FIOGroup = formData['FIOGroup']
-            const answer = Object.keys(formData)
-                .reduce((obj, key) => {
-                    if (key !== "FIOGroup") {
-                        obj[key] = formData[key];
-                    }
-                    return obj;
-                }, {} as {
-                    [key: string]: string;
-                });
-            await saveAnswerTrigger({
-                FIOGroup,
-                answer,
-                testId
-            })
+            if (!isTestWithDescription) {
+                const answer = Object.keys(formData)
+                    .reduce((obj, key) => {
+                        if (key !== "FIOGroup") {
+                            obj[key] = formData[key];
+                        }
+                        return obj;
+                    }, {} as {
+                        [key: string]: string;
+                    });
+                await saveAnswerTrigger({
+                    FIOGroup,
+                    answer,
+                    testId
+                })
+            } else {
+                const testKey = formData['testKey']
+                const newArray = new Array(testData.quantityQuestion).fill('1')
+                const answer = newArray.reduce((obj, key, index) => {
+                        obj[index + 1] = testKey[index];
+                        return obj;
+                    }, {} as {
+                        [key: string]: string;
+                    });
+                await saveAnswerTrigger({
+                    FIOGroup,
+                    answer,
+                    testId
+                })
+            }
             message.success('Ваши ответы сохранены!')
             navigate('/')
         } catch (e) {
@@ -110,9 +132,9 @@ const Test = () => {
                         <Input/>
                     </Form.Item>
                 </div>
-                {
-                    testData.questions
-                        ? testData.questions.map((el, index) =>
+                {!testData.descriptionEditor
+                ?  testData.questions
+                        ? testData?.questions?.map((el, index) =>
                             <div key={el._id} className={s.item}>
                                 <div className={s.title}>Вопрос {index + 1}</div>
                                 <div className={s.description}>
@@ -132,8 +154,7 @@ const Test = () => {
                                         : <Input className={s.customQuestionInput}/>
                                     }
                                 </Form.Item>
-                            </div>
-                        )
+                            </div>)
                         : new Array(testData.quantityQuestion).fill('1').map((_, index) =>
                             <div key={index} className={s.item}>
                                 <div className={s.title}>Вопрос {index + 1}</div>
@@ -144,6 +165,19 @@ const Test = () => {
                                 </Form.Item>
                             </div>
                         )
+                : <div className={s.testWithDescription}>
+                        <div className={clsx( "text-container", s.descriptionBg)}>{parse(edjsParser.parse(testData.descriptionEditor).join(""))}</div>
+                        <div className={s.item}>
+                            <div className={s.title}>Введите свои ответы:</div>
+                            <Form.Item
+                                name={`testKey`}
+                            >
+                                <Input
+                                    maxLength={testData.quantityQuestion}
+                                />
+                            </Form.Item>
+                        </div>
+                </div>
                 }
             </Form>
             <div className={s.confirmBtnWrapper}>

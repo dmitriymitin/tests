@@ -14,7 +14,8 @@ router.post('/create',authMiddleware, TestController.create);
 router.get('/downloadTest/:id', TestController.downloadTest);
 router.post('/createCustom',authMiddleware, TestController.createCustom);
 router.post('/custom/addQuestion/:id',authMiddleware, TestController.addQuestionCustomTest);
-router.post('/custom/updateOneQuestion',authMiddleware, TestController.updateQuestionCustomTest)
+router.post('/custom/updateOneQuestion',authMiddleware, TestController.updateQuestionCustomTest);
+router.post('/description/updateDescription/:id',authMiddleware, TestController.updateDescription)
 router.get('/all',authMiddleware, TestController.getAll);
 router.get('/getOneInfo/:id',authMiddleware, TestController.getOneInfo);
 router.get('/custom/getOneQuestionCustomInfo/:id',authMiddleware, TestController.getOneQuestionCustomInfo);
@@ -28,5 +29,6 @@ router.delete('/clearResults/:id',authMiddleware, TestController.clearResults);
 router.delete('/custom/deleteOneQuestion',authMiddleware, TestController.deleteOneCustomQuestion);
 router.get('/getAllQuestion',authMiddleware, TestController.getAllQuestion);
 router.post('/custom/updateTitle',authMiddleware, TestController.updateTitleCustomTest);
+router.post('/changeInfoTest',authMiddleware, TestController.changeInfoTest);
 
 module.exports = router;
