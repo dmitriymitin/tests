@@ -2,6 +2,7 @@ const TestModel = require('../models/test-model')
 const TestUserModel = require('../models/test-user-model')
 const TestCustomModel = require('../models/test-custom-model')
 const TestCustomQuestionModel = require('../models/test-custom-question-model')
+const ExelFileModel = require('../models/exel-file-model')
 
 const path = require('path');
 const excel = require('excel4node');
@@ -113,14 +114,26 @@ class TestService {
             worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result.toFixed(0)}%`)
         })
 
-        const filePath = path.join(__dirname, 'Excel.xlsx');
+        workbook.writeToBuffer().then(async buffer => {
+            const exelFile = await ExelFileModel.findOne({testId: id})
+            const base64String = buffer.toString('base64');
+            if (!exelFile) {
+                await ExelFileModel.create({file: base64String, testId: id});
+            } else {
+                exelFile.file = base64String;
+                await exelFile.save();
+            }
 
-        await workbook.write(filePath);
+            return {
+                ...exelFile
+            }
+        });
     }
 
-    async generateFilePathTest() {
-        const filePath = path.join(__dirname, 'Excel.xlsx');
-        return filePath;
+    async generateFilePathTest(id) {
+        const exelFile = await ExelFileModel.findOne({testId: id})
+        const buffer = Buffer.from(exelFile.file, 'base64');
+        return buffer;
     }
 
     async getOneInfo(id){

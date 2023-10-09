@@ -33,12 +33,9 @@ class TestController{
     async downloadTest(req, res, next){
         try{
             const {id} = req.params;
-            const filePath = await TestService.generateFilePathTest();
-            res.download(filePath, (err) => {
-                if (err) {
-                    res.status(500).send('Ошибка при загрузке файла');
-                }
-            });
+            const bufferFile = await TestService.generateFilePathTest(id);
+            res.setHeader('Content-Disposition', 'attachment; filename=TestTable.xlsx');
+            res.send(bufferFile)
         } catch (e){
             next(e)
         }
