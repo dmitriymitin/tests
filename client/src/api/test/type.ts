@@ -1,5 +1,7 @@
 import {testStatusType} from "../../type/test/type";
 
+export type EditorDescriptionTest = {time: number, blocks: ({id: string, type: string, data: {text: string, level: number}} | {id: string, type: string, data: {text: string, level?: undefined}})[]}
+
 export interface ITestModelRequest {
     title: string;
     quantityQuestion: number;
@@ -23,6 +25,7 @@ export interface ITestModelResponse {
     firstQuestionTitle: string | null;
     _id: string,
     title: string;
+    descriptionEditor?: EditorDescriptionTest;
     quantityQuestion: number;
     questions: ICustomTestQuestion[] | null
     status: testStatusType;

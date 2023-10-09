@@ -8,15 +8,17 @@ import {AuthActionCreators} from "../../store/reducers/auth/action-creators";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useMutation} from "react-query";
-import {createNewCustomTest} from "../../api/test";
+import {createNewCustomTest, createNewTest, createNewTestWithDescription} from "../../api/test";
 import ChangeCustomTestTitle from "../CreateCustomTestForm/ChangeCustomTestTitle/ChangeCustomTestTitle";
 import ChangeAllTestFirstQuestion from "../AllAdminTestsList/ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
+import NewTestModalDrawerWithDescription from "../NewTestModalDrawerWithDescription";
 
 const AdminForm = () => {
     const navigate = useNavigate()
     const [changePasswordOpen, setChangePasswordModal] = useState(false)
     const dispatch = useDispatch();
     const [newTestOpen, setNewTestOpen] = useState(false)
+    const [newTestDescriptionOpen, setNewTestDescriptionOpen] = useState(false)
     const {
         mutateAsync: createCustomTestTrigger,
         isLoading: createCustomTestLoading,
@@ -32,12 +34,7 @@ const AdminForm = () => {
     }
 
     const handleCreateCustomTestWithDescription = async () => {
-        try {
-            const res = await createCustomTestTrigger();
-            navigate(`/admin/testInfo/customTest/description/${res._id}`)
-        } catch (e) {
-            message.error('Ошибка при создании теста')
-        }
+        setNewTestDescriptionOpen(true)
     }
 
     return (
@@ -75,7 +72,6 @@ const AdminForm = () => {
                     </Button>
                     <Button
                         className={s.btn}
-                        loading={createCustomTestLoading}
                         type={"primary"}
                         onClick={handleCreateCustomTestWithDescription}
                     >
@@ -85,6 +81,7 @@ const AdminForm = () => {
                 <AllAdminTestsList/>
                 <ChangePasswordModalDrawer open={changePasswordOpen} setOpen={setChangePasswordModal}/>
                 <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>
+                <NewTestModalDrawerWithDescription open={newTestDescriptionOpen} setOpen={setNewTestDescriptionOpen}/>
             </div>
         </>
 

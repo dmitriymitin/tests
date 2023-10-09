@@ -6,7 +6,7 @@ import Tests from "../pages/Tests";
 import AdminTestInfo from "../pages/AdminTestInfo/AdminTestInfo";
 import AdminTestKeyInfo from "../pages/AdminTestKeyInfo/AdminTestKeyInfo";
 import CreateCustomTest from "../pages/CreateCustomTest/CreateCustomTest";
-import CreateCustomTestDescription from "../pages/CreateCustomTestDescription/CreateCustomTestDescription";
+import CreateCustomTestDescription from "../pages/CreateCustomTestDescriptionPage/CreateCustomTestDescriptionPage";
 
 export interface IRoute {
     path: string;

@@ -1,9 +1,3 @@
-.custom__test__form {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
 .btns {
   display: flex;
   gap: 15px;
@@ -44,22 +38,16 @@
   }
 }
 
+.custom__test__form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
 .spin {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 300px;
   width: 100%;
-}
-
-.action__wrapper {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-}
-
-.addBtn {
-  height: 50px;
-  width: 100%;
-  font-size: 16px;
 }
