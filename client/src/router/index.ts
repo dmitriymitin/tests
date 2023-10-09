@@ -6,7 +6,7 @@ import Tests from "../pages/Tests";
 import AdminTestInfo from "../pages/AdminTestInfo/AdminTestInfo";
 import AdminTestKeyInfo from "../pages/AdminTestKeyInfo/AdminTestKeyInfo";
 import CreateCustomTest from "../pages/CreateCustomTest/CreateCustomTest";
-import CreateCustomTestDescription from "../pages/CreateCustomTestDescriptionPage/CreateCustomTestDescriptionPage";
+import CreateCustomTestDescriptionPage from "../pages/CreateCustomTestDescriptionPage/CreateCustomTestDescriptionPage";
 
 export interface IRoute {
     path: string;
@@ -62,7 +62,7 @@ export const privateRoutes : IRoute[] = [
     },
     {
         path: RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION,
-        component: CreateCustomTestDescription
+        component: CreateCustomTestDescriptionPage
     },
     {
         path: RouteNames.CREATE_CUSTOM_TEST,
