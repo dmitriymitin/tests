@@ -38,6 +38,8 @@ class TestService {
     }
 
     async downloadTest(id) {
+        const testModel = await TestModel.findOne({_id: new ObjectId(id)})
+        const testUserModel = await TestUserModel.find({testId: new ObjectId(id)})
         let noCorrectAnswer = {}
         const workbook = new excel.Workbook();
         let countQuestion = 0;
@@ -111,11 +113,11 @@ class TestService {
             worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result.toFixed(0)}%`)
         })
 
-        await workbook.write(__dirname, '../Excel.xlsx');
+        await workbook.write('./service/Excel.xlsx');
     }
 
     async generateFilePathTest() {
-        const filePath = path.join(__dirname, '../Excel.xlsx');
+        const filePath = path.join(__dirname, 'Excel.xlsx');
         return filePath;
     }
 
