@@ -86,7 +86,7 @@ class TestController{
         try {
             const {id} = req.params;
             const response = await TestService.getOneInfo(id);
-            // await TestService.downloadTest(id);
+            await TestService.downloadTest(id);
             return res.json(response);
         } catch (e) {
             next(e)
