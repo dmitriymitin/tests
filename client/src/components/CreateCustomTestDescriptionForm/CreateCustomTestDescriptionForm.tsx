@@ -33,6 +33,7 @@ const CreateCustomTestDescriptionForm: FC<CreateCustomTestDescriptionFormProps> 
                 id,
                 description: descriptionPARSE
             })
+            navigate('/admin')
             message.success('Описание успешно сохранено!')
         } catch (e) {
             message.error('Ошибка при сохранении описания!')

@@ -32,18 +32,7 @@ const AllTest = () => {
             )
     }
 
-    const allTestDataArray = Object.values(allTest)
-    const allTestArray = allTestDataArray.sort((a: ITestModelResponse, b: ITestModelResponse) => {
-        const dateA = new Date(a.createDate);
-        const dateB = new Date(b.createDate);
-        if (dateA < dateB)
-            return 1
-        if (dateA > dateB)
-            return -1
-        return 0
-    });
-
-    if (allTestArray.length === 0) {
+    if (allTest.length === 0) {
         return (
             <div className={s.all__tests__list__empty}>
                 Тестов пока нет
@@ -57,7 +46,7 @@ const AllTest = () => {
                 Список тестов
             </h1>
             <div className={s.all__tests__list}>
-                {allTestArray.map(el =>
+                {allTest.map(el =>
                     <div key={el._id} className={clsx(s.all__tests__list__test__item, 'testBackground')}>
                         <p className={s.title}>
                             {el.title}

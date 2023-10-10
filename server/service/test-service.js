@@ -240,10 +240,22 @@ class TestService {
     async getAll(){
         const testsAll  = await TestModel.find()
         const testsCustom = await TestCustomModel.find()
-        return [
-                ...testsAll,
-                ...testsCustom
+        const allTestDataArray = [
+            ...testsAll,
+            ...testsCustom
         ]
+
+        const allTestArray = allTestDataArray.sort((a, b) => {
+            const dateA = new Date(a.createDate);
+            const dateB = new Date(b.createDate);
+            if (dateA < dateB)
+                return 1
+            if (dateA > dateB)
+                return -1
+            return 0
+        });
+
+        return [...allTestArray]
     }
 
     async getAllQuestion(){
@@ -280,7 +292,19 @@ class TestService {
             return acc
         }, [])
 
-        return [...newTests, ...newCustomTests]
+        const allTestDataArray = [...newTests, ...newCustomTests]
+
+        const allTestArray = allTestDataArray.sort((a, b) => {
+            const dateA = new Date(a.createDate);
+            const dateB = new Date(b.createDate);
+            if (dateA < dateB)
+                return 1
+            if (dateA > dateB)
+                return -1
+            return 0
+        });
+
+        return [...allTestArray]
     }
 
     async deleteOne(id){

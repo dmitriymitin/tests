@@ -14,7 +14,7 @@ interface ChangeCustomTestTitleProps {
 }
 
 const ChangeCustomTestTitle = ({testId, title, getFieldTestTitle, refetch}: ChangeCustomTestTitleProps) => {
-    const [isChangeTitle, setIsChangeTitle] = useState(false)
+    const [isChangeTitle, setIsChangeTitle] = useState(true)
 
     const {
         mutateAsync: onUpdateCustomTestTitleTrigger,

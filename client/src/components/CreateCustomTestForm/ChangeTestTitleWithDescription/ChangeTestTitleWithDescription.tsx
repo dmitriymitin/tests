@@ -14,7 +14,7 @@ interface ChangeTestTitleWithDescriptionProps {
 }
 
 const ChangeTestTitleWithDescription: FC<ChangeTestTitleWithDescriptionProps> = ({testId, title, getFieldTestTitle, refetch}) => {
-    const [isChangeTitle, setIsChangeTitle] = useState(false)
+    const [isChangeTitle, setIsChangeTitle] = useState(true)
 
     const {
         mutateAsync: onUpdateCustomTestTitleWithDescriptionTrigger,

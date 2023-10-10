@@ -83,18 +83,18 @@ const AllAdminTestsList = () => {
         return <Spin size={'large'}/>
     }
 
-    const allTestDataArray = Object.values(allTest)
-    const allTestArray = allTestDataArray.sort((a: ITestModelResponse, b: ITestModelResponse) => {
-        const dateA = new Date(a.createDate);
-        const dateB = new Date(b.createDate);
-        if (dateA < dateB)
-            return 1
-        if (dateA > dateB)
-            return -1
-        return 0
-    });
+    // const allTestDataArray = Object.values(allTest)
+    // const allTestArray = allTestDataArray.sort((a: ITestModelResponse, b: ITestModelResponse) => {
+    //     const dateA = new Date(a.createDate);
+    //     const dateB = new Date(b.createDate);
+    //     if (dateA < dateB)
+    //         return 1
+    //     if (dateA > dateB)
+    //         return -1
+    //     return 0
+    // });
 
-    if (allTestArray.length === 0) {
+    if (allTest.length === 0) {
         return (
             <div className={s.all__tests__list__empty}>
                 Тестов пока нет
@@ -112,9 +112,9 @@ const AllAdminTestsList = () => {
     return (
         <div className={s.all__tests__list}>
             <ChangeAllTestFirstQuestion refetch={allTestRefetch}
-                                        title={allTestArray[0].firstQuestionTitle || 'Фамилия, номер группы'}/>
+                                        title={allTest[0].firstQuestionTitle || 'Фамилия, номер группы'}/>
             <h2>Список всех тестов</h2>
-            {allTestArray.map(el =>
+            {allTest.map(el =>
                 <div key={el._id} className={s.all__tests__list__wrapper}>
                     <div className={s.all__tests__list__test__item}>
                         <div className={s.title}>
@@ -130,8 +130,8 @@ const AllAdminTestsList = () => {
                             <p>Тип теста:</p>
                             <div className={s.body}>
                                 {!!el.quantityQuestion && !el.descriptionEditor && 'Тест без описания'}
-                                {!!el.questions && 'Тест с описанием'}
-                                {!!el.descriptionEditor && 'Тест с отдельным описанием вопросов'}
+                                {!!el.questions && 'Тест с отдельным описанием вопросов'}
+                                {!!el.descriptionEditor && 'Тест с описанием'}
                             </div>
                         </div>
 

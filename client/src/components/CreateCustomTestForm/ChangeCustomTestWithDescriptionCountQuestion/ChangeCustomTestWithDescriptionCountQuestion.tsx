@@ -15,7 +15,7 @@ interface ChangeCustomTestWithDescriptionCountQuestionProps {
 }
 
 const ChangeCustomTestWithDescriptionCountQuestion: FC<ChangeCustomTestWithDescriptionCountQuestionProps> = ({testId, count, getFieldTestQuantityQuestion, refetch}) => {
-    const [isChangeTitle, setIsChangeTitle] = useState(false)
+    const [isChangeTitle, setIsChangeTitle] = useState(true)
 
     const {
         mutateAsync: onUpdateCustomTestTitleTrigger,
