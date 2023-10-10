@@ -4,8 +4,8 @@ const ApiError = require("../exceptions/api-error");
 class TestController{
     async create(req, res, next){
         try {
-            const {title, quantityQuestion, description} = req.body;
-            const testData = await TestService.create(title, quantityQuestion, description);
+            const {title, quantityQuestion, description, createDate} = req.body;
+            const testData = await TestService.create(title, quantityQuestion, description, createDate);
             return res.json(testData)
         } catch (e){
             next(e);
@@ -14,7 +14,8 @@ class TestController{
 
     async createCustom(req, res, next){
         try {
-            const testData = await TestService.createCustom();
+            const {createDate} = req.body;
+            const testData = await TestService.createCustom(createDate);
             return res.json(testData)
         } catch (e){
             next(e);

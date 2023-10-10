@@ -7,11 +7,12 @@ import AllAdminTestsList from "../AllAdminTestsList/AllAdminTestsList";
 import {AuthActionCreators} from "../../store/reducers/auth/action-creators";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {useMutation} from "react-query";
+import {useMutation, useQueryClient} from "react-query";
 import {createNewCustomTest, createNewTest, createNewTestWithDescription} from "../../api/test";
 import ChangeCustomTestTitle from "../CreateCustomTestForm/ChangeCustomTestTitle/ChangeCustomTestTitle";
 import ChangeAllTestFirstQuestion from "../AllAdminTestsList/ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
 import NewTestModalDrawerWithDescription from "../NewTestModalDrawerWithDescription";
+import {getFormateDate} from "../../utils/getFormateDate";
 
 const AdminForm = () => {
     const navigate = useNavigate()
@@ -19,14 +20,23 @@ const AdminForm = () => {
     const dispatch = useDispatch();
     const [newTestOpen, setNewTestOpen] = useState(false)
     const [newTestDescriptionOpen, setNewTestDescriptionOpen] = useState(false)
+    const queryClient = useQueryClient()
+
     const {
         mutateAsync: createCustomTestTrigger,
         isLoading: createCustomTestLoading,
     } = useMutation(createNewCustomTest)
 
+    const {
+        mutateAsync: createNewTestTrigger,
+        isLoading: isCreateNewTestLoading
+    } = useMutation(createNewTestWithDescription);
+
     const handleCreateCustomTest = async () => {
         try {
-            const res = await createCustomTestTrigger();
+            const date = new Date();
+            const createDate = getFormateDate(date)
+            const res = await createCustomTestTrigger(createDate);
             navigate(`/admin/testInfo/customTest/${res._id}`)
         } catch (e) {
             message.error('Ошибка при создании теста')
@@ -34,7 +44,19 @@ const AdminForm = () => {
     }
 
     const handleCreateCustomTestWithDescription = async () => {
-        setNewTestDescriptionOpen(true)
+        try {
+            const date = new Date();
+            const createDate = getFormateDate(date)
+            const res = await createNewTestTrigger({
+                title: 'Тест с описанием',
+                quantityQuestion: 1,
+                createDate
+            });
+            navigate(`/admin/testInfo/customTest/description/${res._id}`)
+            await queryClient.invalidateQueries({ queryKey: ['allTests'] })
+        } catch (e) {
+            message.error('Ошибка при создании теста')
+        }
     }
 
     return (
@@ -49,33 +71,38 @@ const AdminForm = () => {
 
                 <div className={s.admin__form__btns}>
                     <Button
-                        className={s.btn}
-                        type={"primary"}
-                        onClick={() => setChangePasswordModal(true)}
-                    >
-                        Изменить пароль
-                    </Button>
-                    <Button
+                        size={'large'}
                         className={s.btn}
                         type={"primary"}
                         onClick={() => setNewTestOpen(true)}
                     >
-                        Создать новый тест
+                        Тест без описания
                     </Button>
                     <Button
+                        size={'large'}
+                        className={s.btn}
+                        loading={isCreateNewTestLoading}
+                        type={"primary"}
+                        onClick={handleCreateCustomTestWithDescription}
+                    >
+                        Тест с описанием
+                    </Button>
+                    <Button
+                        size={'large'}
                         className={s.btn}
                         loading={createCustomTestLoading}
                         type={"primary"}
                         onClick={handleCreateCustomTest}
                     >
-                        Создать новый тест со своими вопросами
+                        Тест с отдельным описанием вопросов
                     </Button>
                     <Button
+                        size={'large'}
                         className={s.btn}
                         type={"primary"}
-                        onClick={handleCreateCustomTestWithDescription}
+                        onClick={() => setChangePasswordModal(true)}
                     >
-                        Создать новый тест только с описанием
+                        Изменить пароль
                     </Button>
                 </div>
                 <AllAdminTestsList/>

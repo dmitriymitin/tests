@@ -11,6 +11,7 @@ import {CopyOutlined} from "@ant-design/icons";
 import CustomTooltip from "../CustomTooltip";
 import ChangeAllTestFirstQuestion from "./ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
 import ChangeTitleOrQuestionCountModalDrawer from "../ChangeTitleOrQuestionCountModalDrawer";
+import {ITestModelResponse} from "../../api/test/type";
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
     switch (status) {
@@ -82,7 +83,16 @@ const AllAdminTestsList = () => {
         return <Spin size={'large'}/>
     }
 
-    const allTestArray = Object.values(allTest)
+    const allTestDataArray = Object.values(allTest)
+    const allTestArray = allTestDataArray.sort((a: ITestModelResponse, b: ITestModelResponse) => {
+        const dateA = new Date(a.createDate);
+        const dateB = new Date(b.createDate);
+        if (dateA < dateB)
+            return 1
+        if (dateA > dateB)
+            return -1
+        return 0
+    });
 
     if (allTestArray.length === 0) {
         return (
@@ -119,9 +129,9 @@ const AllAdminTestsList = () => {
                         <div className={s.infoWrapper}>
                             <p>Тип теста:</p>
                             <div className={s.body}>
-                                {!!el.quantityQuestion && !el.descriptionEditor && 'Обычный тест'}
-                                {!!el.questions && 'Тест со своими вопросами'}
-                                {!!el.descriptionEditor && 'Тест с описанием'}
+                                {!!el.quantityQuestion && !el.descriptionEditor && 'Тест без описания'}
+                                {!!el.questions && 'Тест с описанием'}
+                                {!!el.descriptionEditor && 'Тест с отдельным описанием вопросов'}
                             </div>
                         </div>
 

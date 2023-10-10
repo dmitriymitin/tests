@@ -102,8 +102,10 @@ export const onUpdateQuestionCustomTest = async (values: {
     return data;
 };
 
-export const createNewCustomTest = async (): Promise<ITestCustomModelResponse> => {
-    const {data} = await $api.post('/test/createCustom');
+export const createNewCustomTest = async (createDate: string): Promise<ITestCustomModelResponse> => {
+    const {data} = await $api.post('/test/createCustom', {
+        createDate
+    });
     return data;
 };
 

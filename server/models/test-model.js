@@ -6,7 +6,8 @@ const TestSchema = new Schema({
     quantityQuestion: {type: Number, required: true},
     status: {type: String, required: true, default: 'Start'},
     testKey: {type: String, required: false, default: ''},
-    descriptionEditor: {type: Object, required: false}
+    descriptionEditor: {type: Object, required: false},
+    createDate: {type: String, required: false}
 })
 
 module.exports = model('Test', TestSchema);

@@ -223,18 +223,18 @@ class TestService {
         return
     }
 
-    async create(title, quantityQuestion, description){
+    async create(title, quantityQuestion, description, createDate){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()
         const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
-        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description})
+        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description, createDate})
     }
 
-    async createCustom(){
+    async createCustom(createDate){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()
         const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
-        return await TestCustomModel.create({firstQuestionTitle, title: 'Название теста', questions: []})
+        return await TestCustomModel.create({firstQuestionTitle, title: 'Тест с отдельным описанием вопросов', questions: [], createDate})
     }
 
     async getAll(){
@@ -262,6 +262,7 @@ class TestService {
                     _id: el[1]._id,
                     title: el[1].title,
                     quantityQuestion: el[1].quantityQuestion,
+                    createDate: el[1].createDate,
                 })
             }
             return acc
@@ -273,6 +274,7 @@ class TestService {
                     _id: el[1]._id,
                     title: el[1].title,
                     quantityQuestion: el[1].questions.length,
+                    createDate: el[1].createDate,
                 })
             }
             return acc
