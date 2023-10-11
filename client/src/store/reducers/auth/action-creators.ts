@@ -28,6 +28,23 @@ export const AuthActionCreators = {
             dispatch(AuthActionCreators.setError('Произошла ошибка при логине'));
         }
     },
+    loginDev: (password: string) => async (dispatch: AppDispatch) => {
+        dispatch(AuthActionCreators.setIsLoading(true));
+        try {
+            const response = await AuthService.loginDev(password);
+            if (!response) {
+                dispatch(AuthActionCreators.setError('Некорректный пароль'))
+            } else {
+                localStorage.setItem('token', response.data.accessToken);
+                localStorage.setItem('refreshToken', response.data.refreshToken);
+                dispatch(AuthActionCreators.setError(''));
+                dispatch(AuthActionCreators.setUser(response.data.user));
+                dispatch(AuthActionCreators.setIsAuth(true));
+            }
+        } catch (e) {
+            dispatch(AuthActionCreators.setError('Произошла ошибка при логине'));
+        }
+    },
     setIsLoadingFalse: () => async (dispatch: AppDispatch) => {
         dispatch(AuthActionCreators.setIsLoading(false));
     },

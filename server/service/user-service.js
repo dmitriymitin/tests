@@ -4,15 +4,27 @@ const tokenService = require('./token-service');
 const UserDto = require('../dtos/user-dto');
 const ApiError = require('../exceptions/api-error');
 class UserService {
+    async registration(name, password) {
+        const hashPassword = await bcrypt.hash(password, 3);
+        const user = await UserModel.create({name, password: hashPassword})
+        const userDto = new UserDto(user);
+        const tokens = tokenService.generateTokens({...userDto});
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        return {
+            ...tokens,
+            user: userDto
+        }
+    }
+
     async updatePassword(password){
         const user = await UserModel.findOne({name: 'admin'})
         user.password = await bcrypt.hash(password, 3);
         await user.save();
     }
 
-    async login(password){
-        const user  = await UserModel.findOne({name: "admin"})
-        if (!user){
+    async login(password, name){
+        const user  = await UserModel.findOne({name})
+        if (!user) {
             throw ApiError.BadRequest('Пользователь не был найден')
         }
         const isPassEquals = await bcrypt.compare(password, user.password);

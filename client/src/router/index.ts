@@ -7,6 +7,7 @@ import AdminTestInfo from "../pages/AdminTestInfo/AdminTestInfo";
 import AdminTestKeyInfo from "../pages/AdminTestKeyInfo/AdminTestKeyInfo";
 import CreateCustomTest from "../pages/CreateCustomTest/CreateCustomTest";
 import CreateCustomTestDescriptionPage from "../pages/CreateCustomTestDescriptionPage/CreateCustomTestDescriptionPage";
+import AuthDev from "../pages/AuthDev";
 
 export interface IRoute {
     path: string;
@@ -15,6 +16,7 @@ export interface IRoute {
 
 export enum RouteNames {
     LOGIN = '/login',
+    DEV_LOGIN = '/dev/login',
     TESTS = '/',
     TEST = "/tests/:testId",
     CREATE_CUSTOM_TEST = "/admin/testInfo/customTest/:testId",
@@ -36,6 +38,10 @@ export const publicRoutes : IRoute[] = [
     {
         path: RouteNames.LOGIN,
         component: Auth
+    },
+    {
+        path: RouteNames.DEV_LOGIN,
+        component: AuthDev
     }
 ]
 
