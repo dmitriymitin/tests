@@ -23,7 +23,7 @@ const ChangeAllTestFirstQuestion = ({refetch, title}: ChangeAllTestFirstQuestion
     const onSave = async () => {
         try {
             await onUpdateTitleFirstQuestionTrigger(newTitle)
-            refetch()
+            await refetch()
             setIsChangeTitle(false)
         } catch (e) {
             message.error('Произошла ошибка при обновлении названия')
@@ -58,7 +58,7 @@ const ChangeAllTestFirstQuestion = ({refetch, title}: ChangeAllTestFirstQuestion
 
     return (
         <div className={s.title__block}>
-            <h2 className={s.title}>Название первого вопроса во всех тестах</h2>
+            <h2 className={s.title}>Информация для студента: формат подписи</h2>
             <div className={s.title__wrapper}>
                 <p className={s.test__title}>{title}</p>
             </div>

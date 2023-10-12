@@ -230,6 +230,27 @@ class TestService {
         return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description, createDate})
     }
 
+    async updateStatusInAllTest (status) {
+        const testsAll  = await TestModel.find()
+        if (testsAll) {
+            testsAll.forEach((el, index) => {
+                testsAll[index].status = status;
+                el.save()
+            })
+        }
+        const testsCustomAll  = await TestCustomModel.find()
+        if (testsCustomAll) {
+            testsCustomAll.forEach((el, index) => {
+                testsCustomAll[index].status = status;
+                el.save()
+            })
+        }
+    }
+
+    async clearAllResults() {
+        await TestUserModel.deleteMany()
+    }
+
     async createCustom(createDate){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()

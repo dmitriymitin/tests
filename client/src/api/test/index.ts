@@ -61,15 +61,18 @@ export const updateTestDescriptionEditor = async (values: {
     return data;
 }
 
-export const updateTestInfo = async (values: {
-    id: string,
-    title: string,
+export const openAllTestFetcher = async () => {
+    const {data} = await $api.post(`/test/openAll`);
+    return data;
+}
 
-    description: EditorDescriptionTest
-}) => {
-    const {data} = await $api.post(`/test/description/updateDescription/${values.id}`, {
-        description: values.description
-    })
+export const closeAllTestFetcher = async () => {
+    const {data} = await $api.post(`/test/closeAll`);
+    return data;
+}
+
+export const clearAllTestResultsFetcher = async () => {
+    const {data} = await $api.post(`/test/clearAllResults`);
     return data;
 }
 

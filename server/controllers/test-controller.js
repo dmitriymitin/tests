@@ -12,6 +12,34 @@ class TestController{
         }
     }
 
+    async openAll(req, res, next){
+        try {
+            const testData = await TestService.updateStatusInAllTest('Open');
+            return res.json(testData)
+        } catch (e){
+            console.log(e)
+            next(e);
+        }
+    }
+
+    async closeAll(req, res, next){
+        try {
+            const testData = await TestService.updateStatusInAllTest('Close');
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
+    async clearAllResults(req, res, next){
+        try {
+            const testData = await TestService.clearAllResults();
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
     async createCustom(req, res, next){
         try {
             const {createDate} = req.body;
