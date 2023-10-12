@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import s from './AdminForm.module.scss'
-import {Button, message} from "antd";
+import {Button, message, Popconfirm} from "antd";
 import ChangePasswordModalDrawer from "../ChangePasswordModalDrawer";
 import NewTestModalDrawer from "../NewTestModalDrawer";
 import AllAdminTestsList from "../AllAdminTestsList/AllAdminTestsList";
@@ -8,11 +8,17 @@ import {AuthActionCreators} from "../../store/reducers/auth/action-creators";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useMutation, useQueryClient} from "react-query";
-import {createNewCustomTest, createNewTest, createNewTestWithDescription} from "../../api/test";
+import {
+    clearAllTestResultsFetcher, closeAllTestFetcher,
+    createNewCustomTest,
+    createNewTest,
+    createNewTestWithDescription, openAllTestFetcher
+} from "../../api/test";
 import ChangeCustomTestTitle from "../CreateCustomTestForm/ChangeCustomTestTitle/ChangeCustomTestTitle";
 import ChangeAllTestFirstQuestion from "../AllAdminTestsList/ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
 import NewTestModalDrawerWithDescription from "../NewTestModalDrawerWithDescription";
 import {getFormateDate} from "../../utils/getFormateDate";
+import AllAdminTestListWrapper from "../AllAdminTestsList/AllAdminTestListWrapper";
 
 const AdminForm = () => {
     const navigate = useNavigate()
@@ -31,6 +37,18 @@ const AdminForm = () => {
         mutateAsync: createNewTestTrigger,
         isLoading: isCreateNewTestLoading
     } = useMutation(createNewTestWithDescription);
+
+    const {
+        mutateAsync: clearAllTestResultsTrigger
+    } = useMutation(clearAllTestResultsFetcher)
+
+    const {
+        mutateAsync: openAllTestTrigger
+    } = useMutation(openAllTestFetcher)
+
+    const {
+        mutateAsync: closeAllTestTrigger
+    } = useMutation(closeAllTestFetcher)
 
     const handleCreateCustomTest = async () => {
         try {
@@ -56,6 +74,35 @@ const AdminForm = () => {
             await queryClient.invalidateQueries({ queryKey: ['allTests'] })
         } catch (e) {
             message.error('Ошибка при создании теста')
+        }
+    }
+
+    const handleClearResultsAllTest = async () => {
+        try {
+            await clearAllTestResultsTrigger();
+            message.success('Все результаты тестов успешно очищены!')
+        } catch (e) {
+            message.error('Ошибка при очистке результатов тестов!')
+        }
+    }
+
+    const handleOpenAllTest = async () => {
+        try {
+            await openAllTestTrigger();
+            await queryClient.invalidateQueries({ queryKey: ['allTests'] })
+            message.success('Все тесты успешно открыты!')
+        } catch (e) {
+            message.error('Ошибка при открытии всех тестов!')
+        }
+    }
+
+    const handleCloseAllTest = async () => {
+        try {
+            await closeAllTestTrigger();
+            await queryClient.invalidateQueries({ queryKey: ['allTests'] })
+            message.success('Все тесты успешно закрыты!')
+        } catch (e) {
+            message.error('Ошибка при закрытии всех тестов!')
         }
     }
 
@@ -105,7 +152,66 @@ const AdminForm = () => {
                         Изменить пароль
                     </Button>
                 </div>
-                <AllAdminTestsList/>
+                <ChangeAllTestFirstQuestion/>
+                <div className={s.btnActionWrapper}>
+                    <Popconfirm
+                        title="Открыть все тесты"
+                        description="Вы уверены, что хотите открыть все тесты?"
+                        onConfirm={handleOpenAllTest}
+                        okText="Да"
+                        cancelText="Нет"
+                    >
+                        <Button
+                            size={'large'}
+                            className={s.btn}
+                        >
+                            Открыть все тесты
+                        </Button>
+                    </Popconfirm>
+                    <Popconfirm
+                        title="Закрыть все тесты"
+                        description="Вы уверены, что хотите закрыть все тесты?"
+                        onConfirm={handleCloseAllTest}
+                        okText="Да"
+                        cancelText="Нет"
+                    >
+                        <Button
+                            size={'large'}
+                            className={s.btn}
+                        >
+                            Закрыть все тесты
+                        </Button>
+                    </Popconfirm>
+                    <Popconfirm
+                        title="Очистить результаты"
+                        description="Вы уверены, что хотите очистить результаты всех тестов?"
+                        onConfirm={handleClearResultsAllTest}
+                        okText="Да"
+                        cancelText="Нет"
+                    >
+                        <Button
+                            size={'large'}
+                            className={s.btn}
+                        >
+                            Очистить результаты всех тестов
+                        </Button>
+                    </Popconfirm>
+                    {/*<Popconfirm*/}
+                    {/*    title="Очистить результаты"*/}
+                    {/*    description="Вы уверены, что хотите очистить результаты всех тестов?"*/}
+                    {/*    onConfirm={handleClearResultsAllTest}*/}
+                    {/*    okText="Да"*/}
+                    {/*    cancelText="Нет"*/}
+                    {/*>*/}
+                    {/*    <Button*/}
+                    {/*        size={'large'}*/}
+                    {/*        className={s.btn}*/}
+                    {/*    >*/}
+                    {/*        Очистить результаты только выбранных тестов*/}
+                    {/*    </Button>*/}
+                    {/*</Popconfirm>*/}
+                </div>
+                <AllAdminTestListWrapper/>
                 <ChangePasswordModalDrawer open={changePasswordOpen} setOpen={setChangePasswordModal}/>
                 <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>
                 <NewTestModalDrawerWithDescription open={newTestDescriptionOpen} setOpen={setNewTestDescriptionOpen}/>

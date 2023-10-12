@@ -42,7 +42,12 @@ const getTestStatusText = (status: testStatusType) => {
     }
 }
 
-const AllAdminTestsList = () => {
+interface AllAdminTestsListProps {
+    page: number;
+    query: string;
+}
+
+const AllAdminTestsList = ({}: AllAdminTestsListProps) => {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const [activeTestsList, setActiveListTests] = useState<{
@@ -72,17 +77,7 @@ const AllAdminTestsList = () => {
         mutateAsync: updateStatusTestTrigger
     } = useMutation(updateAdminStatusTest)
 
-    const {
-        mutateAsync: openAllTestTrigger
-    } = useMutation(openAllTestFetcher)
 
-    const {
-        mutateAsync: closeAllTestTrigger
-    } = useMutation(closeAllTestFetcher)
-
-    const {
-        mutateAsync: clearAllTestResultsTrigger
-    } = useMutation(clearAllTestResultsFetcher)
 
     const onDeleteTest = async (id: string) => {
         try {
@@ -132,97 +127,9 @@ const AllAdminTestsList = () => {
         }))
     }
 
-    const handleOpenAllTest = async () => {
-        try {
-            await openAllTestTrigger();
-            await allTestRefetch();
-            message.success('Все тесты успешно открыты!')
-        } catch (e) {
-            message.error('Ошибка при открытии всех тестов!')
-        }
-    }
-
-    const handleCloseAllTest = async () => {
-        try {
-            await closeAllTestTrigger();
-            await allTestRefetch();
-            message.success('Все тесты успешно закрыты!')
-        } catch (e) {
-            message.error('Ошибка при закрытии всех тестов!')
-        }
-    }
-
-    const handleClearResultsAllTest = async () => {
-        try {
-            await clearAllTestResultsTrigger();
-            message.success('Все результаты тестов успешно очищены!')
-        } catch (e) {
-            message.error('Ошибка при очистке результатов тестов!')
-        }
-    }
 
     return (
         <div className={s.all__tests__list}>
-            <ChangeAllTestFirstQuestion refetch={allTestRefetch}
-                                        title={allTest[0].firstQuestionTitle || 'Фамилия, номер группы'}/>
-            <div className={s.btnActionWrapper}>
-                <Popconfirm
-                    title="Открыть все тесты"
-                    description="Вы уверены, что хотите открыть все тесты?"
-                    onConfirm={handleOpenAllTest}
-                    okText="Да"
-                    cancelText="Нет"
-                >
-                    <Button
-                        size={'large'}
-                        className={s.btn}
-                    >
-                        Открыть все тесты
-                    </Button>
-                </Popconfirm>
-                <Popconfirm
-                    title="Закрыть все тесты"
-                    description="Вы уверены, что хотите закрыть все тесты?"
-                    onConfirm={handleCloseAllTest}
-                    okText="Да"
-                    cancelText="Нет"
-                >
-                    <Button
-                        size={'large'}
-                        className={s.btn}
-                    >
-                        Закрыть все тесты
-                    </Button>
-                </Popconfirm>
-                <Popconfirm
-                    title="Очистить результаты"
-                    description="Вы уверены, что хотите очистить результаты всех тестов?"
-                    onConfirm={handleClearResultsAllTest}
-                    okText="Да"
-                    cancelText="Нет"
-                >
-                    <Button
-                        size={'large'}
-                        className={s.btn}
-                    >
-                        Очистить результаты всех тестов
-                    </Button>
-                </Popconfirm>
-                {/*<Popconfirm*/}
-                {/*    title="Очистить результаты"*/}
-                {/*    description="Вы уверены, что хотите очистить результаты всех тестов?"*/}
-                {/*    onConfirm={handleClearResultsAllTest}*/}
-                {/*    okText="Да"*/}
-                {/*    cancelText="Нет"*/}
-                {/*>*/}
-                {/*    <Button*/}
-                {/*        size={'large'}*/}
-                {/*        className={s.btn}*/}
-                {/*    >*/}
-                {/*        Очистить результаты только выбранных тестов*/}
-                {/*    </Button>*/}
-                {/*</Popconfirm>*/}
-            </div>
             <h2>Список всех тестов</h2>
             {allTest.map(el =>
                 <div key={el._id} className={s.all__tests__list__wrapper}>
