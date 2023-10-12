@@ -196,8 +196,8 @@ class TestController{
     async changeInfoTest(req, res, next){
         try{
             const {id} = req.query;
-            const {title, quantityQuestion} = req.body;
-            const response = await TestService.changeInfoTest(id, title, quantityQuestion);
+            const {title, quantityQuestion, description} = req.body;
+            const response = await TestService.changeInfoTest(id, title, quantityQuestion, description);
             return res.json(response);
         } catch (e) {
             next(e)

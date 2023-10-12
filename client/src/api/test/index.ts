@@ -61,6 +61,18 @@ export const updateTestDescriptionEditor = async (values: {
     return data;
 }
 
+export const updateTestInfo = async (values: {
+    id: string,
+    title: string,
+
+    description: EditorDescriptionTest
+}) => {
+    const {data} = await $api.post(`/test/description/updateDescription/${values.id}`, {
+        description: values.description
+    })
+    return data;
+}
+
 export const onDeleteQuestionCustomTest = async (values: {
     id: string | null, testId: string | null
 }): Promise<any> => {
@@ -82,10 +94,12 @@ export const onUpdateTestInfo = async (values: {
     testId: string | null
     title?: string;
     quantityQuestion?: number;
+    description?: EditorDescriptionTest
 }): Promise<any> => {
     const {data} = await $api.post(`/test/changeInfoTest?id=${values.testId}`, {
         title: values.title,
-        quantityQuestion: values.quantityQuestion
+        quantityQuestion: values.quantityQuestion,
+        description: values.description
     });
     return data;
 };

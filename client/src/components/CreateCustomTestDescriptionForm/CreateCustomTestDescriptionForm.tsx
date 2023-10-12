@@ -1,5 +1,5 @@
 import s from "./CreateCustomTestDescriptionForm.module.scss";
-import React, {FC, memo, useState} from "react";
+import React, {FC, memo, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "antd/es/form/Form";
 import Editor from "./Editor/Editor";
@@ -12,49 +12,38 @@ import {log} from "util";
 
 interface CreateCustomTestDescriptionFormProps {
     id: string;
-    description?: EditorDescriptionTest;
+    descriptionPARSE?: EditorDescriptionTest;
     refetch: () => void
+    setDescriptionPARSE: (description: EditorDescriptionTest) => void
 }
 
-const CreateCustomTestDescriptionForm: FC<CreateCustomTestDescriptionFormProps> = ({id, description, refetch}) => {
+const CreateCustomTestDescriptionForm: FC<CreateCustomTestDescriptionFormProps> = ({id, setDescriptionPARSE, descriptionPARSE, refetch}) => {
     const navigate = useNavigate();
     const [form] = useForm()
 
-    const {
-    		mutateAsync: updateTestDescriptionEditorTrigger,
-    		isLoading: updateTestDescriptionEditorLoading,
-    	} = useMutation(updateTestDescriptionEditor)
+    // const {
+    // 		mutateAsync: updateTestDescriptionEditorTrigger,
+    // 		isLoading: updateTestDescriptionEditorLoading,
+    // 	} = useMutation(updateTestDescriptionEditor)
 
-    const [descriptionPARSE, setDescriptionPARSE] = useState(description || exampleData)
-
-    const handleSaveDescription = async () => {
-        try {
-            await updateTestDescriptionEditorTrigger({
-                id,
-                description: descriptionPARSE
-            })
-            navigate('/admin')
-            message.success('Описание успешно сохранено!')
-        } catch (e) {
-            message.error('Ошибка при сохранении описания!')
-        }
-    }
+    // const handleSaveDescription = async () => {
+    //     try {
+    //         await updateTestDescriptionEditorTrigger({
+    //             id,
+    //             description: descriptionPARSE
+    //         })
+    //         navigate('/admin')
+    //         message.success('Описание успешно сохранено!')
+    //     } catch (e) {
+    //         message.error('Ошибка при сохранении описания!')
+    //     }
+    // }
 
 
     return (
         <>
             <div className={s.editorContainer}>
                 <Editor data={descriptionPARSE} setData={setDescriptionPARSE} />
-            </div>
-            <div className={s.btnSaveWrapper}>
-                <Button
-                    onClick={handleSaveDescription}
-                    size={'large'}
-                    type={'primary'}
-                    loading={updateTestDescriptionEditorLoading}
-                >
-                    Сохранить описание
-                </Button>
             </div>
         </>
 

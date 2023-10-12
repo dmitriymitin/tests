@@ -344,7 +344,7 @@ class TestService {
         }
     }
 
-    async changeInfoTest(id, title, quantityQuestion){
+    async changeInfoTest(id, title, quantityQuestion, description){
         const testModel  = await TestModel.findOne({_id: new ObjectId(id)})
         if (title) {
             testModel.title = title;
@@ -352,6 +352,10 @@ class TestService {
         if (quantityQuestion) {
             testModel.quantityQuestion = quantityQuestion;
         }
+        if (description) {
+            testModel.descriptionEditor = description;
+        }
+
         testModel.save()
         return {
             ...testModel
