@@ -194,20 +194,6 @@ const AllAdminTestsList = () => {
                         Закрыть все тесты
                     </Button>
                 </Popconfirm>
-                {/*<Popconfirm*/}
-                {/*    title="Очистить результаты"*/}
-                {/*    description="Вы уверены, что хотите очистить результаты всех тестов?"*/}
-                {/*    onConfirm={handleClearResultsAllTest}*/}
-                {/*    okText="Да"*/}
-                {/*    cancelText="Нет"*/}
-                {/*>*/}
-                {/*    <Button*/}
-                {/*        size={'large'}*/}
-                {/*        className={s.btn}*/}
-                {/*    >*/}
-                {/*        Очистить результаты всех тестов*/}
-                {/*    </Button>*/}
-                {/*</Popconfirm>*/}
                 <Popconfirm
                     title="Очистить результаты"
                     description="Вы уверены, что хотите очистить результаты всех тестов?"
@@ -219,9 +205,23 @@ const AllAdminTestsList = () => {
                         size={'large'}
                         className={s.btn}
                     >
-                        Очистить результаты только выбранных тестов
+                        Очистить результаты всех тестов
                     </Button>
                 </Popconfirm>
+                {/*<Popconfirm*/}
+                {/*    title="Очистить результаты"*/}
+                {/*    description="Вы уверены, что хотите очистить результаты всех тестов?"*/}
+                {/*    onConfirm={handleClearResultsAllTest}*/}
+                {/*    okText="Да"*/}
+                {/*    cancelText="Нет"*/}
+                {/*>*/}
+                {/*    <Button*/}
+                {/*        size={'large'}*/}
+                {/*        className={s.btn}*/}
+                {/*    >*/}
+                {/*        Очистить результаты только выбранных тестов*/}
+                {/*    </Button>*/}
+                {/*</Popconfirm>*/}
             </div>
             <h2>Список всех тестов</h2>
             {allTest.map(el =>
