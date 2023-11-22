@@ -2,10 +2,8 @@ import s from "./CreateCustomTestDescriptionPage.module.scss";
 import React, {FC, memo} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Button, Form, Layout, Spin} from "antd";
-import CreateCustomTestForm from "../../components/CreateCustomTestForm/CreateCustomTestForm";
 import CreateCustomTestDescriptionForm
     from "../../components/CreateCustomTestDescriptionForm/CreateCustomTestDescriptionForm";
-import ChangeCustomTestTitle from "../../components/CreateCustomTestForm/ChangeCustomTestTitle/ChangeCustomTestTitle";
 import {useForm} from "antd/es/form/Form";
 import {getOneTest} from "../../api/test";
 import {useQuery} from "react-query";

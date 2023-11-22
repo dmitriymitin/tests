@@ -3,12 +3,11 @@ import React, {FC, memo, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "antd/es/form/Form";
 import Editor from "./Editor/Editor";
-import exampleData from "./Editor/exampleData";
+import {EditorDescriptionTest} from "../../api/test/type";
 import {Button, message} from "antd";
 import {useMutation} from "react-query";
 import {updateTestDescriptionEditor} from "../../api/test";
-import {EditorDescriptionTest} from "../../api/test/type";
-import {log} from "util";
+import exampleData from "./Editor/exampleData";
 
 interface CreateCustomTestDescriptionFormProps {
     id: string;
