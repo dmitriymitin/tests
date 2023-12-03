@@ -33,24 +33,9 @@ import InlineCode from "@editorjs/inline-code";
 // @ts-ignore
 import SimpleImage from "@editorjs/simple-image";
 import {createReactEditorJS} from "react-editor-js";
+import {useMutation} from "react-query";
+import {addNewImageInTest} from "../../../api/uploadImage";
 
-const EDITOR_JS_TOOLS = {
-    embed: Embed,
-    table: Table,
-    list: List,
-    warning: Warning,
-    code: Code,
-    linkTool: LinkTool,
-    image: Image,
-    raw: Raw,
-    header: Header,
-    quote: Quote,
-    marker: Marker,
-    checklist: CheckList,
-    delimiter: Delimiter,
-    inlineCode: InlineCode,
-    simpleImage: SimpleImage
-};
 
 interface EditorProps {
     data: any;
@@ -59,6 +44,10 @@ interface EditorProps {
 
 const Editor: FC<EditorProps> = ({ data, setData }) => {
     const editorCore = useRef(null);
+    const {
+        mutateAsync: addNewImageTrigger,
+    } = useMutation(addNewImageInTest)
+
     const ReactEditorJS = createReactEditorJS();
 
     const handleInitialize = useCallback((instance: any) => {
@@ -84,7 +73,38 @@ const Editor: FC<EditorProps> = ({ data, setData }) => {
             <div className="editor-container">
                 <ReactEditorJS
                     onInitialize={handleInitialize}
-                    tools={EDITOR_JS_TOOLS}
+                    tools={{
+                        embed: Embed,
+                        table: Table,
+                        list: List,
+                        warning: Warning,
+                        code: Code,
+                        linkTool: LinkTool,
+                        // image: Image,
+                        image: {
+                            class: Image,
+                            config: {
+                                uploader: {
+                                    async uploadByFile(file: any) {
+                                        const formData = new FormData();
+                                        formData.append('file', file);
+
+                                        const response = await addNewImageTrigger({formData})
+                                        console.log(response.file.url)
+                                        return response.file;
+                                    }
+                                }
+                            }
+                        },
+                        raw: Raw,
+                        header: Header,
+                        quote: Quote,
+                        marker: Marker,
+                        checklist: CheckList,
+                        delimiter: Delimiter,
+                        inlineCode: InlineCode,
+                        simpleImage: SimpleImage
+                    }}
                     onChange={handleSave}
                     defaultValue={data}
                 />

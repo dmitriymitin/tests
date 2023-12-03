@@ -21,15 +21,6 @@ class UserController{
         }
     }
 
-    async updateUserInformation(req, res, next){
-        try {
-            const {email, name, surname, patronymic, gender} = req.body;
-            const userData = await UserService.updateUserInformation(email, name, surname, patronymic, gender);
-            return res.json({user: userData})
-        } catch (e){
-            next(e);
-        }
-    }
     async updateUserPassword(req, res, next){
         try {
             const {password} = req.body;
