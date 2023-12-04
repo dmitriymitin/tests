@@ -58,7 +58,7 @@ const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({
                 quantityQuestion,
                 description: descriptionPARSE
             });
-            message.error('Тест успешно сохранен')
+            message.success('Тест успешно сохранен')
             navigate('/admin')
         } catch (e) {
             message.error('Ошибка при сохранении теста')
