@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const path = require("path");
 const router = require('./router/index')
 const errorMiddleware = require('./middlewares/error-middleware')
+const ImageModel = require("./models/image-model");
 
 const PORT = process.env.PORT || 5000;
 const app = express()
@@ -20,7 +21,17 @@ app.use(cors({
 app.use('/api', router);
 app.use(errorMiddleware);
 
-app.use("/public", express.static(path.join(__dirname, "public")));
+// app.use("/public", express.static(path.join(__dirname, "public")));
+
+app.get('/images/:id', async (req, res) => {
+    try {
+        const image = await ImageModel.findById(req.params.id);
+        res.contentType(image.contentType);
+        res.send(image.data);
+    } catch (error) {
+        res.status(404).send('Image not found');
+    }
+});
 
 const start = async () => {
     try {
