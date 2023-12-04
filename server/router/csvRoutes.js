@@ -19,7 +19,7 @@ const upload = multer({
   storage: storage,
 });
 
-router.post("/create",authMiddleware, upload.single("file"), csvController.create);
+router.post("/create", authMiddleware, upload.single("file"), csvController.create);
 
 //post create new media
 // router.post("/createByUrl", csvController.createByUrl);
