@@ -25,16 +25,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  fileFilter: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    console.log("ext");
-
-    if (ext !== ".png" && ext !== ".jpg" && ext !== ".jpeg") {
-      return cb(new Error("Only images are allowed!"));
-    }
-
-    cb(null, true);
-  },
+  // fileFilter: function (req, file, cb) {
+  //   const ext = path.extname(file.originalname);
+  //   console.log("ext");
+  //
+  //   if (ext !== ".png" && ext !== ".jpg" && ext !== ".jpeg") {
+  //     return cb(new Error("Only images are allowed!"));
+  //   }
+  //
+  //   cb(null, true);
+  // },
 });
 
 const router = express.Router();

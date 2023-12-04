@@ -27,7 +27,6 @@ const ImageModel = require("../models/image-model");
 exports.create = async (req, res) => {
   try {
     const image = req.file;
-    console.log(req)
     if (image) {
       const newImage = new ImageModel({
         data: fs.readFileSync(image.path),
@@ -38,7 +37,6 @@ exports.create = async (req, res) => {
       res.json({ success: 1, fileId: newImage._id });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json(error);
   }
 };
