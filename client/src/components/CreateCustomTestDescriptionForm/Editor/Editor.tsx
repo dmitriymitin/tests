@@ -91,7 +91,7 @@ const Editor: FC<EditorProps> = ({ data, setData }) => {
                                         const formData = new FormData();
                                         formData.append('file', file);
 
-                                        const response = await axios.post('http://localhost:6007/api/uploadImage/create', formData, {
+                                        const response = await axios.post(API_URL + '/uploadImage/create', formData, {
                                             headers: {
                                                 'Content-Type': 'multipart/form-data'
                                             },

@@ -12,9 +12,9 @@ export const API_URL_IMAGES = 'https://tests-bzrd.vercel.app'
 // export const API_URL_IMAGES = 'http://localhost:6007'
 
 // для прода использовать url ниже
-// export const CLIENT_URL='https://tests-sandy.vercel.app'
+export const CLIENT_URL='https://tests-sandy.vercel.app'
 // для дэв использовать url ниже
-export const CLIENT_URL='http://localhost:3000'
+// export const CLIENT_URL='http://localhost:3000'
 
 const $api = axios.create({
     baseURL: API_URL
