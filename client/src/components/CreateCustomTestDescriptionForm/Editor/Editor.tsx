@@ -35,6 +35,7 @@ import SimpleImage from "@editorjs/simple-image";
 import {createReactEditorJS} from "react-editor-js";
 import {useMutation} from "react-query";
 import {addNewImageInTest} from "../../../api/uploadImage";
+import axios from "axios";
 
 
 interface EditorProps {
@@ -89,9 +90,25 @@ const Editor: FC<EditorProps> = ({ data, setData }) => {
                                         const formData = new FormData();
                                         formData.append('file', file);
 
-                                        const response = await addNewImageTrigger({formData})
-                                        console.log(response.file.url)
-                                        return response.file;
+                                        // const response = await addNewImageTrigger({formData})
+                                        // // console.log(response.file.url)
+                                        // return {
+                                        //     'success': 1,
+                                        //     'file': {
+                                        //         url: response.file.url
+                                        //     }
+                                        // };
+                                        const response = await axios.post('http://localhost:6007/api/uploadImage/create', formData, {
+                                            headers: {
+                                                'Content-Type': 'multipart/form-data'
+                                            },
+                                            withCredentials: true
+                                        })
+
+                                        if (response.data.success === 1) {
+                                            console.log(response.data)
+                                            return response.data;
+                                        }
                                     }
                                 }
                             }

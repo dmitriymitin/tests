@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose');
+const path = require("path");
 const router = require('./router/index')
 const errorMiddleware = require('./middlewares/error-middleware')
 
@@ -18,6 +19,8 @@ app.use(cors({
 }));
 app.use('/api', router);
 app.use(errorMiddleware);
+
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 const start = async () => {
     try {
