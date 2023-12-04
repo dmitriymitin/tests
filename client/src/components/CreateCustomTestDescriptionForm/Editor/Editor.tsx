@@ -36,7 +36,7 @@ import {createReactEditorJS} from "react-editor-js";
 import {useMutation} from "react-query";
 import {addNewImageInTest} from "../../../api/uploadImage";
 import axios from "axios";
-import {API_URL} from "../../../http";
+import {API_URL, API_URL_IMAGES} from "../../../http";
 
 
 interface EditorProps {
@@ -91,15 +91,7 @@ const Editor: FC<EditorProps> = ({ data, setData }) => {
                                         const formData = new FormData();
                                         formData.append('file', file);
 
-                                        // const response = await addNewImageTrigger({formData})
-                                        // // console.log(response.file.url)
-                                        // return {
-                                        //     'success': 1,
-                                        //     'file': {
-                                        //         url: response.file.url
-                                        //     }
-                                        // };
-                                        const response = await axios.post(API_URL + '/uploadImage/create', formData, {
+                                        const response = await axios.post('http://localhost:6007/api/uploadImage/create', formData, {
                                             headers: {
                                                 'Content-Type': 'multipart/form-data'
                                             },
@@ -107,8 +99,12 @@ const Editor: FC<EditorProps> = ({ data, setData }) => {
                                         })
 
                                         if (response.data.success === 1) {
-                                            console.log(response.data)
-                                            return response.data;
+                                            return {
+                                                success: 1,
+                                                file: {
+                                                    url: API_URL_IMAGES + '/images/' + response.data.fileId
+                                                }
+                                            };
                                         }
                                     }
                                 }
