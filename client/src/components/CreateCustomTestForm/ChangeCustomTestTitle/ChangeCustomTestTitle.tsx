@@ -14,7 +14,7 @@ interface ChangeCustomTestTitleProps {
 }
 
 const ChangeCustomTestTitle = ({testId, title, getFieldTestTitle, refetch}: ChangeCustomTestTitleProps) => {
-    const [isChangeTitle, setIsChangeTitle] = useState(false)
+    const [isChangeTitle, setIsChangeTitle] = useState(true)
 
     const {
         mutateAsync: onUpdateCustomTestTitleTrigger,
@@ -28,7 +28,7 @@ const ChangeCustomTestTitle = ({testId, title, getFieldTestTitle, refetch}: Chan
                 testId:testId,
                 title: newTitle,
             })
-            refetch()
+            await refetch()
             setIsChangeTitle(false)
         } catch (e) {
             message.error('Произошла ошибка при обновлении названия теста')

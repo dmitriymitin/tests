@@ -168,7 +168,7 @@ const Test = () => {
                 : <div className={s.testWithDescription}>
                         <div className={clsx( "text-container", s.descriptionBg)}>{parse(edjsParser.parse(testData.descriptionEditor).join(""))}</div>
                         <div className={s.item}>
-                            <div className={s.title}>Введите свои ответы:</div>
+                            <div className={s.title}>Введите свои ответы слитно, без разделителей: один вопрос - один символ</div>
                             <Form.Item
                                 name={`testKey`}
                             >

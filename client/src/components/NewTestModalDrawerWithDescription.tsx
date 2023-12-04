@@ -5,6 +5,7 @@ import {createNewTest, createNewTestWithDescription} from "../api/test";
 import {useForm} from "antd/es/form/Form";
 import {Button, Drawer, Form, Input, message, Modal} from "antd";
 import {useNavigate} from "react-router-dom";
+import {getFormateDate} from "../utils/getFormateDate";
 
 interface NewTestModalDrawerWithDescriptionProps {
     open: boolean;
@@ -28,9 +29,12 @@ const NewTestModalDrawerWithDescription: FC<NewTestModalDrawerWithDescriptionPro
             await form.validateFields();
             const testName = form.getFieldValue('testName')
             const testQuestionNumber = form.getFieldValue('testQuestionNumber')
+            const date = new Date();
+            const createDate = getFormateDate(date)
             const res = await createNewTestTrigger({
                 title: testName,
                 quantityQuestion: testQuestionNumber,
+                createDate
             });
             navigate(`/admin/testInfo/customTest/description/${res._id}`)
             await queryClient.invalidateQueries({ queryKey: ['allTests'] })

@@ -4,8 +4,36 @@ const ApiError = require("../exceptions/api-error");
 class TestController{
     async create(req, res, next){
         try {
-            const {title, quantityQuestion, description} = req.body;
-            const testData = await TestService.create(title, quantityQuestion, description);
+            const {title, quantityQuestion, description, createDate} = req.body;
+            const testData = await TestService.create(title, quantityQuestion, description, createDate);
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
+    async openAll(req, res, next){
+        try {
+            const testData = await TestService.updateStatusInAllTest('Open');
+            return res.json(testData)
+        } catch (e){
+            console.log(e)
+            next(e);
+        }
+    }
+
+    async closeAll(req, res, next){
+        try {
+            const testData = await TestService.updateStatusInAllTest('Close');
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
+    async clearAllResults(req, res, next){
+        try {
+            const testData = await TestService.clearAllResults();
             return res.json(testData)
         } catch (e){
             next(e);
@@ -14,7 +42,8 @@ class TestController{
 
     async createCustom(req, res, next){
         try {
-            const testData = await TestService.createCustom();
+            const {createDate} = req.body;
+            const testData = await TestService.createCustom(createDate);
             return res.json(testData)
         } catch (e){
             next(e);
@@ -195,8 +224,8 @@ class TestController{
     async changeInfoTest(req, res, next){
         try{
             const {id} = req.query;
-            const {title, quantityQuestion} = req.body;
-            const response = await TestService.changeInfoTest(id, title, quantityQuestion);
+            const {title, quantityQuestion, description} = req.body;
+            const response = await TestService.changeInfoTest(id, title, quantityQuestion, description);
             return res.json(response);
         } catch (e) {
             next(e)

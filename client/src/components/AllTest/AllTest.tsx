@@ -5,6 +5,7 @@ import {Button, Spin} from "antd";
 import {useNavigate} from "react-router-dom";
 import s from './AllTest.module.scss'
 import clsx from "clsx";
+import {ITestModelResponse} from "../../api/test/type";
 
 const AllTest = () => {
     const navigate = useNavigate();
@@ -31,9 +32,7 @@ const AllTest = () => {
             )
     }
 
-    const allTestArray = Object.values(allTest)
-
-    if (allTestArray.length === 0) {
+    if (allTest.length === 0) {
         return (
             <div className={s.all__tests__list__empty}>
                 Тестов пока нет
@@ -47,7 +46,7 @@ const AllTest = () => {
                 Список тестов
             </h1>
             <div className={s.all__tests__list}>
-                {allTestArray.map(el =>
+                {allTest.map(el =>
                     <div key={el._id} className={clsx(s.all__tests__list__test__item, 'testBackground')}>
                         <p className={s.title}>
                             {el.title}

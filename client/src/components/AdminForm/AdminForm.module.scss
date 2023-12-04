@@ -15,16 +15,22 @@
   }
 }
 
+.btnActionWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .btn {
+    max-width: 400px;
+  }
+}
+
 .admin__form__btns {
   display: flex;
+  flex-direction: column;
   gap: 15px;
 
-  @media screen and (max-width: 1000px) {
-    flex-direction: column;
-    gap: 15px;
-
-    .btn {
-      max-width: 400px;
-    }
+  .btn {
+    max-width: 400px;
   }
 }

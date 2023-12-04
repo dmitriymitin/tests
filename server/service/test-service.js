@@ -223,27 +223,60 @@ class TestService {
         return
     }
 
-    async create(title, quantityQuestion, description){
+    async create(title, quantityQuestion, description, createDate){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()
         const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
-        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description})
+        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description, createDate})
     }
 
-    async createCustom(){
+    async updateStatusInAllTest (status) {
+        const testsAll  = await TestModel.find()
+        if (testsAll) {
+            testsAll.forEach((el, index) => {
+                testsAll[index].status = status;
+                el.save()
+            })
+        }
+        const testsCustomAll  = await TestCustomModel.find()
+        if (testsCustomAll) {
+            testsCustomAll.forEach((el, index) => {
+                testsCustomAll[index].status = status;
+                el.save()
+            })
+        }
+    }
+
+    async clearAllResults() {
+        await TestUserModel.deleteMany()
+    }
+
+    async createCustom(createDate){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()
         const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
-        return await TestCustomModel.create({firstQuestionTitle, title: 'Название теста', questions: []})
+        return await TestCustomModel.create({firstQuestionTitle, title: 'Тест с отдельным описанием вопросов', questions: [], createDate})
     }
 
     async getAll(){
         const testsAll  = await TestModel.find()
         const testsCustom = await TestCustomModel.find()
-        return [
-                ...testsAll,
-                ...testsCustom
+        const allTestDataArray = [
+            ...testsAll,
+            ...testsCustom
         ]
+
+        const allTestArray = allTestDataArray.sort((a, b) => {
+            const dateA = new Date(a.createDate);
+            const dateB = new Date(b.createDate);
+            if (dateA < dateB)
+                return 1
+            if (dateA > dateB)
+                return -1
+            return 0
+        });
+
+        return [...allTestArray]
     }
 
     async getAllQuestion(){
@@ -262,6 +295,7 @@ class TestService {
                     _id: el[1]._id,
                     title: el[1].title,
                     quantityQuestion: el[1].quantityQuestion,
+                    createDate: el[1].createDate,
                 })
             }
             return acc
@@ -273,12 +307,25 @@ class TestService {
                     _id: el[1]._id,
                     title: el[1].title,
                     quantityQuestion: el[1].questions.length,
+                    createDate: el[1].createDate,
                 })
             }
             return acc
         }, [])
 
-        return [...newTests, ...newCustomTests]
+        const allTestDataArray = [...newTests, ...newCustomTests]
+
+        const allTestArray = allTestDataArray.sort((a, b) => {
+            const dateA = new Date(a.createDate);
+            const dateB = new Date(b.createDate);
+            if (dateA < dateB)
+                return 1
+            if (dateA > dateB)
+                return -1
+            return 0
+        });
+
+        return [...allTestArray]
     }
 
     async deleteOne(id){
@@ -318,7 +365,7 @@ class TestService {
         }
     }
 
-    async changeInfoTest(id, title, quantityQuestion){
+    async changeInfoTest(id, title, quantityQuestion, description){
         const testModel  = await TestModel.findOne({_id: new ObjectId(id)})
         if (title) {
             testModel.title = title;
@@ -326,6 +373,10 @@ class TestService {
         if (quantityQuestion) {
             testModel.quantityQuestion = quantityQuestion;
         }
+        if (description) {
+            testModel.descriptionEditor = description;
+        }
+
         testModel.save()
         return {
             ...testModel

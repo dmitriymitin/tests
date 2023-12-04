@@ -1,29 +1,46 @@
-import React, {useState} from 'react';
-import {useMutation} from "react-query";
-import {onUpdateCustomTestTitle, updateTitleFirstQuestion} from "../../../api/test";
+import React, {memo, useEffect, useState} from 'react';
+import {useMutation, useQuery, useQueryClient} from "react-query";
+import {getAdminAllTests, onUpdateCustomTestTitle, updateTitleFirstQuestion} from "../../../api/test";
 import s from "./ChangeAllTestFirstQuestion.module.scss";
-import {Button, Form, message} from "antd";
+import {Button, Form, message, Spin} from "antd";
 import {CheckOutlined, CloseOutlined, EditOutlined} from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 
-interface ChangeAllTestFirstQuestionProps{
-    title: string;
-    refetch: () => void
-}
+interface ChangeAllTestFirstQuestionProps{}
 
-const ChangeAllTestFirstQuestion = ({refetch, title}: ChangeAllTestFirstQuestionProps) => {
-    const [newTitle, setNewTitle] = useState(title || '')
+const ChangeAllTestFirstQuestion = () => {
+    const [newTitle, setNewTitle] = useState( '')
     const [isChangeTitle, setIsChangeTitle] = useState(false)
+    const queryClient = useQueryClient()
+
+    const {
+        data: allTest,
+        isLoading: isAllTestLoading
+    } = useQuery('allTests', getAdminAllTests, {
+        refetchOnWindowFocus: false
+    });
 
     const {
         mutateAsync: onUpdateTitleFirstQuestionTrigger,
         isLoading: onUpdateTitleFirstQuestionLoading
     } = useMutation(updateTitleFirstQuestion)
 
+    useEffect(() => {
+        if (!allTest)
+            return
+        setNewTitle(allTest[0].firstQuestionTitle || 'Фамилия, номер группы')
+    }, [allTest]);
+
+    if (!allTest || isAllTestLoading) {
+        return <Spin size={'large'}/>
+    }
+
+    const title= allTest[0].firstQuestionTitle || 'Фамилия, номер группы'
+
+
     const onSave = async () => {
         try {
             await onUpdateTitleFirstQuestionTrigger(newTitle)
-            refetch()
             setIsChangeTitle(false)
         } catch (e) {
             message.error('Произошла ошибка при обновлении названия')
@@ -34,7 +51,7 @@ const ChangeAllTestFirstQuestion = ({refetch, title}: ChangeAllTestFirstQuestion
         return (
             <div className={s.title__wrapper}>
                 <TextArea
-                    defaultValue={title}
+                    defaultValue={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                         className={s.text__area__title}
                         rows={2}
@@ -58,9 +75,9 @@ const ChangeAllTestFirstQuestion = ({refetch, title}: ChangeAllTestFirstQuestion
 
     return (
         <div className={s.title__block}>
-            <h2 className={s.title}>Название первого вопроса во всех тестах</h2>
+            <h2 className={s.title}>Информация для студента: формат подписи</h2>
             <div className={s.title__wrapper}>
-                <p className={s.test__title}>{title}</p>
+                <p className={s.test__title}>{newTitle}</p>
             </div>
             <div className={s.btnWrapper}>
                 <Button
@@ -74,4 +91,4 @@ const ChangeAllTestFirstQuestion = ({refetch, title}: ChangeAllTestFirstQuestion
     );
 };
 
-export default ChangeAllTestFirstQuestion;
+export default memo(ChangeAllTestFirstQuestion);

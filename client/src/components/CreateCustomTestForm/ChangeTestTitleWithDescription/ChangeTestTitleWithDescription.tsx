@@ -14,26 +14,26 @@ interface ChangeTestTitleWithDescriptionProps {
 }
 
 const ChangeTestTitleWithDescription: FC<ChangeTestTitleWithDescriptionProps> = ({testId, title, getFieldTestTitle, refetch}) => {
-    const [isChangeTitle, setIsChangeTitle] = useState(false)
+    const [isChangeTitle, setIsChangeTitle] = useState(true)
+    //
+    // const {
+    //     mutateAsync: onUpdateCustomTestTitleWithDescriptionTrigger,
+    //     isLoading: onUpdateCustomTestTitleLoading
+    // } = useMutation(onUpdateTestInfo)
 
-    const {
-        mutateAsync: onUpdateCustomTestTitleWithDescriptionTrigger,
-        isLoading: onUpdateCustomTestTitleLoading
-    } = useMutation(onUpdateTestInfo)
-
-    const onSave = async () => {
-        try {
-            const newTitle = getFieldTestTitle();
-            await onUpdateCustomTestTitleWithDescriptionTrigger({
-                testId:testId,
-                title: newTitle,
-            })
-            refetch()
-            setIsChangeTitle(false)
-        } catch (e) {
-            message.error('Произошла ошибка при обновлении названия теста')
-        }
-    }
+    // const onSave = async () => {
+    //     try {
+    //         const newTitle = getFieldTestTitle();
+    //         await onUpdateCustomTestTitleWithDescriptionTrigger({
+    //             testId:testId,
+    //             title: newTitle,
+    //         })
+    //         refetch()
+    //         setIsChangeTitle(false)
+    //     } catch (e) {
+    //         message.error('Произошла ошибка при обновлении названия теста')
+    //     }
+    // }
 
     if (isChangeTitle) {
         return (
@@ -41,6 +41,7 @@ const ChangeTestTitleWithDescription: FC<ChangeTestTitleWithDescriptionProps> = 
                 <Form.Item
                     className={s.formTestTitle}
                     name={'testTitle'}
+                    label={'Название теста'}
                 >
                     <TextArea
                         className={s.text__area__title}
@@ -48,18 +49,18 @@ const ChangeTestTitleWithDescription: FC<ChangeTestTitleWithDescriptionProps> = 
                         placeholder={title}
                     />
                 </Form.Item>
-                <Button
-                    loading={onUpdateCustomTestTitleLoading}
-                    onClick={onSave}
-                    className={s.clearBtn}
-                    icon={<CheckOutlined/>}
-                />
-                <Button
-                    loading={onUpdateCustomTestTitleLoading}
-                    onClick={() => setIsChangeTitle(false)}
-                    className={s.clearBtn}
-                    icon={<CloseOutlined/>}
-                />
+                {/*<Button*/}
+                {/*    loading={onUpdateCustomTestTitleLoading}*/}
+                {/*    onClick={onSave}*/}
+                {/*    className={s.clearBtn}*/}
+                {/*    icon={<CheckOutlined/>}*/}
+                {/*/>*/}
+                {/*<Button*/}
+                {/*    loading={onUpdateCustomTestTitleLoading}*/}
+                {/*    onClick={() => setIsChangeTitle(false)}*/}
+                {/*    className={s.clearBtn}*/}
+                {/*    icon={<CloseOutlined/>}*/}
+                {/*/>*/}
             </div>
         );
     }

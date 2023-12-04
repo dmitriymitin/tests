@@ -56,7 +56,7 @@ const AdminTestInfo = () => {
     const handleClearResults = async () => {
         try {
             await clearTestResultsTrigger(testId)
-            refetch()
+            await refetch()
         } catch (e) {
             message.error('Ошибка при удалении результатов')
         }

@@ -4,6 +4,7 @@ import {Button, Drawer, Form, Input, message, Modal} from "antd";
 import {useForm} from "antd/es/form/Form";
 import {useMutation, useQueryClient} from "react-query";
 import {createNewTest} from "../api/test";
+import {getFormateDate} from "../utils/getFormateDate";
 
 interface NewTestModalDrawerProps {
     open: boolean;
@@ -26,9 +27,12 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
             await form.validateFields();
             const testName = form.getFieldValue('testName')
             const testQuestionNumber = form.getFieldValue('testQuestionNumber')
+            const date = new Date();
+            const createDate = getFormateDate(date)
             await createNewTestTrigger({
                 title: testName,
-                quantityQuestion: testQuestionNumber
+                quantityQuestion: testQuestionNumber,
+                createDate
             })
             await queryClient.invalidateQueries({ queryKey: ['allTests'] })
             setOpen(false)

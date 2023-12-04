@@ -15,26 +15,26 @@ interface ChangeCustomTestWithDescriptionCountQuestionProps {
 }
 
 const ChangeCustomTestWithDescriptionCountQuestion: FC<ChangeCustomTestWithDescriptionCountQuestionProps> = ({testId, count, getFieldTestQuantityQuestion, refetch}) => {
-    const [isChangeTitle, setIsChangeTitle] = useState(false)
+    const [isChangeTitle, setIsChangeTitle] = useState(true)
 
-    const {
-        mutateAsync: onUpdateCustomTestTitleTrigger,
-        isLoading: onUpdateCustomTestTitleLoading
-    } = useMutation(onUpdateTestInfo)
+    // const {
+    //     mutateAsync: onUpdateCustomTestTitleTrigger,
+    //     isLoading: onUpdateCustomTestTitleLoading
+    // } = useMutation(onUpdateTestInfo)
 
-    const onSave = async () => {
-        try {
-            const quantityQuestion = getFieldTestQuantityQuestion();
-            await onUpdateCustomTestTitleTrigger({
-                testId:testId,
-                quantityQuestion,
-            })
-            refetch()
-            setIsChangeTitle(false)
-        } catch (e) {
-            message.error('Произошла ошибка при обновлении названия теста')
-        }
-    }
+    // const onSave = async () => {
+    //     try {
+    //         const quantityQuestion = getFieldTestQuantityQuestion();
+    //         await onUpdateCustomTestTitleTrigger({
+    //             testId:testId,
+    //             quantityQuestion,
+    //         })
+    //         refetch()
+    //         setIsChangeTitle(false)
+    //     } catch (e) {
+    //         message.error('Произошла ошибка при обновлении названия теста')
+    //     }
+    // }
 
     if (isChangeTitle) {
         return (
@@ -42,24 +42,25 @@ const ChangeCustomTestWithDescriptionCountQuestion: FC<ChangeCustomTestWithDescr
                 <Form.Item
                     className={s.formTestTitle}
                     name={'quantityQuestion'}
+                    label={'Кол-во вопросов'}
                 >
                     <InputNumber
                         className={s.text__area__title}
                         placeholder={`${count}`}
                     />
                 </Form.Item>
-                <Button
-                    loading={onUpdateCustomTestTitleLoading}
-                    onClick={onSave}
-                    className={s.clearBtn}
-                    icon={<CheckOutlined/>}
-                />
-                <Button
-                    loading={onUpdateCustomTestTitleLoading}
-                    onClick={() => setIsChangeTitle(false)}
-                    className={s.clearBtn}
-                    icon={<CloseOutlined/>}
-                />
+                {/*<Button*/}
+                {/*    loading={onUpdateCustomTestTitleLoading}*/}
+                {/*    onClick={onSave}*/}
+                {/*    className={s.clearBtn}*/}
+                {/*    icon={<CheckOutlined/>}*/}
+                {/*/>*/}
+                {/*<Button*/}
+                {/*    loading={onUpdateCustomTestTitleLoading}*/}
+                {/*    onClick={() => setIsChangeTitle(false)}*/}
+                {/*    className={s.clearBtn}*/}
+                {/*    icon={<CloseOutlined/>}*/}
+                {/*/>*/}
             </div>
         );
     }

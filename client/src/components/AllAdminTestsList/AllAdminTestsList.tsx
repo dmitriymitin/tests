@@ -1,7 +1,14 @@
 import React, {useState} from 'react';
 import {Button, message, Popconfirm, Spin} from "antd";
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {deleteTest, getAdminAllTests, updateAdminStatusTest} from "../../api/test";
+import {
+    clearAllTestResultsFetcher,
+    closeAllTestFetcher,
+    deleteTest,
+    getAdminAllTests,
+    openAllTestFetcher,
+    updateAdminStatusTest
+} from "../../api/test";
 import {testStatusType} from "../../type/test/type";
 import {useNavigate} from "react-router-dom";
 import {CLIENT_URL} from "../../http";
@@ -11,6 +18,7 @@ import {CopyOutlined} from "@ant-design/icons";
 import CustomTooltip from "../CustomTooltip";
 import ChangeAllTestFirstQuestion from "./ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
 import ChangeTitleOrQuestionCountModalDrawer from "../ChangeTitleOrQuestionCountModalDrawer";
+import {ITestModelResponse} from "../../api/test/type";
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
     switch (status) {
@@ -34,9 +42,18 @@ const getTestStatusText = (status: testStatusType) => {
     }
 }
 
-const AllAdminTestsList = () => {
+interface AllAdminTestsListProps {
+    page: number;
+    query: string;
+}
+
+const AllAdminTestsList = ({}: AllAdminTestsListProps) => {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+    const [activeTestsList, setActiveListTests] = useState<{
+        title: string;
+        testId: string;
+    }[]>([])
     const [currentDefaultTestData, setCurrentDefaultTestData] = useState({
         testId: '',
         title: '',
@@ -60,6 +77,8 @@ const AllAdminTestsList = () => {
         mutateAsync: updateStatusTestTrigger
     } = useMutation(updateAdminStatusTest)
 
+
+
     const onDeleteTest = async (id: string) => {
         try {
             await deleteTestTrigger(id)
@@ -82,9 +101,18 @@ const AllAdminTestsList = () => {
         return <Spin size={'large'}/>
     }
 
-    const allTestArray = Object.values(allTest)
+    // const allTestDataArray = Object.values(allTest)
+    // const allTestArray = allTestDataArray.sort((a: ITestModelResponse, b: ITestModelResponse) => {
+    //     const dateA = new Date(a.createDate);
+    //     const dateB = new Date(b.createDate);
+    //     if (dateA < dateB)
+    //         return 1
+    //     if (dateA > dateB)
+    //         return -1
+    //     return 0
+    // });
 
-    if (allTestArray.length === 0) {
+    if (allTest.length === 0) {
         return (
             <div className={s.all__tests__list__empty}>
                 Тестов пока нет
@@ -99,12 +127,11 @@ const AllAdminTestsList = () => {
         }))
     }
 
+
     return (
         <div className={s.all__tests__list}>
-            <ChangeAllTestFirstQuestion refetch={allTestRefetch}
-                                        title={allTestArray[0].firstQuestionTitle || 'Фамилия, номер группы'}/>
             <h2>Список всех тестов</h2>
-            {allTestArray.map(el =>
+            {allTest.map(el =>
                 <div key={el._id} className={s.all__tests__list__wrapper}>
                     <div className={s.all__tests__list__test__item}>
                         <div className={s.title}>
@@ -119,8 +146,8 @@ const AllAdminTestsList = () => {
                         <div className={s.infoWrapper}>
                             <p>Тип теста:</p>
                             <div className={s.body}>
-                                {!!el.quantityQuestion && !el.descriptionEditor && 'Обычный тест'}
-                                {!!el.questions && 'Тест со своими вопросами'}
+                                {!!el.quantityQuestion && !el.descriptionEditor && 'Тест без описания'}
+                                {!!el.questions && 'Тест с отдельным описанием вопросов'}
                                 {!!el.descriptionEditor && 'Тест с описанием'}
                             </div>
                         </div>

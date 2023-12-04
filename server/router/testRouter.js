@@ -11,6 +11,9 @@ router.get('/user/getOne/:id', TestController.getUserOne);
 
 //запросы которые могут отправялть только авторизованные пользователи
 router.post('/create',authMiddleware, TestController.create);
+router.post('/openAll',authMiddleware, TestController.openAll);
+router.post('/closeAll',authMiddleware, TestController.closeAll);
+router.post('/clearAllResults',authMiddleware, TestController.clearAllResults);
 router.get('/downloadTest/:id', TestController.downloadTest);
 router.post('/createCustom',authMiddleware, TestController.createCustom);
 router.post('/custom/addQuestion/:id',authMiddleware, TestController.addQuestionCustomTest);

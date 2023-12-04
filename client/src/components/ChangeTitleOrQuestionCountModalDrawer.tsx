@@ -37,7 +37,7 @@ const ChangeTitleOrQuestionCountModalDrawer: FC<ChangeTitleOrQuestionCountModalD
                 title: testName,
                 quantityQuestion: testQuestionNumber,
             });
-            refetch()
+            await refetch()
             setOpen(false)
         } catch (e) {
             message.error('Ошибка при обновлении информации о тесте')

@@ -54,7 +54,7 @@ const ChangeCustomQuestion = ({refetchTest, testId, question, open, setOpen}: Ch
                     answers: answersInfo.answers
                 }
             })
-            refetchTest();
+            await refetchTest();
             setOpen(false)
             setAnswersInfo({answers: {}})
             message.success(question.name + ' был успешно изменен!')

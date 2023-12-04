@@ -1,16 +1,19 @@
 import s from "./CreateCustomTestDescriptionPage.module.scss";
-import React, {FC, memo} from "react";
+import React, {FC, memo, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Button, Form, Layout, Spin} from "antd";
+import {Button, Form, Layout, message, Spin} from "antd";
+import CreateCustomTestForm from "../../components/CreateCustomTestForm/CreateCustomTestForm";
 import CreateCustomTestDescriptionForm
     from "../../components/CreateCustomTestDescriptionForm/CreateCustomTestDescriptionForm";
+import ChangeCustomTestTitle from "../../components/CreateCustomTestForm/ChangeCustomTestTitle/ChangeCustomTestTitle";
 import {useForm} from "antd/es/form/Form";
-import {getOneTest} from "../../api/test";
-import {useQuery} from "react-query";
+import {getOneTest, onUpdateTestInfo} from "../../api/test";
+import {useMutation, useQuery} from "react-query";
 import ChangeTestTitleWithDescription
     from "../../components/CreateCustomTestForm/ChangeTestTitleWithDescription/ChangeTestTitleWithDescription";
 import ChangeCustomTestWithDescriptionCountQuestion
     from "../../components/CreateCustomTestForm/ChangeCustomTestWithDescriptionCountQuestion/ChangeCustomTestWithDescriptionCountQuestion";
+import exampleData from "../../components/CreateCustomTestDescriptionForm/Editor/exampleData";
 
 interface CreateCustomTestDescriptionProps {}
 
@@ -30,12 +33,36 @@ const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({
         cacheTime: 0
     })
 
+    const [descriptionPARSE, setDescriptionPARSE] = useState(testData?.descriptionEditor || exampleData)
+
+    const {
+        mutateAsync: onUpdateTestInfoTrgiier,
+        isLoading: updateTestInfoLoading
+    } = useMutation(onUpdateTestInfo)
+
     const getFieldTestTitle = (): string => {
         return form.getFieldValue('testTitle')
     }
 
     const getFieldTestQuantityQuestion = (): number => {
         return form.getFieldValue('quantityQuestion')
+    }
+
+    const handleSaveTestInfo = async () => {
+        try {
+            const title = getFieldTestTitle();
+            const quantityQuestion = getFieldTestQuantityQuestion();
+            await onUpdateTestInfoTrgiier({
+                testId,
+                title,
+                quantityQuestion,
+                description: descriptionPARSE
+            });
+            message.error('Тест успешно сохранен')
+            navigate('/admin')
+        } catch (e) {
+            message.error('Ошибка при сохранении теста')
+        }
     }
 
     const getForm = () => {
@@ -75,9 +102,20 @@ const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({
                 </h2>
                 <CreateCustomTestDescriptionForm
                     id={testId}
-                    description={testData?.descriptionEditor}
+                    descriptionPARSE={testData?.descriptionEditor || exampleData}
+                    setDescriptionPARSE={setDescriptionPARSE}
                     refetch={tefetchTestData}
                 />
+                <div className={s.btnSaveWrapper}>
+                    <Button
+                        onClick={handleSaveTestInfo}
+                        size={'large'}
+                        type={'primary'}
+                        // loading={updateTestDescriptionEditorLoading}
+                    >
+                        Сохранить изменения
+                    </Button>
+                </div>
             </Form>
         )
     }
@@ -85,7 +123,7 @@ const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({
     return (
         <Layout>
             <div className="container">
-                {testDataLoading && testDataFetching
+                {testDataLoading || testDataFetching || updateTestInfoLoading
                     ?
                     <div className={s.spin}>
                         <Spin size={'large'}/>

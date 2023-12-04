@@ -61,6 +61,21 @@ export const updateTestDescriptionEditor = async (values: {
     return data;
 }
 
+export const openAllTestFetcher = async () => {
+    const {data} = await $api.post(`/test/openAll`);
+    return data;
+}
+
+export const closeAllTestFetcher = async () => {
+    const {data} = await $api.post(`/test/closeAll`);
+    return data;
+}
+
+export const clearAllTestResultsFetcher = async () => {
+    const {data} = await $api.post(`/test/clearAllResults`);
+    return data;
+}
+
 export const onDeleteQuestionCustomTest = async (values: {
     id: string | null, testId: string | null
 }): Promise<any> => {
@@ -82,10 +97,12 @@ export const onUpdateTestInfo = async (values: {
     testId: string | null
     title?: string;
     quantityQuestion?: number;
+    description?: EditorDescriptionTest
 }): Promise<any> => {
     const {data} = await $api.post(`/test/changeInfoTest?id=${values.testId}`, {
         title: values.title,
-        quantityQuestion: values.quantityQuestion
+        quantityQuestion: values.quantityQuestion,
+        description: values.description
     });
     return data;
 };
@@ -102,8 +119,10 @@ export const onUpdateQuestionCustomTest = async (values: {
     return data;
 };
 
-export const createNewCustomTest = async (): Promise<ITestCustomModelResponse> => {
-    const {data} = await $api.post('/test/createCustom');
+export const createNewCustomTest = async (createDate: string): Promise<ITestCustomModelResponse> => {
+    const {data} = await $api.post('/test/createCustom', {
+        createDate
+    });
     return data;
 };
 

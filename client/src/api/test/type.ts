@@ -5,6 +5,7 @@ export type EditorDescriptionTest = {time: number, blocks: ({id: string, type: s
 export interface ITestModelRequest {
     title: string;
     quantityQuestion: number;
+    createDate: string;
 }
 
 export interface ITestUpdateStatusModelRequest {
@@ -29,6 +30,7 @@ export interface ITestModelResponse {
     quantityQuestion: number;
     questions: ICustomTestQuestion[] | null
     status: testStatusType;
+    createDate: string;
     testKey: string | null;
 }
 
@@ -43,6 +45,7 @@ export interface ITestCustomModelResponse {
     title: string;
     questions: ICustomTestQuestion[];
     status: testStatusType;
+    createDate: string;
     testKey: string | null;
 }
 
