@@ -36,6 +36,7 @@ import {createReactEditorJS} from "react-editor-js";
 import {useMutation} from "react-query";
 import {addNewImageInTest} from "../../../api/uploadImage";
 import axios from "axios";
+import {API_URL} from "../../../http";
 
 
 interface EditorProps {
@@ -98,7 +99,7 @@ const Editor: FC<EditorProps> = ({ data, setData }) => {
                                         //         url: response.file.url
                                         //     }
                                         // };
-                                        const response = await axios.post('http://localhost:6007/api/uploadImage/create', formData, {
+                                        const response = await axios.post(API_URL + '/api/uploadImage/create', formData, {
                                             headers: {
                                                 'Content-Type': 'multipart/form-data'
                                             },
