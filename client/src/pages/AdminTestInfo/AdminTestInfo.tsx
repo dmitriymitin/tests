@@ -46,7 +46,7 @@ const AdminTestInfo = () => {
     }, [testInfoData])
 
     useEffect(() => {
-        if (!fio && !search) {
+        if (!search) {
             setTestInfoUsersResult(testInfoData?.usersInfo)
             return
         }
