@@ -95,7 +95,7 @@ const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCu
                 marginBottom: 100
             }}
         >
-            <Column fixed={'left'} width={400} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
+            <Column fixed={'left'} width={400} title="Фамилия, номер группы" dataIndex="fiogroup" key="fiogroup" />
             <Column fixed={'right'} title="Кол-во верных ответов" dataIndex="correctAnswers" key="correctAnswers" />
         </Table>
     )
