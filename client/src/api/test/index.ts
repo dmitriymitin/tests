@@ -10,6 +10,7 @@ import {
 } from "./type";
 import $api from "../../http";
 import exampleData from "../../components/CreateCustomTestDescriptionForm/Editor/exampleData";
+import {ITest} from "../../models/ITest";
 
 export const getOneTest = async (id: string): Promise<ITestModelResponse> => {
     const {data} = await $api.get(`/test/getOne/${id}`);
@@ -188,14 +189,14 @@ export const updateAdminKeyTest = async (values: {
     return data;
 };
 
-export const getAllStudentsBySearch = async ({
-                                                 search,
-                                                 pageNumber
-                                             }: {
-    search: string,
-    pageNumber: number,
-}): Promise<{
-    data: IStudent[],
+export const getAllStudentsBySearch = async ({search, pageNumber}: { search: string, pageNumber: number, }): Promise<{
+    data: {
+        userInfo: IStudent,
+        test: {
+            title: string;
+            _id: string;
+        };
+    }[],
     totalCount: number
 }> => {
     const {data} = await $api.get('/test/getAllStudents', {

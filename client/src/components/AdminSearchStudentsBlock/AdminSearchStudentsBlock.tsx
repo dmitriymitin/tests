@@ -35,17 +35,21 @@ const AdminSearchStudentsBlock = () => {
                 {students && students?.length > 0 &&
                     <ul className={s.resultsWrapper}>
                         {students?.map(el =>
-                            <li key={el._id} className={clsx(s.resultsWrapperItem, 'testBackground')}>
-                                <p className={s.title}>
-                                    {el.FIOGroup}
-                                </p>
-
+                            <li key={el.userInfo._id} className={clsx(s.resultsWrapperItem, 'testBackground')}>
+                                <div className={s.infoWrapper}>
+                                    <p className={s.title}>
+                                        {el.userInfo.FIOGroup}
+                                    </p>
+                                    <p className={s.title}>
+                                        <strong>Название теста:</strong> {el.test.title}
+                                    </p>
+                                </div>
                                 <div className={s.btns}>
                                     <Button
                                         type={'primary'}
                                         onClick={() => {
-                                            localStorage.setItem('FIO', el.FIOGroup)
-                                            navigate(`/admin/testInfo/${el.testId}`)
+                                            localStorage.setItem('FIO', el.userInfo.FIOGroup)
+                                            navigate(`/admin/testInfo/${el.userInfo.testId}`)
                                         }}
                                     >
                                         Перейти к тесту

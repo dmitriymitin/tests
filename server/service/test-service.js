@@ -288,6 +288,13 @@ class TestService {
     }
 
     async getAllStudents(search, pageN, lim) {
+        const testsAll  = await TestModel.find()
+        const testsCustom = await TestCustomModel.find()
+        const allTestDataArray = [
+            ...testsAll,
+            ...testsCustom
+        ]
+
         const page = parseInt(pageN) || 0;
         const limit = parseInt(lim) || 12;
         const startIndex = (page - 1) * limit;
@@ -295,8 +302,13 @@ class TestService {
 
         const testUserModel = await TestUserModel.find()
         const data = testUserModel.filter(it => natural.PorterStemmerRu.stem(JSON.stringify(it.FIOGroup)).includes(natural.PorterStemmerRu.stem(search)))
+        const newData = data.map(el => ({
+            test: allTestDataArray.find(test => test._id.toString() === el.testId),
+            userInfo: el
+        }))
+
         return {
-            data: data.slice(startIndex, endIndex),
+            data: newData?.slice(startIndex, endIndex),
             totalCount: data.length
         };
     }
