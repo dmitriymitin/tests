@@ -89,7 +89,7 @@ const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCu
             dataSource={data}
             bordered
             size={getSize()}
-            scroll={getScroll()}
+            scroll={{ y: 700 }}
             pagination={false}
             style={{
                 marginBottom: 100
