@@ -6,6 +6,7 @@ const ExelFileModel = require('../models/exel-file-model')
 
 const path = require('path');
 const excel = require('excel4node');
+const natural = require('natural');
 const {ObjectId} = require("mongodb");
 const ApiError = require("../exceptions/api-error");
 const {Workbook} = require("excel4node");
@@ -284,6 +285,20 @@ class TestService {
         return [
             ...questionsAll
         ]
+    }
+
+    async getAllStudents(search, pageN, lim) {
+        const page = parseInt(pageN) || 0;
+        const limit = parseInt(lim) || 12;
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const testUserModel = await TestUserModel.find()
+        const data = testUserModel.filter(it => natural.PorterStemmerRu.stem(JSON.stringify(it.FIOGroup)).includes(natural.PorterStemmerRu.stem(search)))
+        return {
+            data: data.slice(startIndex, endIndex),
+            totalCount: data.length
+        };
     }
 
     async getUsersTestsAll(){

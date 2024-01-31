@@ -1,0 +1,62 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.searchBlock {
+
+  input {
+    height: 40px;
+  }
+}
+
+.statusWrapper {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resultsWrapper {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.resultsWrapperItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media screen and (max-width: 1000px) {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  .title {
+    max-width: 60%;
+    overflow-wrap: break-word;
+    font-size: 20px;
+  }
+
+  .btns {
+    display: flex;
+    gap: 5px;
+
+    @media screen and (max-width: 570px) {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 200px;
+}

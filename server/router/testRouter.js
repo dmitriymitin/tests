@@ -31,6 +31,7 @@ router.delete('/deleteOne/:id',authMiddleware, TestController.deleteOne);
 router.delete('/clearResults/:id',authMiddleware, TestController.clearResults);
 router.delete('/custom/deleteOneQuestion',authMiddleware, TestController.deleteOneCustomQuestion);
 router.get('/getAllQuestion',authMiddleware, TestController.getAllQuestion);
+router.get('/getAllStudents',authMiddleware, TestController.getAllStudents);
 router.post('/custom/updateTitle',authMiddleware, TestController.updateTitleCustomTest);
 router.post('/changeInfoTest',authMiddleware, TestController.changeInfoTest);
 

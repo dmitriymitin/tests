@@ -25,9 +25,10 @@ interface AdminTestInfoTableProps {
     }) => void,
     countAnswers: number;
     testKey: string | null;
+    isFullInfo?: boolean;
 }
 
-const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCurrentQuestion, countAnswers, testKey}: AdminTestInfoTableProps) => {
+const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCurrentQuestion, countAnswers, testKey, isFullInfo}: AdminTestInfoTableProps) => {
     const isMedia768 = useMedia('(max-width: 768px');
     const isMedia576 = useMedia('(max-width: 576px');
     const getSize = () => {
@@ -83,7 +84,20 @@ const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCu
         return 200
     }
 
-    return (
+    const smallInfoTable = (
+        <Table
+            dataSource={data}
+            bordered
+            size={getSize()}
+            scroll={getScroll()}
+            pagination={false}
+        >
+            <Column fixed={'left'} width={400} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
+            <Column fixed={'right'} title="Кол-во верных ответов" dataIndex="correctAnswers" key="correctAnswers" />
+        </Table>
+    )
+
+    const fullInfoTable = (
         <Table
             dataSource={data}
             bordered
@@ -106,39 +120,43 @@ const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCu
             <Column fixed={'left'} width={FIOWidth()} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
             {questions
                 ? questions.map((el, index) => (
-                            <Column
-                                title={<Button
-                                    onClick={() => {
-                                        setCurrentQuestion({
-                                            openModal: true,
-                                            question: {
-                                                _id: el._id,
-                                                description: el.description,
-                                                answers: el.answers,
-                                                name: `Вопрос ${index + 1}`,
-                                            }
-                                        })
-                                    }}
-                                >
-                                    Вопрос {index + 1}
-                                </Button>}
-                                dataIndex={index + 1}
-                                key={index + 1}
-                            />
-                        )
+                        <Column
+                            title={<Button
+                                onClick={() => {
+                                    setCurrentQuestion({
+                                        openModal: true,
+                                        question: {
+                                            _id: el._id,
+                                            description: el.description,
+                                            answers: el.answers,
+                                            name: `Вопрос ${index + 1}`,
+                                        }
+                                    })
+                                }}
+                            >
+                                Вопрос {index + 1}
+                            </Button>}
+                            dataIndex={index + 1}
+                            key={index + 1}
+                        />
+                    )
                 )
                 : new Array(countAnswers).fill('1').map((_, index) => (
-                            <Column
-                                title={`Вопрос ${index + 1}`}
-                                dataIndex={index + 1}
-                                key={index + 1}
-                            />
-                        )
+                        <Column
+                            title={`Вопрос ${index + 1}`}
+                            dataIndex={index + 1}
+                            key={index + 1}
+                        />
+                    )
                 )
             }
             <Column fixed={'right'} width={100} title="Кол-во верных ответов" dataIndex="correctAnswers" key="correctAnswers" />
         </Table>
-    );
+    )
+
+    return (
+        isFullInfo ? fullInfoTable : smallInfoTable
+    )
 };
 
 export default AdminTestInfoTable;

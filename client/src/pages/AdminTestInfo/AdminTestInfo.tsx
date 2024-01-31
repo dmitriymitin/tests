@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useMutation, useQuery} from "react-query";
 import {clearTestResults, getOneTestInfo} from "../../api/test";
-import {Button, message, Popconfirm, Spin} from "antd";
+import {Button, Input, message, Popconfirm, Radio, Spin} from "antd";
 import AdminTestInfoTable from "../../components/AdminTestInfoTable/AdminTestInfoTable";
 import s from './AdminTestInfo.module.scss'
 import clsx from "clsx";
@@ -15,6 +15,9 @@ const AdminTestInfo = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const testId = location.pathname.split('/')[3]
+    const fio = localStorage.getItem('FIO')
+    const [isFullInfo, setIsFullInfo] = useState(false);
+    const [search, setSearch] = useState(fio || '');
     const [currentQuestion, setCurrentQuestion] = useState<{
         openModal: boolean,
         question: ICustomTestQuestion & { name: string }
@@ -31,11 +34,26 @@ const AdminTestInfo = () => {
     } = useQuery(['adminTestInfo', testId], () => getOneTestInfo(testId), {
         refetchOnWindowFocus: false
     })
+    const [testInfoUsersResult, setTestInfoUsersResult] = useState(testInfoData?.usersInfo)
 
     const {
         mutateAsync: clearTestResultsTrigger,
         isLoading: clearTestResultsLoading
     } = useMutation(clearTestResults)
+
+    useEffect(() => {
+        setTestInfoUsersResult(testInfoData?.usersInfo)
+    }, [testInfoData])
+
+    useEffect(() => {
+        if (!search) {
+            setTestInfoUsersResult(testInfoData?.usersInfo)
+            return
+        }
+        setTestInfoUsersResult(prev =>
+            prev?.filter((el) => el.FIOGroup.toLowerCase().includes(search.toLowerCase()))
+        )
+    }, [search, fio])
 
 
     if (isTestInfoLoading || isTestInfoFetching) {
@@ -62,8 +80,12 @@ const AdminTestInfo = () => {
         }
     }
 
+    const handleChangeFullInfo = () => {
+        if (isFullInfo) setIsFullInfo(false);
+        else setIsFullInfo(true)
+    }
+
     const currentTest = testInfoData.test
-    const testInfoUsersResult = testInfoData.usersInfo
 
     return (
         <div className={clsx(s.admin__test__info, 'container')}>
@@ -93,24 +115,36 @@ const AdminTestInfo = () => {
                     <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/customTest/${currentTest._id}`)}>Редакитровать тест</Button>
                 }
             </div>
+            <Input placeholder={'Введите ФИО студента для поиска'} value={search} onChange={e => setSearch(e.target.value)}/>
+            <div className={s.change__status__wrapper}>
+                <Radio.Group value={isFullInfo} onChange={handleChangeFullInfo}>
+                    <Radio.Button value={false}>Краткая информация</Radio.Button>
+                    <Radio.Button value={true}>Подробная информация</Radio.Button>
+                </Radio.Group>
+            </div>
             {
-                testInfoUsersResult.length === 0
+                testInfoUsersResult?.length === 0
                     ? <p>Результов по тесту нет</p>
                     :  <div className={s.test__info__wrapper}>
-                        <div className={s.downloadBtnWrapper}>
-                            <Link
-                                to={`${API_URL}/test/downloadTest/${testId}`}
-                                className={s.downloadBtn}
-                            ><DownloadOutlined/></Link>
-                        </div>
-                        <AdminTestInfoTable
-                            firstQuestionTitle={currentTest.firstQuestionTitle || 'Фамилия, номер группы'}
-                            usersTestInfo={testInfoUsersResult}
-                            questions={currentTest.questions}
-                            countAnswers={currentTest.quantityQuestion || currentTest.questions.length}
-                            setCurrentQuestion={setCurrentQuestion}
-                            testKey={testInfoData.testKey}
-                        />
+                        {isFullInfo && (
+                            <div className={s.downloadBtnWrapper}>
+                                <Link
+                                    to={`${API_URL}/test/downloadTest/${testId}`}
+                                    className={s.downloadBtn}
+                                ><DownloadOutlined/></Link>
+                            </div>
+                        )}
+                        {testInfoUsersResult &&
+                            <AdminTestInfoTable
+                                isFullInfo={isFullInfo}
+                                firstQuestionTitle={currentTest.firstQuestionTitle || 'Фамилия, номер группы'}
+                                usersTestInfo={testInfoUsersResult}
+                                questions={currentTest.questions}
+                                countAnswers={currentTest.quantityQuestion || currentTest.questions.length}
+                                setCurrentQuestion={setCurrentQuestion}
+                                testKey={testInfoData.testKey}
+                            />
+                        }
                     </div>
             }
             {testInfoData.test.questions &&

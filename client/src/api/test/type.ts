@@ -22,6 +22,14 @@ export interface ICustomTestQuestion {
 }
 
 
+export interface IStudent {
+    "_id": string,
+    "FIOGroup": string,
+    "answer": Record<string, string>,
+    "testId": string,
+}
+
+
 export interface ITestModelResponse {
     firstQuestionTitle: string | null;
     _id: string,

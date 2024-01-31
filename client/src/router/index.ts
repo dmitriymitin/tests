@@ -8,6 +8,7 @@ import AdminTestKeyInfo from "../pages/AdminTestKeyInfo/AdminTestKeyInfo";
 import CreateCustomTest from "../pages/CreateCustomTest/CreateCustomTest";
 import CreateCustomTestDescriptionPage from "../pages/CreateCustomTestDescriptionPage/CreateCustomTestDescriptionPage";
 import AuthDev from "../pages/AuthDev";
+import AdminSearchStudents from "../pages/AdminSearchStudents/AdminSearchStudents";
 
 export interface IRoute {
     path: string;
@@ -23,7 +24,8 @@ export enum RouteNames {
     CREATE_CUSTOM_TEST_DESCRIPTION = '/admin/testInfo/customTest/description/:testId',
     ADMIN = '/admin',
     ADMIN_TEST_INFO = "/admin/testInfo/:testId",
-    ADMIN_TEST_KEY_INFO = "/admin/testInfo/key/:testId"
+    ADMIN_TEST_KEY_INFO = "/admin/testInfo/key/:testId",
+    ADMIN_SEARCH_STUDENTS = "/admin/searchStudents"
 }
 
 export const publicRoutes : IRoute[] = [
@@ -73,5 +75,9 @@ export const privateRoutes : IRoute[] = [
     {
         path: RouteNames.CREATE_CUSTOM_TEST,
         component: CreateCustomTest
+    },
+    {
+        path: RouteNames.ADMIN_SEARCH_STUDENTS,
+        component: AdminSearchStudents
     }
 ]

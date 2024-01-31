@@ -3,7 +3,7 @@ import {
     ICustomTestQuestion,
     IGetOneTestInfoResponse, IGetTestInfoCustomModelResponse,
     ISaveNewTestRequest,
-    ISaveNewTestResponse, ITestCustomModelRequest, ITestCustomModelResponse,
+    ISaveNewTestResponse, IStudent, ITestCustomModelRequest, ITestCustomModelResponse,
     ITestModelRequest,
     ITestModelResponse,
     ITestUpdateStatusModelRequest, TypeCustomTestQuestionAnswer
@@ -185,6 +185,25 @@ export const updateAdminKeyTest = async (values: {
     key: string
 }): Promise<ITestModelResponse> => {
     const {data} = await $api.post('/test/changeKeyOne', { ...values});
+    return data;
+};
+
+export const getAllStudentsBySearch = async ({
+                                                 search,
+                                                 pageNumber
+                                             }: {
+    search: string,
+    pageNumber: number,
+}): Promise<{
+    data: IStudent[],
+    totalCount: number
+}> => {
+    const {data} = await $api.get('/test/getAllStudents', {
+        params: {
+            search, pageNumber, limit: 10
+        }
+    });
+
     return data;
 };
 

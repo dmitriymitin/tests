@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import s from './AdminForm.module.scss'
-import {Button, message, Popconfirm} from "antd";
+import {Button, Collapse, message, Popconfirm} from "antd";
 import ChangePasswordModalDrawer from "../ChangePasswordModalDrawer";
 import NewTestModalDrawer from "../NewTestModalDrawer";
-import AllAdminTestsList from "../AllAdminTestsList/AllAdminTestsList";
 import {AuthActionCreators} from "../../store/reducers/auth/action-creators";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
@@ -14,7 +13,6 @@ import {
     createNewTest,
     createNewTestWithDescription, openAllTestFetcher
 } from "../../api/test";
-import ChangeCustomTestTitle from "../CreateCustomTestForm/ChangeCustomTestTitle/ChangeCustomTestTitle";
 import ChangeAllTestFirstQuestion from "../AllAdminTestsList/ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
 import NewTestModalDrawerWithDescription from "../NewTestModalDrawerWithDescription";
 import {getFormateDate} from "../../utils/getFormateDate";
@@ -106,6 +104,57 @@ const AdminForm = () => {
         }
     }
 
+    const items: any = [
+        {
+            key: '1',
+            label: 'Функции для управлениями всеми тестами',
+            children: <div className={s.btnActionWrapper}>
+                <Popconfirm
+                    title="Открыть все тесты"
+                    description="Вы уверены, что хотите открыть все тесты?"
+                    onConfirm={handleOpenAllTest}
+                    okText="Да"
+                    cancelText="Нет"
+                >
+                    <Button
+                        size={'large'}
+                        className={s.btn}
+                    >
+                        Открыть все тесты
+                    </Button>
+                </Popconfirm>
+                <Popconfirm
+                    title="Закрыть все тесты"
+                    description="Вы уверены, что хотите закрыть все тесты?"
+                    onConfirm={handleCloseAllTest}
+                    okText="Да"
+                    cancelText="Нет"
+                >
+                    <Button
+                        size={'large'}
+                        className={s.btn}
+                    >
+                        Закрыть все тесты
+                    </Button>
+                </Popconfirm>
+                <Popconfirm
+                    title="Очистить результаты"
+                    description="Вы уверены, что хотите очистить результаты всех тестов?"
+                    onConfirm={handleClearResultsAllTest}
+                    okText="Да"
+                    cancelText="Нет"
+                >
+                    <Button
+                        size={'large'}
+                        className={s.btn}
+                    >
+                        Очистить результаты всех тестов
+                    </Button>
+                </Popconfirm>
+            </div>,
+        }
+    ];
+
     return (
         <>
             <div className={s.admin__form}>
@@ -154,48 +203,14 @@ const AdminForm = () => {
                 </div>
                 <ChangeAllTestFirstQuestion/>
                 <div className={s.btnActionWrapper}>
-                    <Popconfirm
-                        title="Открыть все тесты"
-                        description="Вы уверены, что хотите открыть все тесты?"
-                        onConfirm={handleOpenAllTest}
-                        okText="Да"
-                        cancelText="Нет"
+                    <Collapse bordered={false} items={items} defaultActiveKey={['2']} />
+                    <Button
+                        size={'large'}
+                        className={s.btn}
+                        onClick={() => navigate(`/admin/searchStudents`)}
                     >
-                        <Button
-                            size={'large'}
-                            className={s.btn}
-                        >
-                            Открыть все тесты
-                        </Button>
-                    </Popconfirm>
-                    <Popconfirm
-                        title="Закрыть все тесты"
-                        description="Вы уверены, что хотите закрыть все тесты?"
-                        onConfirm={handleCloseAllTest}
-                        okText="Да"
-                        cancelText="Нет"
-                    >
-                        <Button
-                            size={'large'}
-                            className={s.btn}
-                        >
-                            Закрыть все тесты
-                        </Button>
-                    </Popconfirm>
-                    <Popconfirm
-                        title="Очистить результаты"
-                        description="Вы уверены, что хотите очистить результаты всех тестов?"
-                        onConfirm={handleClearResultsAllTest}
-                        okText="Да"
-                        cancelText="Нет"
-                    >
-                        <Button
-                            size={'large'}
-                            className={s.btn}
-                        >
-                            Очистить результаты всех тестов
-                        </Button>
-                    </Popconfirm>
+                        Поиск результатов студентов
+                    </Button>
                     {/*<Popconfirm*/}
                     {/*    title="Очистить результаты"*/}
                     {/*    description="Вы уверены, что хотите очистить результаты всех тестов?"*/}
