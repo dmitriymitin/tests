@@ -91,6 +91,9 @@ const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCu
             size={getSize()}
             scroll={getScroll()}
             pagination={false}
+            style={{
+                marginBottom: 100
+            }}
         >
             <Column fixed={'left'} width={400} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
             <Column fixed={'right'} title="Кол-во верных ответов" dataIndex="correctAnswers" key="correctAnswers" />
@@ -104,6 +107,9 @@ const AdminTestInfoTable = ({firstQuestionTitle, usersTestInfo, questions, setCu
             size={getSize()}
             scroll={getScroll()}
             pagination={false}
+            style={{
+                marginBottom: 100
+            }}
             summary={() => (
                 <Table.Summary fixed>
                     <Table.Summary.Row>

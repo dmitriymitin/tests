@@ -209,7 +209,10 @@ const AllAdminTestsList = ({}: AllAdminTestsListProps) => {
                             </Button>
                             <Button
                                 className={s.btn}
-                                onClick={() => navigate(`/admin/testInfo/${el._id}`)}
+                                onClick={() => {
+                                    localStorage.removeItem('FIO')
+                                    navigate(`/admin/testInfo/${el._id}`)
+                                }}
                             >
                                 Результаты
                             </Button>

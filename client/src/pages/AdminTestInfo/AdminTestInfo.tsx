@@ -46,14 +46,18 @@ const AdminTestInfo = () => {
     }, [testInfoData])
 
     useEffect(() => {
-        if (!search) {
+        if (!fio && !search) {
             setTestInfoUsersResult(testInfoData?.usersInfo)
             return
         }
         setTestInfoUsersResult(prev =>
-            prev?.filter((el) => el.FIOGroup.toLowerCase().includes(search.toLowerCase()))
+            {
+                console.log(search)
+                const test = testInfoData?.usersInfo?.filter((el) => el.FIOGroup.toLowerCase().includes((search || fio || '').toLowerCase()))
+                return test
+            }
         )
-    }, [search, fio])
+    }, [search, fio, testInfoData])
 
 
     if (isTestInfoLoading || isTestInfoFetching) {
