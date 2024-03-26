@@ -85,7 +85,7 @@ class TestService {
             arrayQuestion.forEach((_, index) => {
                 indexUserAnswerCell++;
                 const answer = el.answer ? el.answer[index + 1] || '' : ''
-                if (testKey[index] && answer === testKey[index]) {
+                if (testKey[index] && answer.toUpperCase() === testKey[index].toUpperCase()) {
                     countCorrectAnswer++;
                 } else {
                     noCorrectAnswer[index] = (noCorrectAnswer[index] || 0) + 1
