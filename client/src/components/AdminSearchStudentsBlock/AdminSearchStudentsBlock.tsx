@@ -37,9 +37,8 @@ const AdminSearchStudentsBlock = () => {
                 {students && students?.length > 0 &&
                     <ul className={s.resultsWrapper}>
                         {students?.map(el => {
-                            console.log(el.userInfo.answer)
                             const getCountCorrectAnswers = () => {
-                                if (!el.test.testKey) return 'Ключ не установлен'
+                                if (!el.test?.testKey) return 'Ключ не установлен'
                                 return Object.values(el.userInfo.answer).reduce((acc, answer, index) =>
                                     acc += answer.toUpperCase() === el.test.testKey!![index].toUpperCase() ? 1 : 0
                                   , 0)
@@ -51,7 +50,7 @@ const AdminSearchStudentsBlock = () => {
                                           {el.userInfo.FIOGroup}
                                       </p>
                                       <p className={s.title}>
-                                          <strong>Название теста:</strong> {el.test.title}
+                                          <strong>Название теста:</strong> {el.test?.title}
                                       </p>
                                       <p className={s.title}>
                                           <strong>Кол-во верных ответов:</strong> {getCountCorrectAnswers()}

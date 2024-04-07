@@ -4,7 +4,7 @@ import {Layout} from "antd";
 import AdminSearchStudentsBlock from "../../components/AdminSearchStudentsBlock/AdminSearchStudentsBlock";
 const AdminSearchStudents = () => {
     return (
-        <Layout>
+      <Layout className={'layout'}>
             <div className="container">
                 <AdminSearchStudentsBlock/>
             </div>

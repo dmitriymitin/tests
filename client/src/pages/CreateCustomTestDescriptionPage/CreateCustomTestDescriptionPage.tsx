@@ -121,7 +121,7 @@ const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({
     }
 
     return (
-        <Layout>
+      <Layout className={'layout'}>
             <div className="container">
                 {testDataLoading || testDataFetching || updateTestInfoLoading
                     ?

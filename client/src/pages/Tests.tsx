@@ -6,7 +6,7 @@ import AllTest from "../components/AllTest/AllTest";
 
 const Tests:FC = () => {
     return (
-        <Layout>
+      <Layout className={'layout'}>
             <div className="container">
                 <AllTest/>
             </div>

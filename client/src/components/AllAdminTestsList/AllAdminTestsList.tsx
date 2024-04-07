@@ -1,12 +1,9 @@
-import React, {useState} from 'react';
-import {Button, message, Popconfirm, Spin} from "antd";
+import React, {Fragment, useState} from 'react';
+import {Badge, Button, message, Popconfirm, Segmented, Select, Spin} from "antd";
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {
-    clearAllTestResultsFetcher,
-    closeAllTestFetcher,
     deleteTest,
     getAdminAllTests,
-    openAllTestFetcher,
     updateAdminStatusTest
 } from "../../api/test";
 import {testStatusType} from "../../type/test/type";
@@ -16,9 +13,20 @@ import s from './AllAdminTestsList.module.scss'
 import clsx from "clsx";
 import {CopyOutlined} from "@ant-design/icons";
 import CustomTooltip from "../CustomTooltip";
-import ChangeAllTestFirstQuestion from "./ChangeAllTestFirstQuestion/ChangeAllTestFirstQuestion";
 import ChangeTitleOrQuestionCountModalDrawer from "../ChangeTitleOrQuestionCountModalDrawer";
-import {ITestModelResponse} from "../../api/test/type";
+import {
+    EFilterById,
+    EFilterTranslate,
+    ITestCustomModelResponse,
+    ITestModelResponse,
+    TFilterById
+} from "../../api/test/type";
+import {getFormateDate} from "../../utils/getFormateDate";
+import {getFormatCreateDate} from "../../utils/getFormatCreateDate";
+import {getFormatUpdateDate} from "../../utils/getFormatUpdateDate";
+import {useAllTest} from "../../http/hooks/useAllTest";
+import {useAllFolder} from "../../http/hooks/useAllFolder";
+import PutInFolderBtn from "./PutInFolderBtn/PutInFolderBtn";
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
     switch (status) {
@@ -43,31 +51,29 @@ const getTestStatusText = (status: testStatusType) => {
 }
 
 interface AllAdminTestsListProps {
-    page: number;
-    query: string;
+    filterById: string | undefined;
+    isShowBadge: boolean;
+    folderId: string | undefined;
+    showTestInFolder: number;
 }
 
-const AllAdminTestsList = ({}: AllAdminTestsListProps) => {
+const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}: AllAdminTestsListProps) => {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
-    const [activeTestsList, setActiveListTests] = useState<{
-        title: string;
-        testId: string;
-    }[]>([])
+    const {data: allFolder, isLoading: isLoadingFolder} = useAllFolder();
     const [currentDefaultTestData, setCurrentDefaultTestData] = useState({
         testId: '',
         title: '',
         quantityQuestion: 0,
         openModal: false,
     })
+
     const {
         data: allTest,
         isLoading: isAllTestLoading,
         isFetching,
         refetch: allTestRefetch
-    } = useQuery('allTests', getAdminAllTests, {
-        refetchOnWindowFocus: false
-    });
+    } = useAllTest(filterById, folderId)
 
     const {
         mutateAsync: deleteTestTrigger
@@ -76,7 +82,6 @@ const AllAdminTestsList = ({}: AllAdminTestsListProps) => {
     const {
         mutateAsync: updateStatusTestTrigger
     } = useMutation(updateAdminStatusTest)
-
 
 
     const onDeleteTest = async (id: string) => {
@@ -97,22 +102,13 @@ const AllAdminTestsList = ({}: AllAdminTestsListProps) => {
         }
     }
 
-    if (!allTest || isAllTestLoading || isFetching) {
-        return <Spin size={'large'}/>
+    if (isAllTestLoading || isFetching || isLoadingFolder) {
+        return <div className={s.loading}>
+            <Spin size={'large'}/>
+        </div>
     }
 
-    // const allTestDataArray = Object.values(allTest)
-    // const allTestArray = allTestDataArray.sort((a: ITestModelResponse, b: ITestModelResponse) => {
-    //     const dateA = new Date(a.createDate);
-    //     const dateB = new Date(b.createDate);
-    //     if (dateA < dateB)
-    //         return 1
-    //     if (dateA > dateB)
-    //         return -1
-    //     return 0
-    // });
-
-    if (allTest.length === 0) {
+    if (!allTest || allTest.length === 0) {
         return (
             <div className={s.all__tests__list__empty}>
                 Тестов пока нет
@@ -127,121 +123,155 @@ const AllAdminTestsList = ({}: AllAdminTestsListProps) => {
         }))
     }
 
+    const newAllTest = allTest?.reduce((acc, el, index) => {
+        if (showTestInFolder) acc.push(el)
+        else if (!el.folderId) acc.push(el)
+        return acc
+    }, [] as (ITestModelResponse & ITestCustomModelResponse)[])
+
 
     return (
-        <div className={s.all__tests__list}>
-            <h2>Список всех тестов</h2>
-            {allTest.map(el =>
-                <div key={el._id} className={s.all__tests__list__wrapper}>
-                    <div className={s.all__tests__list__test__item}>
-                        <div className={s.title}>
-                            {el.title}
-                        </div>
+      <Fragment>
+            {newAllTest.map((el, index) => {
+                const folderName = allFolder?.find(folder => folder._id === el.folderId)?.name;
+                const isShowTestInFolder = isShowBadge ? showTestInFolder : false;
+                return (
+                  <Badge.Ribbon text={folderName} color="gold" style={{
+                      display: isShowTestInFolder ? folderName ? 'block' : 'none' : 'none',
+                  }}>
+                      <div key={el._id} className={s.all__tests__list__wrapper}>
+                          <div className={s.all__tests__list__test__item}>
+                              <div className={s.title}>
+                                  {el.title}
+                              </div>
 
-                        <div className={s.infoWrapper}>
-                            <p className={s.wrapperStatus}>Статус теста:</p>
-                            {getTestStatusText(el.status)}
-                        </div>
+                              <div className={s.infoWrapper}>
+                                  <p className={s.wrapperStatus}>Статус теста:</p>
+                                  {getTestStatusText(el.status)}
+                              </div>
 
-                        <div className={s.infoWrapper}>
-                            <p>Тип теста:</p>
-                            <div className={s.body}>
-                                {!!el.quantityQuestion && !el.descriptionEditor && 'Тест без описания'}
-                                {!!el.questions && 'Тест с отдельным описанием вопросов'}
-                                {!!el.descriptionEditor && 'Тест с описанием'}
-                            </div>
-                        </div>
+                              <div className={s.infoWrapper}>
+                                  <p>Тип теста:</p>
+                                  <div className={s.body}>
+                                      {!!el.quantityQuestion && !el.descriptionEditor && 'Тест без описания'}
+                                      {!!el.questions && 'Тест с отдельным описанием вопросов'}
+                                      {!!el.descriptionEditor && 'Тест с описанием'}
+                                  </div>
+                              </div>
 
-                        <div className={s.infoWrapper}>
-                            <p>Адрес теста:</p>
-                            <div className={clsx(s.body, s.addressTest)}>{CLIENT_URL + `/tests/${el._id}`}</div>
-                            <CustomTooltip text={'Адрес теста был успешно скопирован!'}>
-                                <button
-                                    className={s.addressCopyButton}
-                                    onClick={() => copyAddress(CLIENT_URL + `/tests/${el._id}`)}
-                                >
-                                    <CopyOutlined/>
-                                </button>
-                            </CustomTooltip>
-                        </div>
+                              <div className={s.infoWrapper}>
+                                  <p>Адрес теста:</p>
+                                  <div className={clsx(s.body, s.addressTest)}>{CLIENT_URL + `/tests/${el._id}`}</div>
+                                  <CustomTooltip text={'Адрес теста был успешно скопирован!'}>
+                                      <button
+                                        className={s.addressCopyButton}
+                                        onClick={() => copyAddress(CLIENT_URL + `/tests/${el._id}`)}
+                                      >
+                                          <CopyOutlined/>
+                                      </button>
+                                  </CustomTooltip>
+                              </div>
 
-                        <div className={s.infoWrapper}>
-                            <p>Кол-во вопросов:</p>
-                            <div
-                                className={s.body}>{el.quantityQuestion || (el.questions && el.questions.length) || 0}</div>
-                        </div>
+                              <div className={s.infoWrapper}>
+                                  <p>Кол-во вопросов:</p>
+                                  <div
+                                    className={s.body}>{el.quantityQuestion || (el.questions && el.questions.length) || 0}</div>
+                              </div>
 
-                    </div>
-                    <div className={s.btnsWrapper}>
-                        <div className={s.btns}>
-                            <Button
-                                className={s.btn}
-                                onClick={() => {
-                                    //Обычный тест
-                                    if (!!el.quantityQuestion && !el.descriptionEditor) {
-                                        setCurrentDefaultTestData({
-                                            testId: el._id,
-                                            title: el.title,
-                                            quantityQuestion: el.quantityQuestion,
-                                            openModal: true
-                                        })
-                                        return
-                                    }
-                                    //Тест со своими вопросами
-                                    if (el.questions) {
-                                        navigate(`/admin/testInfo/customTest/${el._id}`)
-                                        return
-                                    }
+                              {el?.createDate && <div className={s.infoWrapper}>
+                                  <p>Тест создан: </p>
+                                  <div
+                                    className={s.body}>{getFormatCreateDate(el.createDate)}</div>
+                              </div>}
 
-                                    if (!!el.descriptionEditor) {
-                                        navigate(`/admin/testInfo/customTest/description/${el._id}`)
-                                        return
-                                    }
-                                }}
-                            >
-                                Редактировать тест
-                            </Button>
-                            <Button
-                                className={s.btn}
-                                onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
-                            >
-                                Ввести ключ
-                            </Button>
-                            <Button
-                                className={s.btn}
-                                onClick={() => {
-                                    localStorage.removeItem('FIO')
-                                    navigate(`/admin/testInfo/${el._id}`)
-                                }}
-                            >
-                                Результаты
-                            </Button>
-                        </div>
-                        <div className={s.btns}>
-                            <Button
-                                className={s.btn}
-                                type={'primary'}
-                                onClick={() => onUpdateStatusTest(el._id, el.status)}
-                            >
-                                {getTestStatusTextForBtn(el.status)}
-                            </Button>
-                            <Popconfirm
-                                title="Удаление теста"
-                                description="Вы уверены, что хотите удалить тест?"
-                                onConfirm={() => onDeleteTest(el._id)}
-                                okText="Да"
-                                cancelText="Нет"
-                            >
-                                <Button
-                                    className={clsx(s.deleteBtn, s.btn)}
-                                    danger
-                                >
-                                    Удалить
-                                </Button>
-                            </Popconfirm>
-                        </div>
-                    </div>
-                </div>
+                              {el?.updateDate && <div className={s.infoWrapper}>
+                                  <p>Тест изменен: </p>
+                                  <div
+                                    className={s.body}>{getFormatUpdateDate(el.updateDate)}</div>
+                              </div>}
+
+                          </div>
+                          <div
+                            className={s.btnsWrapper}
+                            style={{
+                                marginTop: isShowTestInFolder ? folderName ? 30 : 0 : 0,
+                            }}
+                          >
+                              <div className={s.btnsColum}>
+                              <div className={s.btns}>
+                                  <Button
+                                    className={s.btn}
+                                    onClick={() => {
+                                        //Обычный тест
+                                        if (!!el.quantityQuestion && !el.descriptionEditor) {
+                                            setCurrentDefaultTestData({
+                                                testId: el._id,
+                                                title: el.title,
+                                                quantityQuestion: el.quantityQuestion,
+                                                openModal: true
+                                            })
+                                            return
+                                        }
+                                        //Тест со своими вопросами
+                                        if (el.questions) {
+                                            navigate(`/admin/testInfo/customTest/${el._id}`)
+                                            return
+                                        }
+
+                                        if (!!el.descriptionEditor) {
+                                            navigate(`/admin/testInfo/customTest/description/${el._id}`)
+                                            return
+                                        }
+                                    }}
+                                  >
+                                      Редактировать тест
+                                  </Button>
+                                  <Button
+                                    className={s.btn}
+                                    onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
+                                  >
+                                      Ввести ключ
+                                  </Button>
+                                  <Button
+                                    className={s.btn}
+                                    onClick={() => {
+                                        localStorage.removeItem('FIO')
+                                        navigate(`/admin/testInfo/${el._id}`)
+                                    }}
+                                  >
+                                      Результаты
+                                  </Button>
+                              </div>
+                              <PutInFolderBtn id={el._id}/>
+                          </div>
+                              <div className={s.btns}>
+                                  <Button
+                                    className={s.btn}
+                                    type={'primary'}
+                                    onClick={() => onUpdateStatusTest(el._id, el.status)}
+                                  >
+                                      {getTestStatusTextForBtn(el.status)}
+                                  </Button>
+                                  <Popconfirm
+                                    title="Удаление теста"
+                                    description="Вы уверены, что хотите удалить тест?"
+                                    onConfirm={() => onDeleteTest(el._id)}
+                                    okText="Да"
+                                    cancelText="Нет"
+                                  >
+                                      <Button
+                                        className={clsx(s.deleteBtn, s.btn)}
+                                        danger
+                                      >
+                                          Удалить
+                                      </Button>
+                                  </Popconfirm>
+                              </div>
+                          </div>
+                      </div>
+                  </Badge.Ribbon>
+                )
+              }
             )}
             {currentDefaultTestData.testId &&
                 <ChangeTitleOrQuestionCountModalDrawer
@@ -253,7 +283,7 @@ const AllAdminTestsList = ({}: AllAdminTestsListProps) => {
                     setOpen={handleOpenChangeInfoTest}
                 />
             }
-        </div>
+      </Fragment>
     );
 };
 

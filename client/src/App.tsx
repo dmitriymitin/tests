@@ -33,10 +33,10 @@ const App : FC = () => {
     return (
         <ConfigProvider
             theme={{
-                algorithm: darkTheme ? darkAlgorithm : defaultAlgorithm,
+                algorithm: defaultAlgorithm,
             }}>
             <QueryClientProvider client={queryClient}>
-                <Layout>
+                <Layout className={'layout'}>
                     {isLoading
                         ?
                             <div
@@ -50,7 +50,9 @@ const App : FC = () => {
                         <>
                             <Navbar/>
                             <Layout.Content>
-                                    <div className="page">
+                                    <div className="page" style={{
+                                        marginBottom: 200
+                                    }}>
                                         <AppRouter/>
                                     </div>
                             </Layout.Content>

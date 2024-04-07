@@ -35,7 +35,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1230px;
+    max-width: 1330px;
     padding-left: 15px;
     padding-right: 15px;
     margin: auto;
@@ -51,6 +51,24 @@ body {
     justify-content: space-between;
     padding: 25px;
     background: rgba(0, 0, 0, 0.06);
+
+    .btnNavbarWrapper {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+}
+
+.tooltipClass {
+    background: white;
+}
+
+.tooltipWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    padding: 5px;
 }
 
 .clearButton {
@@ -60,9 +78,14 @@ body {
 }
 
 .title {
+    margin-top: 25px;
     font-size: 32px;
     width: 100%;
     overflow-wrap: break-word;
+}
+
+.layout {
+    background: white !important;
 }
 
 .drawer {

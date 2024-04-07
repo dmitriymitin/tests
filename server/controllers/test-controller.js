@@ -12,12 +12,56 @@ class TestController{
         }
     }
 
+    async createFolder(req, res, next){
+        try {
+            const {name, testIds} = req.body;
+            const testData = await TestService.createFolder(name);
+            if (testIds.length > 0) {
+                const newTestData = await TestService.putManyTestInFolder(testData._id, testIds);
+            }
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
+    async updateFolder(req, res, next){
+        try {
+            const {id, name, testIds} = req.body;
+            const testData = await TestService.updateFolder(id, name);
+            if (testIds) {
+                await TestService.putManyTestInFolder(id, testIds);
+            }
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
+    async putOneTestInFolder(req, res, next) {
+        try {
+            const {id, folderId} = req.body;
+            const testData = await TestService.putOneTestInFolder(id, folderId);
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
+    async getFolder(req, res, next){
+        try {
+            const testData = await TestService.getAllFolder();
+            return res.json(testData)
+        } catch (e){
+            next(e);
+        }
+    }
+
     async openAll(req, res, next){
         try {
             const testData = await TestService.updateStatusInAllTest('Open');
             return res.json(testData)
         } catch (e){
-            console.log(e)
             next(e);
         }
     }
@@ -52,7 +96,8 @@ class TestController{
 
     async getAll(req, res, next){
         try{
-            const testsData = await TestService.getAll();
+            const {filterByCreateId, folderId} = req.query;
+            const testsData = await TestService.getAll({filterByCreateId: filterByCreateId, filterByFolderId: folderId});
             return res.json(testsData)
         } catch (e){
             next(e)
@@ -194,6 +239,16 @@ class TestController{
         try{
             const {id} = req.params;
             const response = await TestService.deleteOne(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async deleteOneFolder(req, res, next){
+        try{
+            const {id} = req.params;
+            const response = await TestService.deleteOneFolder(id);
             return res.json(response);
         } catch (e) {
             next(e)

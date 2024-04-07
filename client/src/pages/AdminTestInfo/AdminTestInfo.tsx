@@ -52,7 +52,6 @@ const AdminTestInfo = () => {
         }
         setTestInfoUsersResult(prev =>
             {
-                console.log(search)
                 const test = testInfoData?.usersInfo?.filter((el) => el.FIOGroup.toLowerCase().includes((search || fio || '').toLowerCase()))
                 return test
             }

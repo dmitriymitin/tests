@@ -1,6 +1,6 @@
 import {
     EditorDescriptionTest,
-    ICustomTestQuestion,
+    ICustomTestQuestion, IFolderModel,
     IGetOneTestInfoResponse, IGetTestInfoCustomModelResponse,
     ISaveNewTestRequest,
     ISaveNewTestResponse, IStudent, ITestCustomModelRequest, ITestCustomModelResponse,
@@ -132,8 +132,42 @@ export const saveNewTest = async (values: ISaveNewTestRequest): Promise<ISaveNew
     return data;
 };
 
-export const getAdminAllTests = async (): Promise<(ITestModelResponse & ITestCustomModelResponse)[]> => {
-    const {data} = await $api.get('/test/all');
+export const getAdminAllTests = async (filterByCreateId?: string, folderId?: string): Promise<(ITestModelResponse & ITestCustomModelResponse)[]> => {
+    const {data} = await $api.get('/test/all', {
+        params: {
+            filterByCreateId,
+            folderId
+        }
+    });
+    return data;
+};
+
+export const getAllFolder = async (): Promise<IFolderModel[]>  => {
+    const {data} = await $api.get('/test/get/folder');
+    return data;
+}
+
+export const createNewFolderApi = async ({folderName, testIds = []}: {
+    folderName: string, testIds?: string[]
+}): Promise<void> => {
+    const {data} = await $api.post('/test/create/folder', {
+        name: folderName,
+        testIds
+    });
+    return data;
+};
+
+export const updateFolderApi = async ({folderName, testIds = [], folderId}: {
+    folderName: string, testIds?: string[], folderId?: string;
+}): Promise<void> => {
+    const {data} = await $api.post('/test/update/folder', {id: folderId, name: folderName, testIds});
+    return data;
+};
+
+export const putFolderOneApi = async ({id, folderId}: {
+    id?: string, folderId?: string;
+}): Promise<void> => {
+    const {data} = await $api.post('/test/putFolderOne', {id, folderId});
     return data;
 };
 
@@ -161,6 +195,11 @@ export const updateTitleFirstQuestion = async (title: string): Promise<any> => {
 
 export const deleteTest = async (id: string): Promise<any> => {
     const {data} = await $api.delete(`/test/deleteOne/${id}`);
+    return data;
+};
+
+export const deleteFolder = async (id: string): Promise<any> => {
+    const {data} = await $api.delete(`/test/deleteOne/folder/${id}`);
     return data;
 };
 

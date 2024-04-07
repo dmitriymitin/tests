@@ -1,7 +1,7 @@
 import React from 'react';
 import {useQuery} from "react-query";
 import {getAdminAllTests, getUsersAllTests} from "../../api/test";
-import {Button, Spin} from "antd";
+import {Button, Segmented, Spin} from "antd";
 import {useNavigate} from "react-router-dom";
 import s from './AllTest.module.scss'
 import clsx from "clsx";

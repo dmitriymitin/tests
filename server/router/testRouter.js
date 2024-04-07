@@ -11,6 +11,13 @@ router.get('/user/getOne/:id', TestController.getUserOne);
 
 //запросы которые могут отправялть только авторизованные пользователи
 router.post('/create',authMiddleware, TestController.create);
+router.post('/create/folder',authMiddleware, TestController.createFolder);
+router.post('/update/folder',authMiddleware, TestController.updateFolder);
+router.post('/putFolderOne',authMiddleware, TestController.putOneTestInFolder);
+
+router.get('/get/folder',authMiddleware, TestController.getFolder);
+router.delete('/deleteOne/folder/:id',authMiddleware, TestController.deleteOneFolder);
+
 router.post('/openAll',authMiddleware, TestController.openAll);
 router.post('/closeAll',authMiddleware, TestController.closeAll);
 router.post('/clearAllResults',authMiddleware, TestController.clearAllResults);

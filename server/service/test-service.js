@@ -3,6 +3,7 @@ const TestUserModel = require('../models/test-user-model')
 const TestCustomModel = require('../models/test-custom-model')
 const TestCustomQuestionModel = require('../models/test-custom-question-model')
 const ExelFileModel = require('../models/exel-file-model')
+const FolderModel = require('../models/folder-model')
 
 const path = require('path');
 const excel = require('excel4node');
@@ -188,6 +189,7 @@ class TestService {
         const test  = await TestModel.findOne({_id: new ObjectId(id)})
         if (test) {
             test.status = status
+            test.updateDate = new Date();
             await test.save();
             return {
                 ...test
@@ -195,6 +197,7 @@ class TestService {
         }
         const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(id)})
         testCustomModel.status = status
+        testCustomModel.updateDate = new Date();
         await testCustomModel.save();
         return {
             ...testCustomModel
@@ -205,6 +208,7 @@ class TestService {
         const test  = await TestModel.findOne({_id: new ObjectId(id)})
         if (test) {
             test.testKey = key
+            test.updateDate = new Date();
             await test.save();
             return {
                 ...test
@@ -212,6 +216,7 @@ class TestService {
         }
         const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(id)})
         testCustomModel.testKey = key
+        testCustomModel.updateDate = new Date();
         await testCustomModel.save();
         return {
             ...testCustomModel
@@ -221,7 +226,7 @@ class TestService {
     async updateFirstQuestion(title){
         const tests = await TestModel.updateMany({firstQuestionTitle: title})
         const testsCustom = await TestCustomModel.updateMany({firstQuestionTitle: title})
-        return
+        return testsCustom
     }
 
     async create(title, quantityQuestion, description, createDate){
@@ -231,11 +236,78 @@ class TestService {
         return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description, createDate})
     }
 
+    async createFolder(name){
+        const folderModel = await FolderModel.create({name});
+        return folderModel;
+    }
+
+    async updateFolder(id, name) {
+        const folder  = await FolderModel.findById(id);
+        folder.name = name;
+        await folder.save();
+    }
+
+    async getAllFolder() {
+        const allFolder =  await FolderModel.find()
+        return allFolder;
+    }
+
+
+    async putOneTestInFolder(testId, id) {
+        const testOne  = await TestModel.findById(testId)
+        if (testOne) {
+            testOne.folderId = id;
+            testOne.save();
+            return
+        }
+        const testsCustomOne  = await TestCustomModel.findById(testId)
+        if (testsCustomOne) {
+            testsCustomOne.folderId = id;
+            testsCustomOne.save();
+        }
+    }
+
+    async putManyTestInFolder(id, testsId) {
+        const folderId = new ObjectId(id)
+        const testsAll  = await TestModel.find({folderId})
+        if (testsAll) {
+            testsAll.forEach((el, index) => {
+                testsAll[index].folderId = undefined;
+                testsAll.updateDate = new Date();
+                el.save()
+            })
+        }
+        const testsCustomAll  = await TestCustomModel.find({folderId})
+        if (testsCustomAll) {
+            testsCustomAll.forEach((el, index) => {
+                testsCustomAll[index].folderId = undefined;
+                testsCustomAll.updateDate = new Date();
+                el.save()
+            })
+        }
+        for await (let testId of testsId) {
+            const testOne  = await TestModel.findById(testId)
+            if (testOne) {
+                testOne.folderId = id;
+                testOne.updateDate = new Date();
+                await testOne.save();
+            } else {
+                const testsCustomOne  = await TestCustomModel.findById(testId);
+                if (testsCustomOne) {
+                    testsCustomOne.folderId = id;
+                    testsCustomOne.updateDate = new Date();
+                    await testsCustomOne.save();
+                }
+            }
+        }
+    }
+
     async updateStatusInAllTest (status) {
         const testsAll  = await TestModel.find()
         if (testsAll) {
             testsAll.forEach((el, index) => {
                 testsAll[index].status = status;
+                testsAll.updateDate = new Date();
                 el.save()
             })
         }
@@ -243,6 +315,7 @@ class TestService {
         if (testsCustomAll) {
             testsCustomAll.forEach((el, index) => {
                 testsCustomAll[index].status = status;
+                testsCustomAll.updateDate = new Date();
                 el.save()
             })
         }
@@ -259,23 +332,85 @@ class TestService {
         return await TestCustomModel.create({firstQuestionTitle, title: 'Тест с отдельным описанием вопросов', questions: [], createDate})
     }
 
-    async getAll(){
-        const testsAll  = await TestModel.find()
-        const testsCustom = await TestCustomModel.find()
+    async getAll({filterByCreateId, filterByFolderId}){
+        const testsAll  = await (async () => {
+            if (filterByFolderId) {
+                return TestModel.find({folderId: filterByFolderId});
+            }
+            return TestModel.find();
+        })()
+        const testsCustom  = await (async () => {
+            if (filterByFolderId) {
+                return TestCustomModel.find({folderId: filterByFolderId});
+            }
+            return TestCustomModel.find();
+        })()
         const allTestDataArray = [
             ...testsAll,
             ...testsCustom
         ]
+        let allTestArray = []
 
-        const allTestArray = allTestDataArray.sort((a, b) => {
-            const dateA = new Date(a.createDate);
-            const dateB = new Date(b.createDate);
-            if (dateA < dateB)
-                return 1
-            if (dateA > dateB)
-                return -1
-            return 0
-        });
+        if (filterByCreateId === '0' || !filterByCreateId) {
+            allTestArray = allTestDataArray.sort((a, b) => {
+                const dateA = new Date(a.createDate);
+                const dateB = new Date(b.createDate);
+                if (dateA < dateB)
+                    return 1
+                if (dateA > dateB)
+                    return -1
+                return 0
+            });
+        }
+
+        if (filterByCreateId === '1') {
+            allTestArray = allTestDataArray.sort((a, b) => {
+                const dateA = new Date(a.createDate);
+                const dateB = new Date(b.createDate);
+                if (dateA > dateB)
+                    return 1
+                if (dateA < dateB)
+                    return -1
+                return 0
+            });
+        }
+
+
+        if (filterByCreateId === '2') {
+            allTestArray = allTestDataArray.sort((a, b) => {
+                if (!a?.updateDate && b?.updateDate) {
+                    return 1
+                }
+                if (a?.updateDate && !b?.updateDate) {
+                    return -1
+                }
+                const dateA = new Date(a.updateDate);
+                const dateB = new Date(b.updateDate);
+                if (dateA < dateB)
+                    return 1
+                if (dateA > dateB)
+                    return -1
+                return 0
+            });
+        }
+
+        if (filterByCreateId === '3') {
+            allTestArray = allTestDataArray.sort((a, b) => {
+                if (!a?.updateDate && b?.updateDate) {
+                    return 1
+                }
+                if (a?.updateDate && !b?.updateDate) {
+                    return -1
+                }
+                const dateA = new Date(a.updateDate);
+                const dateB = new Date(b.updateDate);
+                if (dateA > dateB)
+                    return 1
+                if (dateA < dateB)
+                    return -1
+                return 0
+            });
+        }
 
         return [...allTestArray]
     }
@@ -359,10 +494,33 @@ class TestService {
         const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(id)})
         if (testCustomModel) {
             await TestCustomModel.deleteOne({_id: new ObjectId(id)})
-            return
+        } else {
+            await TestModel.deleteOne({_id: new ObjectId(id)})
+        }
+        await TestUserModel.deleteMany({testId: id});
+    }
+
+    async deleteOneFolder(id){
+        const folderId = new ObjectId(id)
+        const testsAll  = await TestModel.find({folderId})
+        if (testsAll) {
+            testsAll.forEach((el, index) => {
+                testsAll[index].folderId = undefined;
+                testsAll.updateDate = new Date();
+                el.save()
+            })
         }
 
-        await TestModel.deleteOne({_id: new ObjectId(id)})
+        const testsCustomAll  = await TestCustomModel.find()
+        if (testsCustomAll) {
+            testsCustomAll.forEach((el, index) => {
+                testsCustomAll[index].folderId = undefined;
+                testsCustomAll.updateDate = new Date();
+                el.save()
+            })
+        }
+
+        await FolderModel.deleteOne({_id: new ObjectId(id)})
     }
 
     async clearResults(id){
@@ -377,7 +535,7 @@ class TestService {
         const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(testId)})
         const filterQuestions = testCustomModel.questions.filter(el => !el._id.equals(new ObjectId(id)))
         testCustomModel.questions = filterQuestions;
-        testCustomModel.save()
+        await testCustomModel.save()
         return {
             ...testCustomModel
         }
@@ -386,7 +544,8 @@ class TestService {
     async updateTitleCustomTest(id, title){
         const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(id)})
         testCustomModel.title = title;
-        testCustomModel.save()
+        testCustomModel.updateDate = new Date();
+        await testCustomModel.save()
         return {
             ...testCustomModel
         }
@@ -396,6 +555,7 @@ class TestService {
         const testModel  = await TestModel.findOne({_id: new ObjectId(id)})
         if (title) {
             testModel.title = title;
+
         }
         if (quantityQuestion) {
             testModel.quantityQuestion = quantityQuestion;
@@ -403,8 +563,8 @@ class TestService {
         if (description) {
             testModel.descriptionEditor = description;
         }
-
-        testModel.save()
+        testModel.updateDate = new Date();
+        await testModel.save()
         return {
             ...testModel
         }
@@ -418,6 +578,7 @@ class TestService {
             }
 
             testModel.descriptionEditor = description;
+            testModel.updateDate = new Date();
             await testModel.save()
             return {
                 ...testModel
@@ -435,6 +596,7 @@ class TestService {
             await question.save()
 
             const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(testId)})
+            testCustomModel.updateDate = new Date();
             const newQuestions = testCustomModel.questions.reduce((acc, el, index) => {
                 if (el._id.equals(new ObjectId(id))) {
                     acc.push({ ...el, answers, description})
@@ -443,7 +605,7 @@ class TestService {
             }, [])
 
             testCustomModel.questions = newQuestions;
-            testCustomModel.save()
+            await testCustomModel.save()
             return {
                 ...testCustomModel
             }

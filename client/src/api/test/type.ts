@@ -29,6 +29,10 @@ export interface IStudent {
     testId: string,
 }
 
+export interface IFolderModel {
+    _id: string,
+    name: string
+}
 
 export interface ITestModelResponse {
     firstQuestionTitle: string | null;
@@ -40,6 +44,8 @@ export interface ITestModelResponse {
     status: testStatusType;
     createDate: string;
     testKey: string | null;
+    updateDate?: string;
+    folderId?: string;
 }
 
 export type TypeCustomTestQuestionAnswer = {
@@ -55,6 +61,8 @@ export interface ITestCustomModelResponse {
     status: testStatusType;
     createDate: string;
     testKey: string | null;
+    updateDate?: string;
+    folderId?: string;
 }
 
 export interface IGetTestInfoCustomModelResponse {
@@ -97,5 +105,24 @@ export interface ISaveNewTestResponse {
         [key: string]: string;
     };
     testId: string;
+}
+
+
+export type TFilterById = 'byCreationDateDescending' | 'byCreationDateAscending' | 'byDateOfChangeDescending' | 'byDateOfChangeAscending'
+
+export enum EFilterById {
+    byCreationDateDescending = '0',
+    byCreationDateAscending = '1',
+    byDateOfChangeDescending = '2',
+    byDateOfChangeAscending = '3'
+}
+
+export const EFilterTranslate: {
+    [key: TFilterById | string]: string
+} = {
+    byCreationDateDescending: 'По дате создания (сначала новые)',
+    byCreationDateAscending: 'По дате создания (сначала старые)',
+    byDateOfChangeDescending: 'По дате редактирования (сначала новые)',
+    byDateOfChangeAscending: 'По дате редакитрования (сначала старые)',
 }
 

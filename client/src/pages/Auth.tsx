@@ -4,7 +4,7 @@ import AuthForm from "../components/AuthForm/AuthForm";
 
 const Auth: FC = () => {
     return (
-        <Layout>
+      <Layout className={'layout'}>
             <Row justify="center" align="middle" className="auth">
                     <AuthForm/>
             </Row>

@@ -17,11 +17,11 @@ import ChangeAllTestFirstQuestion from "../AllAdminTestsList/ChangeAllTestFirstQ
 import NewTestModalDrawerWithDescription from "../NewTestModalDrawerWithDescription";
 import {getFormateDate} from "../../utils/getFormateDate";
 import AllAdminTestListWrapper from "../AllAdminTestsList/AllAdminTestListWrapper";
+import CreateNewForder from "./CreateNewForder/CreateNewForder";
 
 const AdminForm = () => {
     const navigate = useNavigate()
-    const [changePasswordOpen, setChangePasswordModal] = useState(false)
-    const dispatch = useDispatch();
+    const [newFolderOpen, setNewFolderOpen] = useState(false);
     const [newTestOpen, setNewTestOpen] = useState(false)
     const [newTestDescriptionOpen, setNewTestDescriptionOpen] = useState(false)
     const queryClient = useQueryClient()
@@ -151,86 +151,73 @@ const AdminForm = () => {
                         Очистить результаты всех тестов
                     </Button>
                 </Popconfirm>
+                <ChangeAllTestFirstQuestion/>
+            </div>,
+        }
+    ];
+
+    const itemsCreateTest: any = [
+        {
+            key: '1',
+            label: 'Функции для создания тестов',
+            children: <div className={s.admin__form__btns}>
+                <Button
+                  size={'large'}
+                  className={s.btn}
+                  type={"primary"}
+                  onClick={() => setNewTestOpen(true)}
+                >
+                    Тест без описания
+                </Button>
+                <Button
+                  size={'large'}
+                  className={s.btn}
+                  loading={isCreateNewTestLoading}
+                  type={"primary"}
+                  onClick={handleCreateCustomTestWithDescription}
+                >
+                    Тест с описанием
+                </Button>
+                <Button
+                  size={'large'}
+                  className={s.btn}
+                  loading={createCustomTestLoading}
+                  type={"primary"}
+                  onClick={handleCreateCustomTest}
+                >
+                    Тест с отдельным описанием вопросов
+                </Button>
             </div>,
         }
     ];
 
     return (
-        <>
-            <div className={s.admin__form}>
-                <div className={s.title__wrapper}>
-                    <h1 className="title">
-                        Страница администратора
-                    </h1>
-                    <Button className={s.exitBtn} danger onClick={() => AuthActionCreators.logout()(dispatch)}>Выйти</Button>
+      <>
+          <div className={s.admin__form}>
+              <div className={s.title__wrapper}>
+                  <h1 className="title">
+                      Страница администратора
+                  </h1>
+              </div>
+              <Collapse items={itemsCreateTest}/>
+              <div className={s.btnActionWrapper}>
+                  <Collapse items={items} defaultActiveKey={['2']}/>
                 </div>
-
-                <div className={s.admin__form__btns}>
-                    <Button
-                        size={'large'}
-                        className={s.btn}
-                        type={"primary"}
-                        onClick={() => setNewTestOpen(true)}
-                    >
-                        Тест без описания
-                    </Button>
-                    <Button
-                        size={'large'}
-                        className={s.btn}
-                        loading={isCreateNewTestLoading}
-                        type={"primary"}
-                        onClick={handleCreateCustomTestWithDescription}
-                    >
-                        Тест с описанием
-                    </Button>
-                    <Button
-                        size={'large'}
-                        className={s.btn}
-                        loading={createCustomTestLoading}
-                        type={"primary"}
-                        onClick={handleCreateCustomTest}
-                    >
-                        Тест с отдельным описанием вопросов
-                    </Button>
-                    <Button
-                        size={'large'}
-                        className={s.btn}
-                        type={"primary"}
-                        onClick={() => setChangePasswordModal(true)}
-                    >
-                        Изменить пароль
-                    </Button>
-                </div>
-                <ChangeAllTestFirstQuestion/>
-                <div className={s.btnActionWrapper}>
-                    <Collapse bordered={false} items={items} defaultActiveKey={['2']} />
-                    <Button
-                        size={'large'}
-                        className={s.btn}
-                        onClick={() => navigate(`/admin/searchStudents`)}
-                    >
-                        Поиск результатов студентов
-                    </Button>
-                    {/*<Popconfirm*/}
-                    {/*    title="Очистить результаты"*/}
-                    {/*    description="Вы уверены, что хотите очистить результаты всех тестов?"*/}
-                    {/*    onConfirm={handleClearResultsAllTest}*/}
-                    {/*    okText="Да"*/}
-                    {/*    cancelText="Нет"*/}
-                    {/*>*/}
-                    {/*    <Button*/}
-                    {/*        size={'large'}*/}
-                    {/*        className={s.btn}*/}
-                    {/*    >*/}
-                    {/*        Очистить результаты только выбранных тестов*/}
-                    {/*    </Button>*/}
-                    {/*</Popconfirm>*/}
-                </div>
+              <Button
+                size={'large'}
+                className={s.createForderBtn}
+                type={'primary'}
+                onClick={() => {
+                    setNewFolderOpen(true);
+                }}
+              >
+                  Создать новую папку
+              </Button>
                 <AllAdminTestListWrapper/>
-                <ChangePasswordModalDrawer open={changePasswordOpen} setOpen={setChangePasswordModal}/>
                 <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>
                 <NewTestModalDrawerWithDescription open={newTestDescriptionOpen} setOpen={setNewTestDescriptionOpen}/>
             </div>
+          <CreateNewForder open={newFolderOpen} setOpen={setNewFolderOpen}/>
         </>
 
     );

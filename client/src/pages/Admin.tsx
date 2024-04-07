@@ -4,7 +4,7 @@ import AdminForm from "../components/AdminForm/AdminForm";
 
 const Admin:FC = () => {
     return (
-        <Layout>
+      <Layout className={'layout'}>
             <div className="container">
                 <AdminForm/>
             </div>

@@ -4,6 +4,47 @@
   gap: 15px;
 }
 
+.select {
+  width: 400px;
+
+  @media screen and (max-width: 700px) {
+    width: 100%;
+  }
+}
+
+.folderLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+.loading {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.questionWrapper {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-size: 16px;
+}
+
+.header__wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+
+  @media screen and (max-width: 700px) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 .all__tests__list__wrapper {
   display: flex;
   justify-content: space-between;
@@ -49,6 +90,8 @@
   }
 
   .infoWrapper {
+    width: max-content;
+    max-width: 100%;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -58,7 +101,7 @@
     }
 
     .addressTest {
-      @media screen and (max-width: 7000px) {
+      @media screen and (max-width: 700px) {
         width: 60%;
       }
     }
@@ -78,6 +121,13 @@
       }
     }
   }
+}
+
+.btnsColum {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-end;
 }
 
 .btnsWrapper {
@@ -109,6 +159,7 @@
 }
 
 .addressCopyButton {
+  background: transparent;
   border: none;
   cursor: pointer;
   font-size: 18px;

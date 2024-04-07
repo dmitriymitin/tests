@@ -6,7 +6,9 @@ const TestCustomSchema = new Schema({
     questions: {type: Array, required: false},
     status: {type: String, required: true, default: 'Start'},
     testKey: {type: String, required: false, default: ''},
-    createDate: {type: String, required: false}
+    createDate: {type: String, required: false},
+    updateDate: {type: String, required: false},
+    folderId: {type: String, required: false}
 })
 
 module.exports = model('TestCustom', TestCustomSchema);

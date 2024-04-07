@@ -5,21 +5,16 @@ import s from "./ChangeAllTestFirstQuestion.module.scss";
 import {Button, Form, message, Spin} from "antd";
 import {CheckOutlined, CloseOutlined, EditOutlined} from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
+import {useAllTest} from "../../../http/hooks/useAllTest";
 
-interface ChangeAllTestFirstQuestionProps{}
 
 const ChangeAllTestFirstQuestion = () => {
     const [newTitle, setNewTitle] = useState( '')
     const [isChangeTitle, setIsChangeTitle] = useState(false)
-    const queryClient = useQueryClient()
-
-    const {
-        data: allTest,
-        isLoading: isAllTestLoading
-    } = useQuery('allTests', getAdminAllTests, {
-        refetchOnWindowFocus: false
-    });
-
+  const {
+    data: allTest,
+    isLoading: isAllTestLoading
+  } = useAllTest()
     const {
         mutateAsync: onUpdateTitleFirstQuestionTrigger,
         isLoading: onUpdateTitleFirstQuestionLoading
@@ -28,14 +23,14 @@ const ChangeAllTestFirstQuestion = () => {
     useEffect(() => {
         if (!allTest)
             return
-        setNewTitle(allTest[0].firstQuestionTitle || 'Фамилия, номер группы')
+        setNewTitle(allTest[0]?.firstQuestionTitle || 'Фамилия, номер группы')
     }, [allTest]);
 
     if (!allTest || isAllTestLoading) {
         return <Spin size={'large'}/>
     }
 
-    const title= allTest[0].firstQuestionTitle || 'Фамилия, номер группы'
+    const title= allTest[0]?.firstQuestionTitle || 'Фамилия, номер группы'
 
 
     const onSave = async () => {
@@ -45,6 +40,10 @@ const ChangeAllTestFirstQuestion = () => {
         } catch (e) {
             message.error('Произошла ошибка при обновлении названия')
         }
+    }
+
+    if (!allTest[0]?.firstQuestionTitle) {
+      return null;
     }
 
     if (isChangeTitle) {

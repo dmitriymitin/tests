@@ -7,7 +7,9 @@ const TestSchema = new Schema({
     status: {type: String, required: true, default: 'Start'},
     testKey: {type: String, required: false, default: ''},
     descriptionEditor: {type: Object, required: false},
-    createDate: {type: String, required: false}
+    createDate: {type: String, required: false},
+    updateDate: {type: String, required: false},
+    folderId: {type: String, required: false}
 })
 
 module.exports = model('Test', TestSchema);

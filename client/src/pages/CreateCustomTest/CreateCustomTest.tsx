@@ -7,7 +7,7 @@ const CreateCustomTest = () => {
     const location = useLocation();
     const testId = location.pathname.split('/')[4]
     return (
-        <Layout>
+        <Layout className={'layout'}>
             <div className="container">
                 <CreateCustomTestForm testId={testId}/>
             </div>
