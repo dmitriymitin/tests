@@ -273,7 +273,6 @@ class TestService {
         if (testsAll) {
             testsAll.forEach((el, index) => {
                 testsAll[index].folderId = undefined;
-                testsAll.updateDate = new Date();
                 el.save()
             })
         }
@@ -281,7 +280,6 @@ class TestService {
         if (testsCustomAll) {
             testsCustomAll.forEach((el, index) => {
                 testsCustomAll[index].folderId = undefined;
-                testsCustomAll.updateDate = new Date();
                 el.save()
             })
         }
