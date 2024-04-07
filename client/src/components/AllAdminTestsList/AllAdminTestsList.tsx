@@ -242,7 +242,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                                       Результаты
                                   </Button>
                               </div>
-                              <PutInFolderBtn id={el._id}/>
+                              {allFolder && allFolder.length > 0 && <PutInFolderBtn id={el._id}/>}
                           </div>
                               <div className={s.btns}>
                                   <Button

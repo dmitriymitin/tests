@@ -5,6 +5,7 @@ import {useMutation, useQueryClient} from "react-query";
 import {putFolderOneApi} from "../../../api/test";
 import {useAllFolder} from "../../../http/hooks/useAllFolder";
 import {useAllTest} from "../../../http/hooks/useAllTest";
+import clsx from "clsx";
 
 const PutInFolderBtn = ({id}:{id?: string}) => {
   const queryClient = useQueryClient();
@@ -28,7 +29,7 @@ const PutInFolderBtn = ({id}:{id?: string}) => {
       color={'white'}
       placement="bottom"
       title={
-        <div className={'tooltipWrapper'}>
+        <div className={clsx('tooltipWrapper', s.tooltipWrapperMain)}>
           {data?.map((el, index) => (
             <div className={s.tooltipItem} onClick={() => handlePut(el._id)}>
               {el.name}
