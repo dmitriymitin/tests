@@ -27,7 +27,6 @@ const Navbar = () => {
                       <div className={'btnNavbarWrapper'}>
                           <button className={'clearButton'} onClick={() => {
                               navigate('/admin/searchStudents');
-                              localStorage.setItem('FIO', '');
                           }}>
                               Поиск результатов студентов
                           </button>
