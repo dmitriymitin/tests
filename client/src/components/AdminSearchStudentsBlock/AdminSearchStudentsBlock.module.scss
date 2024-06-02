@@ -4,6 +4,25 @@
   gap: 15px;
 }
 
+.studentBlockSearch {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  @media screen and (max-width: 500px) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+.select {
+  width: 400px;
+
+  @media screen and (max-width: 500px) {
+    width: 100%;
+  }
+}
+
 .searchBlock {
 
   input {

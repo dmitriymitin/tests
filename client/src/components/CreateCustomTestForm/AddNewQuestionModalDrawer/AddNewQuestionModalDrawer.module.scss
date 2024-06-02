@@ -83,7 +83,13 @@
   padding-bottom: 40px;
 
   :global(.ant-drawer-header) {
+    width: 100%;
     border-bottom: 0;
+  }
+
+  :global(.ant-drawer-body) {
+    padding-top: 0;
+    width: 100%;
   }
 
   :global(.ant-drawer-header-title) {

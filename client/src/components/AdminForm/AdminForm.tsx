@@ -24,6 +24,8 @@ const AdminForm = () => {
     const [newFolderOpen, setNewFolderOpen] = useState(false);
     const [newTestOpen, setNewTestOpen] = useState(false)
     const [newTestDescriptionOpen, setNewTestDescriptionOpen] = useState(false)
+    const [changePasswordOpen, setChangePasswordModal] = useState(false)
+    const dispatch = useDispatch();
     const queryClient = useQueryClient()
 
     const {
@@ -194,15 +196,26 @@ const AdminForm = () => {
     return (
       <>
           <div className={s.admin__form}>
+              <ChangePasswordModalDrawer open={changePasswordOpen} setOpen={setChangePasswordModal}/>
               <div className={s.title__wrapper}>
-                  <h1 className="title">
+                  <h1 className="title-admin">
                       Страница администратора
                   </h1>
+                  <div className={'tooltipWrapper'}>
+                      <Button
+                        className={s.exitBtn}
+                        onClick={() => setChangePasswordModal(true)}
+                      >
+                          Изменить пароль
+                      </Button>
+                      <Button className={s.exitBtn} danger
+                              onClick={() => AuthActionCreators.logout()(dispatch)}>Выйти</Button>
+                  </div>
               </div>
               <Collapse items={itemsCreateTest}/>
               <div className={s.btnActionWrapper}>
                   <Collapse items={items} defaultActiveKey={['2']}/>
-                </div>
+              </div>
               <Button
                 size={'large'}
                 className={s.createForderBtn}
@@ -213,8 +226,8 @@ const AdminForm = () => {
               >
                   Создать новую папку
               </Button>
-                <AllAdminTestListWrapper/>
-                <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>
+              <AllAdminTestListWrapper/>
+              <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>
                 <NewTestModalDrawerWithDescription open={newTestDescriptionOpen} setOpen={setNewTestDescriptionOpen}/>
             </div>
           <CreateNewForder open={newFolderOpen} setOpen={setNewFolderOpen}/>

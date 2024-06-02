@@ -305,7 +305,6 @@ class TestService {
         if (testsAll) {
             testsAll.forEach((el, index) => {
                 testsAll[index].status = status;
-                testsAll.updateDate = new Date();
                 el.save()
             })
         }
@@ -313,7 +312,6 @@ class TestService {
         if (testsCustomAll) {
             testsCustomAll.forEach((el, index) => {
                 testsCustomAll[index].status = status;
-                testsCustomAll.updateDate = new Date();
                 el.save()
             })
         }
@@ -420,7 +418,8 @@ class TestService {
         ]
     }
 
-    async getAllStudents(search, pageN, lim) {
+
+    async getAllStudents(search, pageN, lim, sortId) {
         const testsAll  = await TestModel.find()
         const testsCustom = await TestCustomModel.find()
         const allTestDataArray = [
@@ -440,8 +439,41 @@ class TestService {
             userInfo: el
         }))
 
+        const resultsData = newData?.slice(startIndex, endIndex);
+
+        // sortId
+        // 0 - по алфавиту
+        // 1 - по дате создания (сначала новые)
+        // 2 - по дате создания (сначала старые)
+        let resultsSort = (() => {
+            switch (sortId) {
+                case '0':
+                    return resultsData.sort((a, b) =>
+                        a.userInfo.FIOGroup.toLowerCase().localeCompare(b.userInfo.FIOGroup.toLowerCase()));
+                case '1':
+                    // Сортировка по дате создания (сначала новые)
+                    return resultsData.sort((a, b) => {
+                        if (!a.userInfo.createDate && !b.userInfo.createDate) return 0; // Оба undefined
+                        if (!a.userInfo.createDate) return 1; // A без даты, B с датой
+                        if (!b.userInfo.createDate) return -1; // B без даты, A с датой
+                        return new Date(b.userInfo.createDate) - new Date(a.userInfo.createDate); // Оба с датами
+                    });
+                case '2':
+                    // Сортировка по дате создания (сначала старые)
+                    return resultsData.sort((a, b) => {
+                        if (!a.userInfo.createDate && !b.userInfo.createDate) return 0; // Оба undefined
+                        if (!a.userInfo.createDate) return 1; // A без даты, B с датой
+                        if (!b.userInfo.createDate) return -1; // B без даты, A с датой
+                        return new Date(a.userInfo.createDate) - new Date(b.userInfo.createDate); // Оба с датами
+                    });
+                default:
+                    return resultsData;
+            }
+        })();
+
+
         return {
-            data: newData?.slice(startIndex, endIndex),
+            data: resultsSort,
             totalCount: data.length
         };
     }

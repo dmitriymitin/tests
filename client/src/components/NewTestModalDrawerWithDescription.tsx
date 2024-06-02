@@ -1,11 +1,12 @@
 import {FC, memo} from "react";
 import {useMedia} from "react-use";
 import {useMutation, useQueryClient} from "react-query";
-import {createNewTest, createNewTestWithDescription} from "../api/test";
+import {createNewTestWithDescription} from "../api/test";
 import {useForm} from "antd/es/form/Form";
 import {Button, Drawer, Form, Input, message, Modal} from "antd";
 import {useNavigate} from "react-router-dom";
 import {getFormateDate} from "../utils/getFormateDate";
+import drawerStyles from '../DrawerStyles.module.scss'
 
 interface NewTestModalDrawerWithDescriptionProps {
     open: boolean;
@@ -104,12 +105,12 @@ const NewTestModalDrawerWithDescription: FC<NewTestModalDrawerWithDescriptionPro
                     open={open}
                     width={500}
                     height={'auto'}
-                    className={"drawer"}
+                    className={drawerStyles.drawer}
                     destroyOnClose
                 >
-                    <div className={"drawerWrapper"}>
+                    <div className={drawerStyles.drawerWrapper}>
                         {content}
-                        <div className={'btns'}>
+                        <div className={drawerStyles.btns}>
                             <Button onClick={() => setOpen(false)}>Отмена</Button>
                             <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
                         </div>

@@ -1,0 +1,35 @@
+.drawer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 40px;
+
+  :global(.ant-drawer-header) {
+    width: 100%;
+    border-bottom: 0;
+  }
+
+  :global(.ant-drawer-body) {
+    width: 100%;
+  }
+
+  :global(.ant-drawer-header-title) {
+    justify-content: flex-end;
+  }
+}
+
+.drawerWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.btns {
+  margin-top: 40px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}

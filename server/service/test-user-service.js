@@ -12,14 +12,14 @@ class TestService {
                 throw ApiError.BadRequest(`Тест закрыт`)
                 return
             }
-            return await TestUserModel.create({FIOGroup, answer, testId})
+            return await TestUserModel.create({FIOGroup, answer, testId, createDate: new Date()})
         }
         const customTest = await CustomTestModel.findOne({_id: new ObjectId(testId)})
         if (customTest.status === 'Close' || customTest.status === 'Start') {
             throw ApiError.BadRequest(`Тест закрыт`)
             return
         }
-        return await TestUserModel.create({FIOGroup, answer, testId})
+        return await TestUserModel.create({FIOGroup, answer, testId, createDate: new Date()})
     }
 }
 module.exports = new TestService();

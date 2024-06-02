@@ -29,7 +29,6 @@ body {
 .page {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     transition: transform cubic-bezier(1, 0.04, 0.07, 1.02) .6s;
 }
 
@@ -49,7 +48,7 @@ body {
 .navbar {
     display: flex;
     justify-content: space-between;
-    padding: 25px;
+    padding: 15px;
     background: rgba(0, 0, 0, 0.06);
 
     .btnNavbarWrapper {
@@ -65,7 +64,7 @@ body {
 
 .tooltipWrapper {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 20px;
     background: white;
     padding: 5px;
@@ -84,6 +83,16 @@ body {
     overflow-wrap: break-word;
 }
 
+.title-admin {
+    font-size: 32px;
+    width: max-content;
+    overflow-wrap: break-word;
+
+    @media screen and (max-width: 470px) {
+        width: 100%;
+    }
+}
+
 .layout {
     background: white !important;
 }
@@ -96,7 +105,13 @@ body {
     padding-bottom: 75px;
 
     :global(.ant-drawer-header) {
+        width: 100% !important;
         border-bottom: 0;
+    }
+
+    :global(.ant-drawer-body) {
+        padding-top: 0;
+        width: 100% !important;
     }
 
     :global(.ant-drawer-header-title) {

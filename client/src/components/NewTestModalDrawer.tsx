@@ -1,10 +1,10 @@
-import {useState} from "react";
 import {useMedia} from "react-use";
 import {Button, Drawer, Form, Input, message, Modal} from "antd";
 import {useForm} from "antd/es/form/Form";
 import {useMutation, useQueryClient} from "react-query";
 import {createNewTest} from "../api/test";
 import {getFormateDate} from "../utils/getFormateDate";
+import drawerStyle from '../DrawerStyles.module.scss'
 
 interface NewTestModalDrawerProps {
     open: boolean;
@@ -101,12 +101,12 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
                     open={open}
                     width={500}
                     height={'auto'}
-                    className={"drawer"}
+                    className={drawerStyle.drawer}
                     destroyOnClose
                 >
-                    <div className={"drawerWrapper"}>
+                    <div className={drawerStyle.drawerWrapper}>
                         {content}
-                        <div className={'btns'}>
+                        <div className={drawerStyle.btns}>
                             <Button onClick={() => setOpen(false)}>Отмена</Button>
                             <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
                         </div>

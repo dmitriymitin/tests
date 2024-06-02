@@ -110,9 +110,9 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
 
     if (!allTest || allTest.length === 0) {
         return (
-            <div className={s.all__tests__list__empty}>
-                Тестов пока нет
-            </div>
+          <div className={s.all__tests__list__empty}>
+              Тестов пока нет
+          </div>
         )
     }
 
@@ -132,7 +132,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
 
     return (
       <Fragment>
-            {newAllTest.map((el, index) => {
+          {newAllTest.map((el, index) => {
                 const folderName = allFolder?.find(folder => folder._id === el.folderId)?.name;
                 const isShowTestInFolder = isShowBadge ? showTestInFolder : false;
                 return (
@@ -198,52 +198,52 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                             }}
                           >
                               <div className={s.btnsColum}>
-                              <div className={s.btns}>
-                                  <Button
-                                    className={s.btn}
-                                    onClick={() => {
-                                        //Обычный тест
-                                        if (!!el.quantityQuestion && !el.descriptionEditor) {
-                                            setCurrentDefaultTestData({
-                                                testId: el._id,
-                                                title: el.title,
-                                                quantityQuestion: el.quantityQuestion,
-                                                openModal: true
-                                            })
-                                            return
-                                        }
-                                        //Тест со своими вопросами
-                                        if (el.questions) {
-                                            navigate(`/admin/testInfo/customTest/${el._id}`)
-                                            return
-                                        }
+                                  <div className={s.btns}>
+                                      <Button
+                                        className={s.btn}
+                                        onClick={() => {
+                                            //Обычный тест
+                                            if (!!el.quantityQuestion && !el.descriptionEditor) {
+                                                setCurrentDefaultTestData({
+                                                    testId: el._id,
+                                                    title: el.title,
+                                                    quantityQuestion: el.quantityQuestion,
+                                                    openModal: true
+                                                })
+                                                return
+                                            }
+                                            //Тест со своими вопросами
+                                            if (el.questions) {
+                                                navigate(`/admin/testInfo/customTest/${el._id}`)
+                                                return
+                                            }
 
-                                        if (!!el.descriptionEditor) {
-                                            navigate(`/admin/testInfo/customTest/description/${el._id}`)
-                                            return
-                                        }
-                                    }}
-                                  >
-                                      Редактировать тест
-                                  </Button>
-                                  <Button
-                                    className={s.btn}
-                                    onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
-                                  >
-                                      Ввести ключ
-                                  </Button>
-                                  <Button
-                                    className={s.btn}
-                                    onClick={() => {
-                                        localStorage.removeItem('FIO')
-                                        navigate(`/admin/testInfo/${el._id}`)
-                                    }}
-                                  >
-                                      Результаты
-                                  </Button>
+                                            if (!!el.descriptionEditor) {
+                                                navigate(`/admin/testInfo/customTest/description/${el._id}`)
+                                                return
+                                            }
+                                        }}
+                                      >
+                                          Редактировать тест
+                                      </Button>
+                                      <Button
+                                        className={s.btn}
+                                        onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
+                                      >
+                                          Ввести ключ
+                                      </Button>
+                                      <Button
+                                        className={s.btn}
+                                        onClick={() => {
+                                            localStorage.removeItem('FIO')
+                                            navigate(`/admin/testInfo/${el._id}`)
+                                        }}
+                                      >
+                                          Результаты
+                                      </Button>
+                                  </div>
+                                  {allFolder && allFolder.length > 0 && <PutInFolderBtn id={el._id}/>}
                               </div>
-                              {allFolder && allFolder.length > 0 && <PutInFolderBtn id={el._id}/>}
-                          </div>
                               <div className={s.btns}>
                                   <Button
                                     className={s.btn}
@@ -271,18 +271,18 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                       </div>
                   </Badge.Ribbon>
                 )
-              }
-            )}
-            {currentDefaultTestData.testId &&
-                <ChangeTitleOrQuestionCountModalDrawer
-                    refetch={allTestRefetch}
-                    testId={currentDefaultTestData.testId}
-                    title={currentDefaultTestData.title}
-                    quantityQuestion={currentDefaultTestData.quantityQuestion}
-                    open={currentDefaultTestData.openModal}
-                    setOpen={handleOpenChangeInfoTest}
-                />
             }
+          )}
+          {currentDefaultTestData.testId &&
+            <ChangeTitleOrQuestionCountModalDrawer
+              refetch={allTestRefetch}
+              testId={currentDefaultTestData.testId}
+              title={currentDefaultTestData.title}
+              quantityQuestion={currentDefaultTestData.quantityQuestion}
+              open={currentDefaultTestData.openModal}
+              setOpen={handleOpenChangeInfoTest}
+            />
+          }
       </Fragment>
     );
 };

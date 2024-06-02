@@ -127,8 +127,8 @@ class TestController{
 
     async getAllStudents(req, res, next){
         try{
-            const {search, pageNumber, limit} = req.query;
-            const filterStudents = await TestService.getAllStudents(search, pageNumber, limit);
+            const {search, pageNumber, limit, sortId} = req.query;
+            const filterStudents = await TestService.getAllStudents(search, pageNumber, limit, sortId);
             return res.json(filterStudents)
         } catch (e){
             next(e)

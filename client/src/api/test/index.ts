@@ -228,7 +228,7 @@ export const updateAdminKeyTest = async (values: {
     return data;
 };
 
-export const getAllStudentsBySearch = async ({search, pageNumber}: { search: string, pageNumber: number, }): Promise<{
+export const getAllStudentsBySearch = async ({search, pageNumber, limit = 10, sortId}: { search: string, pageNumber: number, limit?: number, sortId?: number}): Promise<{
     data: {
         userInfo: IStudent,
         test: {
@@ -241,7 +241,7 @@ export const getAllStudentsBySearch = async ({search, pageNumber}: { search: str
 }> => {
     const {data} = await $api.get('/test/getAllStudents', {
         params: {
-            search, pageNumber, limit: 10
+            search, pageNumber, limit, sortId
         }
     });
 

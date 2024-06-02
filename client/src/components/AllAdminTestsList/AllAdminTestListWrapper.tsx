@@ -1,6 +1,6 @@
 'use client'
 import s from "./AllAdminTestsList.module.scss";
-import React, {FC, memo, useEffect, useState} from "react";
+import React, {FC, memo, useEffect, useRef, useState} from "react";
 import AllAdminTestsList from "./AllAdminTestsList";
 import {Segmented, Select, Spin} from "antd";
 import {EFilterById, EFilterTranslate, TFilterById} from "../../api/test/type";
@@ -10,6 +10,7 @@ import FolderFunctionBlock from "./FolderFunctionBlock/FolderFunctionBlock";
 interface AllAdminTestListWrapperProps {}
 
 const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
+  const isMounted = useRef(false)
     const {
         data: allFolder,
         isLoading: isFolderLoading,
@@ -17,10 +18,11 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
 
     const [showTestInFolder, setShowTestInFolder] = useState<number>(0);
     const [filterById, setFilterById] = useState<string>('2');
-    const [folderId, setFolderId] = useState<string | undefined>(undefined);
+    const [folderId, setFolderId] = useState<string | undefined>(localStorage.getItem('currentFolder') || undefined);
 
     useEffect(() => {
-      setFolderId(undefined);
+      const id = localStorage.getItem('currentFolder')
+      setFolderId(id || undefined);
     }, [allFolder]);
 
     const handleFilterChange = (e: string) => {
@@ -28,8 +30,14 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
     }
 
     const handleFolderChange = (e: any) => {
-        if (!e) setFolderId(undefined)
-        else setFolderId(e);
+        if (!e) {
+          setFolderId(undefined)
+          localStorage.removeItem('currentFolder');
+        }
+        else {
+          localStorage.setItem('currentFolder', e);
+          setFolderId(e);
+        }
     }
 
     return (

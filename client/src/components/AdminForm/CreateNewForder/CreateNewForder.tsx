@@ -3,6 +3,7 @@ import {useForm} from "antd/es/form/Form";
 import {useMedia} from "react-use";
 import {Badge, Button, Checkbox, Drawer, Form, Input, message, Modal, Segmented, Spin} from "antd";
 import {ITestCustomModelResponse, ITestModelResponse} from "../../../api/test/type";
+import drawerStyles from '../../../DrawerStyles.module.scss';
 import s from "./CreateNewForder.module.scss";
 import {useAllTest} from "../../../http/hooks/useAllTest";
 import {useMutation} from "react-query";
@@ -69,6 +70,7 @@ const CreateNewForder = ({ open, setOpen, titleFolder = '', activeTestIdsDefault
       await invalidateFolder();
       setOpen(false);
       message.success('Папки создана успешно')
+      localStorage.removeItem('currentFolder')
     } catch (e) {
       message.error('Ошибка при создании папки')
     }
@@ -198,13 +200,13 @@ const CreateNewForder = ({ open, setOpen, titleFolder = '', activeTestIdsDefault
               open={open}
               width={500}
               height={'auto'}
-              className={s.drawer}
+              className={drawerStyles.drawer}
               destroyOnClose
           >
-              <div className={s.drawerWrapper}>
+              <div className={drawerStyles.drawerWrapper}>
                 {content}
               </div>
-              <div className={s.btns}>
+              <div className={drawerStyles.btns}>
                   <Button onClick={onCancel}>Отмена</Button>
                   <Button loading={isCreateFolderLoading || isUpdateFolderLoading} type={'primary'} onClick={onOk}>{isChange ? 'Изменить папку' : 'Создать папку'}</Button>
               </div>

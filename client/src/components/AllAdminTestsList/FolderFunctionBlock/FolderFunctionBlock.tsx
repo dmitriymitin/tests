@@ -24,6 +24,7 @@ const FolderFunctionBlock = ({folderId, folderName = ''}: IFolderFunctionBlockPr
       await deleteFolderTrigger(folderId);
       await invalidate();
       await invalidateFolder();
+      localStorage.removeItem('currentFolder');
     } catch (e) {
       message.error('Ошибка при удалениии папки');
     }

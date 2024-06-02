@@ -1,9 +1,9 @@
 import React, {useCallback, useState} from 'react';
 import {useMedia} from "react-use";
 import {Button, Drawer, Input, message, Modal} from "antd";
-import AuthService from "../services/AuthService";
 import {useMutation} from "react-query";
 import {updateUserPassword} from "../api/user";
+import drawerStyle from '../DrawerStyles.module.scss'
 
 interface ChangePasswordModalDrawerProps {
     open: boolean;
@@ -60,16 +60,16 @@ const ChangePasswordModalDrawer = ({open, setOpen}: ChangePasswordModalDrawerPro
                     open={open}
                     width={500}
                     height={'auto'}
-                    className={"drawer"}
+                    className={drawerStyle.drawer}
                     destroyOnClose
                 >
-                    <div className={"drawerWrapper"}>
+                    <div className={drawerStyle.drawerWrapper}>
                         <Input
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             placeholder="Введите новый пароль"
                         />
-                        <div className={'btns'}>
+                        <div className={drawerStyle.btns}>
                             <Button onClick={() => setOpen(false)}>Отмена</Button>
                             <Button type={'primary'} onClick={onOk}>Подтвердить</Button>
                         </div>

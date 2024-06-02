@@ -126,3 +126,19 @@ export const EFilterTranslate: {
     byDateOfChangeAscending: 'По дате редакитрования (сначала старые)',
 }
 
+export enum EFilterStudentById {
+    byWords,
+    byDoneDescending,
+    byDoneAscending,
+}
+
+export type TStudentFilterId = keyof typeof EFilterStudentById
+
+export const EFilterStudentsTranslate: {
+    [key: TStudentFilterId | string]: string
+} = {
+    byWords: 'По алфавиту',
+    byDoneDescending: 'По дате прохождения (сначала новые)',
+    byDoneAscending: 'По дате прохождения (сначала старые)'
+}
+
