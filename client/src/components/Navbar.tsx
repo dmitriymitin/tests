@@ -30,7 +30,7 @@ const Navbar = () => {
                            }} src={iconStudent} alt={'иконка поиска студентов'}/>
                         </button>
                         <button className={'clearButton'} onClick={() => navigate('/admin')}>
-                            Панель админа
+                            Админ
                         </button>
                     </div>
                   }
