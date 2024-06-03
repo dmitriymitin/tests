@@ -18,7 +18,11 @@ const Navbar = () => {
                       Главная страница
                   </button>
                   {isAuth &&
-                    <div className={'btnNavbarWrapper'}>
+                    <div className={'btnNavbarWrapper'} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 20
+                    }}>
                         <button className={'clearButton'} onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();

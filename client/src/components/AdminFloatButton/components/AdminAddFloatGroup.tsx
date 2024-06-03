@@ -10,8 +10,10 @@ import clsx from "clsx";
 import NewTestModalDrawer from "../../NewTestModalDrawer";
 import CreateNewForder from "../../AdminForm/CreateNewForder/CreateNewForder";
 import gs from "../../../GlobalStyles.module.scss"
+import {useMedia} from "react-use";
 
 const AdminAddFloatGroup = () => {
+  const isPC = useMedia('(min-width: 768px)');
   const navigate = useNavigate()
   const [newFolderOpen, setNewFolderOpen] = useState(false);
   const [newTestOpen, setNewTestOpen] = useState(false);
@@ -63,7 +65,7 @@ const AdminAddFloatGroup = () => {
       <FloatButton.Group
         trigger="click"
         type="primary"
-        style={{right: 64}}
+        style={{right: isPC ? 64 : 14}}
         icon={<PlusOutlined/>}
       >
         <div className={clsx(gs.adminFunctionBlock, gs.plus)}>

@@ -6,8 +6,10 @@ import gs from "../../../GlobalStyles.module.scss"
 import clsx from "clsx";
 import {useMutation, useQueryClient} from "react-query";
 import {clearAllTestResultsFetcher, closeAllTestFetcher, openAllTestFetcher} from "../../../api/test";
+import {useMedia} from "react-use";
 
 const AdminAddFloatGroup = () => {
+  const isPC = useMedia('(min-width: 768px)');
   const queryClient = useQueryClient()
 
   const {
@@ -56,7 +58,7 @@ const AdminAddFloatGroup = () => {
       <FloatButton.Group
         trigger="click"
         type="primary"
-        style={{right: 164}}
+        style={{right: isPC ? 164 : 114}}
         icon={<EditOutlined/>}
       >
         <div className={gs.adminFunctionBlock}>
