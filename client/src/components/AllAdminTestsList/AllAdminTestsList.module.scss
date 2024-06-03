@@ -12,6 +12,16 @@
   }
 }
 
+.btnChange {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btnDelete {
+  @extend .btnChange;
+}
+
 .folderLoading {
   display: flex;
   align-items: center;

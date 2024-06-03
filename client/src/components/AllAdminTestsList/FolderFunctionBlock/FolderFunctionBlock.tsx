@@ -64,7 +64,7 @@ const FolderFunctionBlock = ({folderId, folderName = ''}: IFolderFunctionBlockPr
 
   return (
     <div>
-      <Collapse items={items}/>
+      {/*<Collapse items={items}/>*/}
       <CreateNewForder
         open={isChangeModalShow}
         setOpen={setIsChangeModalShow}

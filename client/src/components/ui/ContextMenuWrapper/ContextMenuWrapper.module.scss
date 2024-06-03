@@ -1,0 +1,25 @@
+
+.contextMenuStyle {
+  z-index: 3;
+  position: absolute;
+  width: 50px;
+  height: max-content;
+  border-radius: 12px;
+  box-sizing: border-box;
+
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  // Анимация для появления меню
+  &.open {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  // Анимация для скрытия меню
+  &.close {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}

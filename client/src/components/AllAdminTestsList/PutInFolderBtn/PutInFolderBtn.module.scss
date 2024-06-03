@@ -18,5 +18,7 @@
 }
 
 .tooltipWrapperMain {
-  min-width: 200px;
+  min-width: 150px;
+  align-items: flex-start !important;
+  flex-direction: column;
 }
