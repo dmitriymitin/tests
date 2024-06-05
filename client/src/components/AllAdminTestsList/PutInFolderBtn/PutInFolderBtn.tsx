@@ -6,6 +6,7 @@ import {putFolderOneApi} from "../../../api/test";
 import {useAllFolder} from "../../../http/hooks/useAllFolder";
 import {useAllTest} from "../../../http/hooks/useAllTest";
 import clsx from "clsx";
+import {useSelectTestsStore} from "../../../store/folders/useSelectTestsStore";
 
 const PutInFolderBtn = ({id}:{id?: string}) => {
   const queryClient = useQueryClient();
@@ -13,6 +14,7 @@ const PutInFolderBtn = ({id}:{id?: string}) => {
   const {mutateAsync} = useMutation({
     mutationFn: putFolderOneApi
   })
+  const testsSelectStore = useSelectTestsStore(store => store)
 
   const handlePut = async (folderId: string) => {
     try {
@@ -23,6 +25,16 @@ const PutInFolderBtn = ({id}:{id?: string}) => {
     }
   }
 
+  const btn = (
+    <Button
+      onClick={(e) => e.stopPropagation()}
+      className={s.btn}
+      style={{width: 'max-content'}}
+    >
+      Добавить в папку
+    </Button>
+  )
+
   return (
     <Tooltip
       destroyTooltipOnHide
@@ -31,19 +43,17 @@ const PutInFolderBtn = ({id}:{id?: string}) => {
       title={
         <div className={clsx('tooltipWrapper', s.tooltipWrapperMain)}>
           {data?.map((el, index) => (
-            <div className={s.tooltipItem} onClick={() => handlePut(el._id)}>
+            <div className={s.tooltipItem} onClick={(e) => {
+              e.stopPropagation();
+              handlePut(el._id)
+            }}>
               {el.name}
             </div>
           ))}
         </div>
       }
     >
-      <Button
-        className={s.btn}
-        style={{width: 'max-content'}}
-      >
-        Поместить в папку
-      </Button>
+      {btn}
     </Tooltip>
   );
 };

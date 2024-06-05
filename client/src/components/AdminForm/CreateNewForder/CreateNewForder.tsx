@@ -43,6 +43,10 @@ const CreateNewForder = ({ open, setOpen, titleFolder = '', activeTestIdsDefault
     form.setFieldValue('folderName', titleFolder);
   }, [form, titleFolder]);
 
+  useEffect(() => {
+    setActiveTestIds(activeTestIdsDefault);
+  }, [open]);
+
   const onOk = async () => {
     try {
       await form.validateFields();
@@ -81,8 +85,7 @@ const CreateNewForder = ({ open, setOpen, titleFolder = '', activeTestIdsDefault
   }
 
   const newAllTest = allTest?.reduce((acc, el, index) => {
-    if (showTestInFolder) acc.push(el)
-    else if (!el.folderId) acc.push(el)
+    if (showTestInFolder || !el.folderId) acc.push(el)
     return acc
   }, [] as (ITestModelResponse & ITestCustomModelResponse)[])
 

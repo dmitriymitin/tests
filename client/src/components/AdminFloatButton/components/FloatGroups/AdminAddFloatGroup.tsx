@@ -1,22 +1,23 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {useMutation, useQueryClient} from "react-query";
-import {createNewCustomTest, createNewTestWithDescription} from "../../../api/test";
-import {getFormateDate} from "../../../utils/getFormateDate";
+import {createNewCustomTest, createNewTestWithDescription} from "../../../../api/test";
+import {getFormateDate} from "../../../../utils/getFormateDate";
 import {FloatButton, message} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
-import s from "../AdminFloatButton.module.scss";
+import s from "../../AdminFloatButton.module.scss";
 import clsx from "clsx";
-import NewTestModalDrawer from "../../NewTestModalDrawer";
-import CreateNewForder from "../../AdminForm/CreateNewForder/CreateNewForder";
-import gs from "../../../GlobalStyles.module.scss"
+import NewTestModalDrawer from "../../../NewTestModalDrawer";
+import CreateNewForder from "../../../AdminForm/CreateNewForder/CreateNewForder";
+import gs from "../../../../GlobalStyles.module.scss"
 import {useMedia} from "react-use";
+import {useSelectTestsStore} from "../../../../store/folders/useSelectTestsStore";
 
 const AdminAddFloatGroup = () => {
   const isPC = useMedia('(min-width: 768px)');
-  const navigate = useNavigate()
-  const [newFolderOpen, setNewFolderOpen] = useState(false);
+  const navigate = useNavigate();
   const [newTestOpen, setNewTestOpen] = useState(false);
+  const selectTestsStore = useSelectTestsStore(store => store)
   const queryClient = useQueryClient()
 
   const {
@@ -56,17 +57,14 @@ const AdminAddFloatGroup = () => {
     }
   }
 
-  const handleCreateFolder = () => {
-    setNewFolderOpen(true);
-  }
-
   return (
     <>
       <FloatButton.Group
         trigger="click"
         type="primary"
-        style={{right: isPC ? 64 : 14}}
+        style={{right: isPC ? 164 : 114}}
         icon={<PlusOutlined/>}
+        onClick={() => selectTestsStore.setCurrentAction(undefined)}
       >
         <div className={clsx(gs.adminFunctionBlock, gs.plus)}>
           <button
@@ -95,7 +93,6 @@ const AdminAddFloatGroup = () => {
         </div>
       </FloatButton.Group>
       <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>
-      <CreateNewForder open={newFolderOpen} setOpen={setNewFolderOpen}/>
     </>
   );
 };

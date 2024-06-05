@@ -25,6 +25,19 @@ class TestController{
         }
     }
 
+    async actionOnManyTest(req, res, next){
+        try {
+            const {testIds, action, folderId} = req.body;
+            if (testIds.length > 0) {
+                await TestService.actionOnManyTest(testIds, action, folderId);
+            }
+            return res.json([])
+        } catch (e){
+            next(e);
+        }
+    }
+
+
     async updateFolder(req, res, next){
         try {
             const {id, name, testIds} = req.body;
@@ -96,8 +109,8 @@ class TestController{
 
     async getAll(req, res, next){
         try{
-            const {filterByCreateId, folderId} = req.query;
-            const testsData = await TestService.getAll({filterByCreateId: filterByCreateId, filterByFolderId: folderId});
+            const {filterByCreateId, folderId, status} = req.query;
+            const testsData = await TestService.getAll({filterByCreateId: filterByCreateId, filterByFolderId: folderId, status});
             return res.json(testsData)
         } catch (e){
             next(e)

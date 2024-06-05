@@ -3,7 +3,7 @@
   background: white;
   min-width: 300px;
   left: -140px;
-  top: -135px;
+  top: -180px;
   display: flex;
   flex-direction: column;
   //box-shadow: 10px 0 10px 5px rgba(221, 221, 221, 1);
@@ -16,11 +16,12 @@
   }
 
   &.plus {
-    left: -220px;
+    left: -150px;
+    top: -135px;
 
     @media screen and (max-width: 600px) {
       top: -150px;
-      left: -170px;
+      left: -120px;
     }
   }
 
@@ -37,6 +38,22 @@
     &:hover {
       background-color: #1677ff;
       color: white;
+    }
+
+    &.btnGray {
+      color: black;
+
+      &:hover {
+        background-color: rgba(128, 128, 128, 0.22);
+      }
+    }
+
+    &.btnSuccess {
+      color: green;
+      &:hover {
+        background-color: green;
+        color: white;
+      }
     }
 
     &.btnDanger {
@@ -66,4 +83,18 @@
     opacity: 0.33;
     border-bottom: 1px solid gray;
   }
+}
+
+.btnLucky {
+  @extend .btn;
+  border: 1px solid black !important;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: green;
+    color: white;
+  }
+  margin-bottom: 10px;
 }

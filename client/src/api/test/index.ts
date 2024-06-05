@@ -11,6 +11,8 @@ import {
 import $api from "../../http";
 import exampleData from "../../components/CreateCustomTestDescriptionForm/Editor/exampleData";
 import {ITest} from "../../models/ITest";
+import {TCurrentAction} from "../../store/folders/useSelectTestsStore";
+import {testStatusType} from "../../type/test/type";
 
 export const getOneTest = async (id: string): Promise<ITestModelResponse> => {
     const {data} = await $api.get(`/test/getOne/${id}`);
@@ -132,11 +134,12 @@ export const saveNewTest = async (values: ISaveNewTestRequest): Promise<ISaveNew
     return data;
 };
 
-export const getAdminAllTests = async (filterByCreateId?: string, folderId?: string): Promise<(ITestModelResponse & ITestCustomModelResponse)[]> => {
+export const getAdminAllTests = async (filterByCreateId?: string, folderId?: string, status?: testStatusType | undefined): Promise<(ITestModelResponse & ITestCustomModelResponse)[]> => {
     const {data} = await $api.get('/test/all', {
         params: {
             filterByCreateId,
-            folderId
+            folderId,
+            status
         }
     });
     return data;
@@ -248,3 +251,13 @@ export const getAllStudentsBySearch = async ({search, pageNumber, limit = 10, so
     return data;
 };
 
+export type TActionManyTest = 'clearResults' | 'delete' | 'addInFolder' | 'open' | 'close'
+
+export const actionManyTest = async (values: {
+    testIds: string[],
+    action: TActionManyTest,
+    folderId?: string
+}): Promise<ITestModelResponse> => {
+    const {data} = await $api.post('/test/many/action', { ...values});
+    return data;
+};

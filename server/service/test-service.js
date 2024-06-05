@@ -257,46 +257,48 @@ class TestService {
         const testOne  = await TestModel.findById(testId)
         if (testOne) {
             testOne.folderId = id;
+            testOne.updateDate = new Date();
             testOne.save();
             return
         }
         const testsCustomOne  = await TestCustomModel.findById(testId)
         if (testsCustomOne) {
             testsCustomOne.folderId = id;
+            testOne.updateDate = new Date();
             testsCustomOne.save();
         }
     }
 
-    async putManyTestInFolder(id, testsId) {
-        const folderId = new ObjectId(id)
-        const testsAll  = await TestModel.find({folderId})
-        if (testsAll) {
-            testsAll.forEach((el, index) => {
-                testsAll[index].folderId = undefined;
-                el.save()
-            })
-        }
-        const testsCustomAll  = await TestCustomModel.find({folderId})
-        if (testsCustomAll) {
-            testsCustomAll.forEach((el, index) => {
-                testsCustomAll[index].folderId = undefined;
-                el.save()
-            })
-        }
+    async actionOnManyTest(testsId, action, folderId) {
         for await (let testId of testsId) {
-            const testOne  = await TestModel.findById(testId)
-            if (testOne) {
-                testOne.folderId = id;
-                testOne.updateDate = new Date();
-                await testOne.save();
-            } else {
-                const testsCustomOne  = await TestCustomModel.findById(testId);
-                if (testsCustomOne) {
-                    testsCustomOne.folderId = id;
-                    testsCustomOne.updateDate = new Date();
-                    await testsCustomOne.save();
-                }
+            if (action === 'clearResults') {
+                await this.clearResults(testId)
+                continue
             }
+
+            if (action === 'delete') {
+                await this.deleteOne(testId);
+                continue
+            }
+
+            let testOne = await TestModel.findById(testId)
+            if (!testOne) testOne = await TestCustomModel.findById(testId);
+            if (!testOne) continue
+
+            switch (action) {
+                case 'open':
+                    testOne.status = 'Open'
+                    break
+                case 'close':
+                    testOne.status = 'Close'
+                    break
+                case 'addInFolder':
+                    testOne.folderId = folderId;
+                    break
+            }
+
+            testOne.updateDate = new Date();
+            await testOne.save();
         }
     }
 
@@ -305,6 +307,7 @@ class TestService {
         if (testsAll) {
             testsAll.forEach((el, index) => {
                 testsAll[index].status = status;
+                testsAll.updateDate = new Date();
                 el.save()
             })
         }
@@ -312,6 +315,7 @@ class TestService {
         if (testsCustomAll) {
             testsCustomAll.forEach((el, index) => {
                 testsCustomAll[index].status = status;
+                testsCustomAll.updateDate = new Date();
                 el.save()
             })
         }
@@ -328,16 +332,28 @@ class TestService {
         return await TestCustomModel.create({firstQuestionTitle, title: 'Тест с отдельным описанием вопросов', questions: [], createDate})
     }
 
-    async getAll({filterByCreateId, filterByFolderId}){
+    async getAll({filterByCreateId, filterByFolderId, status}){
         const testsAll  = await (async () => {
+            if (filterByFolderId && status) {
+                return TestModel.find({folderId: filterByFolderId, status});
+            }
             if (filterByFolderId) {
                 return TestModel.find({folderId: filterByFolderId});
+            }
+            if (status) {
+                return TestModel.find({status});
             }
             return TestModel.find();
         })()
         const testsCustom  = await (async () => {
+            if (filterByFolderId && status) {
+                return TestCustomModel.find({folderId: filterByFolderId, status});
+            }
             if (filterByFolderId) {
                 return TestCustomModel.find({folderId: filterByFolderId});
+            }
+            if (status) {
+                return TestCustomModel.find({status});
             }
             return TestCustomModel.find();
         })()

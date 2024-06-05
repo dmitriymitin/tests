@@ -10,23 +10,21 @@ import {testStatusType} from "../../type/test/type";
 import {useNavigate} from "react-router-dom";
 import {CLIENT_URL} from "../../http";
 import s from './AllAdminTestsList.module.scss'
+import gs from '../../GlobalStyles.module.scss'
 import clsx from "clsx";
 import {CopyOutlined} from "@ant-design/icons";
 import CustomTooltip from "../CustomTooltip";
 import ChangeTitleOrQuestionCountModalDrawer from "../ChangeTitleOrQuestionCountModalDrawer";
 import {
-    EFilterById,
-    EFilterTranslate,
     ITestCustomModelResponse,
-    ITestModelResponse,
-    TFilterById
+    ITestModelResponse
 } from "../../api/test/type";
-import {getFormateDate} from "../../utils/getFormateDate";
 import {getFormatCreateDate} from "../../utils/getFormatCreateDate";
 import {getFormatUpdateDate} from "../../utils/getFormatUpdateDate";
 import {useAllTest} from "../../http/hooks/useAllTest";
 import {useAllFolder} from "../../http/hooks/useAllFolder";
 import PutInFolderBtn from "./PutInFolderBtn/PutInFolderBtn";
+import {useSelectTestsStore} from "../../store/folders/useSelectTestsStore";
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
     switch (status) {
@@ -58,6 +56,7 @@ interface AllAdminTestsListProps {
 }
 
 const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}: AllAdminTestsListProps) => {
+    const selectTestsStore = useSelectTestsStore(store => store);
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const {data: allFolder, isLoading: isLoadingFolder} = useAllFolder();
@@ -68,12 +67,22 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
         openModal: false,
     })
 
+    const currentStatus: testStatusType | undefined = (() => {
+        if (!selectTestsStore.onlyMakeTestsAction)  return undefined
+        if (selectTestsStore.lastCurrentAction === 'openTests') {
+            return 'Open'
+        }
+        if (selectTestsStore.lastCurrentAction === 'closeTests') {
+            return 'Close'
+        }
+    })()
+
     const {
         data: allTest,
         isLoading: isAllTestLoading,
         isFetching,
         refetch: allTestRefetch
-    } = useAllTest(filterById, folderId)
+    } = useAllTest(filterById, folderId, currentStatus)
 
     const {
         mutateAsync: deleteTestTrigger
@@ -102,7 +111,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
         }
     }
 
-    if (isAllTestLoading || isFetching || isLoadingFolder) {
+    if (isAllTestLoading || isLoadingFolder) {
         return <div className={s.loading}>
             <Spin size={'large'}/>
         </div>
@@ -135,11 +144,32 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
           {newAllTest.map((el, index) => {
                 const folderName = allFolder?.find(folder => folder._id === el.folderId)?.name;
                 const isShowTestInFolder = isShowBadge ? showTestInFolder : false;
+                const isActiveTest = selectTestsStore.selectTests.includes(el._id)
                 return (
                   <Badge.Ribbon text={folderName} color="gold" style={{
                       display: isShowTestInFolder ? folderName ? 'block' : 'none' : 'none',
                   }}>
-                      <div key={el._id} className={s.all__tests__list__wrapper}>
+                      <div
+                        key={el._id}
+                        className={
+                          clsx(s.all__tests__list__wrapper,
+                            {
+                                [s.point]: !!selectTestsStore.currentAction,
+                                [s.activeDefault]: isActiveTest && selectTestsStore.currentAction === 'openTests',
+                                [s.activeDanger]: isActiveTest && (selectTestsStore.currentAction === 'closeTests' || selectTestsStore.currentAction === 'deleteTests'),
+                                [s.activeSuccess]: isActiveTest && selectTestsStore.currentAction === 'clearResults',
+                                [s.activeGray]: isActiveTest && selectTestsStore.currentAction === 'addInFolder'
+                            })
+                        }
+                        onClick={() => {
+                            if (!selectTestsStore.currentAction) return
+                            if (isActiveTest) {
+                                selectTestsStore.removeTest(el._id)
+                            } else {
+                                selectTestsStore.addTest(el._id)
+                            }
+                        }}
+                      >
                           <div className={s.all__tests__list__test__item}>
                               <div className={s.title}>
                                   {el.title}
@@ -162,10 +192,13 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                               <div className={s.infoWrapper}>
                                   <p>Адрес теста:</p>
                                   <div className={clsx(s.body, s.addressTest)}>{CLIENT_URL + `/tests/${el._id}`}</div>
-                                  <CustomTooltip text={'Адрес теста был успешно скопирован!'}>
+                                  <CustomTooltip isPreventDefault text={'Адрес теста был успешно скопирован!'}>
                                       <button
                                         className={s.addressCopyButton}
-                                        onClick={() => copyAddress(CLIENT_URL + `/tests/${el._id}`)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            copyAddress(CLIENT_URL + `/tests/${el._id}`)
+                                        }}
                                       >
                                           <CopyOutlined/>
                                       </button>
@@ -201,7 +234,8 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                                   <div className={s.btns}>
                                       <Button
                                         className={s.btn}
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             //Обычный тест
                                             if (!!el.quantityQuestion && !el.descriptionEditor) {
                                                 setCurrentDefaultTestData({
@@ -228,13 +262,17 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                                       </Button>
                                       <Button
                                         className={s.btn}
-                                        onClick={() => navigate(`/admin/testInfo/key/${el._id}`)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/admin/testInfo/key/${el._id}`)
+                                        }}
                                       >
                                           Ввести ключ
                                       </Button>
                                       <Button
                                         className={s.btn}
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             localStorage.removeItem('FIO')
                                             navigate(`/admin/testInfo/${el._id}`)
                                         }}
@@ -246,20 +284,30 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                               </div>
                               <div className={s.btns}>
                                   <Button
-                                    className={s.btn}
+                                    className={clsx(s.btn)}
+                                    danger={el.status === 'Open'}
                                     type={'primary'}
-                                    onClick={() => onUpdateStatusTest(el._id, el.status)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onUpdateStatusTest(el._id, el.status)
+                                    }}
                                   >
                                       {getTestStatusTextForBtn(el.status)}
                                   </Button>
                                   <Popconfirm
                                     title="Удаление теста"
                                     description="Вы уверены, что хотите удалить тест?"
-                                    onConfirm={() => onDeleteTest(el._id)}
+                                    onConfirm={() => {
+                                        onDeleteTest(el._id)
+                                    }}
+                                    onPopupClick={e => e.stopPropagation()}
                                     okText="Да"
                                     cancelText="Нет"
                                   >
                                       <Button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                        }}
                                         className={clsx(s.deleteBtn, s.btn)}
                                         danger
                                       >

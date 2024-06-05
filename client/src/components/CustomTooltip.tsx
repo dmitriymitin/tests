@@ -11,10 +11,10 @@ type Props = {
     triggerType?: 'click' | 'hover',
     mouseEnterDelay?:  number;
     mouseLeaveDelay?: number;
-
+    isPreventDefault?: boolean;
 }
 
-const CustomTooltip = ({ children, arrow = true, mouseEnterDelay,mouseLeaveDelay, placement = 'top', text, triggerType = 'click' }: Props) => {
+const CustomTooltip = ({isPreventDefault, children, arrow = true, mouseEnterDelay,mouseLeaveDelay, placement = 'top', text, triggerType = 'click' }: Props) => {
     const [open, setOpen] = useState<boolean>(false)
     const [delayHandler, setDelayHandler] = useState(null)
 
@@ -66,7 +66,12 @@ const CustomTooltip = ({ children, arrow = true, mouseEnterDelay,mouseLeaveDelay
             placement={placement}
         >
             <div
-                onClick={() => setOpen(true)}
+                onClick={(e) => {
+                    if (isPreventDefault) {
+                        e.preventDefault();
+                    }
+                    setOpen(true)
+                }}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
             >

@@ -10,3 +10,71 @@
     height: 30px;
   }
 }
+
+.activeBtn {
+  color: #fff !important;
+  background: #1677ff !important;
+  box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1) !important;
+}
+
+.activeSuccessBtn {
+  color: #fff !important;
+  background: green !important;
+  box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1) !important;
+}
+
+.activeDangerBtn {
+  color: #fff !important;
+  background: red !important;
+  box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1) !important;
+}
+
+.activeGrayBtn {
+  color: #fff !important;
+  background: rgba(128, 128, 128, 0.42) !important;
+  box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1) !important;
+}
+
+.spaceWrapper {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.spaace {
+  gap: 10px !important;
+}
+
+.prefixSpaaceBlock {
+  overflow: scroll !important;
+  max-width: 630px !important;
+  width: max-content;
+  z-index: 100 !important;
+}
+
+.prefixSpaaceBlockNone {
+  display: none !important;
+}
+
+.spaaceBlock {
+  width: 100% !important;
+  padding: 10px;
+  :global(.ant-notification-notice-btn) {
+    width: 100% !important;
+  }
+}
+
+.content {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 50px;
+  font-size: 20px !important;
+}
+
+.loading {
+  width: 100%;
+  height: 300px;
+}

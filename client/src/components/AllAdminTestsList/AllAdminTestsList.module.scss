@@ -47,7 +47,6 @@
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  align-items: center;
 
   @media screen and (max-width: 700px) {
     align-items: flex-start;
@@ -63,6 +62,37 @@
   box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.16);
   border-radius: 15px;
   padding: 15px;
+  transition: all 0.3s ease; /* Добавляем плавность анимации для всех свойств */
+
+  &.point {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-5px); /* Поднятие блока на 5px */
+      box-shadow: 0 2px 5px 0px rgba(0, 0, 0, 0.2); /* Более заметная тень для эффекта "подъёма" */
+    }
+  }
+
+  &.active {
+    transform: translateY(-5px); /* Поднятие блока на 5px */
+    box-shadow: 0 2px 5px 0px rgba(0, 0, 0, 0.2); /* Более заметная тень для эффекта "подъёма" */
+  }
+
+  &.activeDefault {
+    background-color: rgba(22, 119, 255, 0.15); /* Серый цвет фона */
+  }
+
+  &.activeDanger {
+    background-color: rgba(255, 0, 0, 0.23); /* Серый цвет фона */
+  }
+
+  &.activeSuccess {
+    background-color: rgba(0, 128, 0, 0.16); /* Серый цвет фона */
+  }
+
+  &.activeGray {
+    background-color: rgba(128, 128, 128, 0.22); /* Серый цвет фона */
+  }
 
   @media screen and (max-width: 1000px) {
     align-items: flex-start;

@@ -44,7 +44,6 @@ const AdminForm = () => {
                               onClick={() => AuthActionCreators.logout()(dispatch)}>Выйти</Button>
                   </div>
               </div>
-              <ChangeAllTestFirstQuestion/>
               <AllAdminTestListWrapper/>
               <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>
                 <NewTestModalDrawerWithDescription open={newTestDescriptionOpen} setOpen={setNewTestDescriptionOpen}/>
