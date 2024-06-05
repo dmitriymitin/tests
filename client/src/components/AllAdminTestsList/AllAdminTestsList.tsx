@@ -111,7 +111,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
         }
     }
 
-    if (isAllTestLoading || isLoadingFolder) {
+    if (isAllTestLoading || isLoadingFolder || (!!selectTestsStore.currentAction ? false : isFetching)) {
         return <div className={s.loading}>
             <Spin size={'large'}/>
         </div>

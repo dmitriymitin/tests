@@ -333,27 +333,38 @@ class TestService {
     }
 
     async getAll({filterByCreateId, filterByFolderId, status}){
+        const statusFind = (() => {
+            if (!status) {
+                return undefined;
+            }
+            if (status === 'Open') {
+                return 'Close'
+            }
+            if (status === 'Close') {
+                return 'Open'
+            }
+        })()
         const testsAll  = await (async () => {
             if (filterByFolderId && status) {
-                return TestModel.find({folderId: filterByFolderId, status});
+                return TestModel.find({folderId: filterByFolderId, status: statusFind});
             }
             if (filterByFolderId) {
                 return TestModel.find({folderId: filterByFolderId});
             }
             if (status) {
-                return TestModel.find({status});
+                return TestModel.find({status: statusFind});
             }
             return TestModel.find();
         })()
         const testsCustom  = await (async () => {
             if (filterByFolderId && status) {
-                return TestCustomModel.find({folderId: filterByFolderId, status});
+                return TestCustomModel.find({folderId: filterByFolderId, status: statusFind});
             }
             if (filterByFolderId) {
                 return TestCustomModel.find({folderId: filterByFolderId});
             }
             if (status) {
-                return TestCustomModel.find({status});
+                return TestCustomModel.find({status: statusFind});
             }
             return TestCustomModel.find();
         })()
