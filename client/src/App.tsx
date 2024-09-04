@@ -2,6 +2,7 @@ import React, {FC, useEffect} from 'react';
 import AppRouter from "./components/AppRouter";
 import {ConfigProvider, Layout} from "antd";
 import "./App.css"
+import "./AppScss.scss"
 import {useTypedSelector} from "./hooks/useTypedSelector";
 import {AuthActionCreators} from "./store/reducers/auth/action-creators";
 import {useDispatch} from "react-redux";

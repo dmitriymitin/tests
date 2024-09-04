@@ -16,6 +16,7 @@ body {
     line-height: 1.7;
     overflow-x: hidden;
     width: 100% !important;
+    background: #f7f8f9;
 }
 
 .auth {
@@ -34,7 +35,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1330px;
+    max-width: 1530px;
     padding-left: 15px;
     padding-right: 15px;
     margin: auto;
@@ -48,8 +49,32 @@ body {
 .navbar {
     display: flex;
     justify-content: space-between;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.06);
+    padding: 20px;
+    background: #fff;
+
+    .text {
+        position: relative;
+        font-size: 20px;
+
+        @media screen and (max-width: 850px) {
+            font-size: 16px;
+        }
+
+        @media screen and (max-width: 550px) {
+            font-size: 12px;
+        }
+
+        &.active:after {
+            background-color: #363e45;
+            bottom: -5px;
+            content: "";
+            height: 1px;
+            left: 0;
+            position: absolute;
+            right: 0;
+            transition: background-color .15s ease-out;
+        }
+    }
 
     .btnNavbarWrapper {
         display: flex;
@@ -76,6 +101,18 @@ body {
     cursor: pointer;
 }
 
+.hoverButton {
+    transition: opacity 0.25s ease;
+
+    &:hover {
+        opacity: .66;
+    }
+}
+
+.dangerColor {
+    color: red;
+}
+
 .title {
     margin-top: 25px;
     font-size: 32px;
@@ -94,7 +131,7 @@ body {
 }
 
 .layout {
-    background: white !important;
+    background: #f7f8f9 !important;
 }
 
 .drawer {
@@ -133,9 +170,9 @@ body {
 }
 
 .testBackground {
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.16);
-    border-radius: 15px;
+    background: #fff;
+    box-shadow: 3px 3px 6px 0 rgba(0,0,0,0.04);
+    border-radius: 12px;
     padding: 15px;
 }
 

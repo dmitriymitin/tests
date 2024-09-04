@@ -76,7 +76,7 @@ const Editor: FC<EditorProps> = ({ data, setData }) => {
                 <ReactEditorJS
                     onInitialize={handleInitialize}
                     tools={{
-                        embed: Embed,
+                        embed: Embed as any,
                         table: Table,
                         list: List,
                         warning: Warning,
@@ -84,7 +84,7 @@ const Editor: FC<EditorProps> = ({ data, setData }) => {
                         linkTool: LinkTool,
                         // image: Image,
                         image: {
-                            class: Image,
+                            class: Image as any,
                             config: {
                                 uploader: {
                                     async uploadByFile(file: any) {

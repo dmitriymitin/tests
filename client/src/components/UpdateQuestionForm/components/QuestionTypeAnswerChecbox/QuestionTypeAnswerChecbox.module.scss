@@ -1,0 +1,26 @@
+
+.row {
+  gap: 10px;
+  $size: 25px;
+
+  :global(.ant-checkbox) {
+    width: $size;
+    height: $size;
+
+    :global(.ant-checkbox-input) {
+      width: $size;
+      height: $size;
+    }
+
+    :global(.ant-checkbox-inner) {
+      width: $size;
+      height: $size;
+    }
+
+    :global(.ant-checkbox-inner)::after {
+      margin-left: 1px;
+      width: 7.714286px;
+      height: 13.142857px;
+    }
+  }
+}

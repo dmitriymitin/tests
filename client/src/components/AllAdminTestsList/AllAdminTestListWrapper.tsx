@@ -9,7 +9,7 @@ import FolderFunctionBlock from "./FolderFunctionBlock/FolderFunctionBlock";
 import ContextMenuWrapper from "../ui/ContextMenuWrapper/ContextMenuWrapper";
 import clsx from "clsx";
 import gs from "../../GlobalStyles.module.scss";
-import CreateNewForder from "../AdminForm/CreateNewForder/CreateNewForder";
+import CreateNewForder from "../AdminTestsListForm/CreateNewForder/CreateNewForder";
 import {useAllTest} from "../../http/hooks/useAllTest";
 import {useMutation} from "react-query";
 import {deleteFolder} from "../../api/test";
@@ -69,26 +69,29 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
 
     return (
       <div className={s.all__tests__list}>
-          <div className={s.header__wrapper}>
-              <h2>Список тестов</h2>
-              <Select
-                defaultValue={filterById}
-                className={s.select}
-                options={Object.keys(EFilterTranslate).map((el, index) => ({
-                    label: EFilterTranslate[el],
-                    value: EFilterById[el as TFilterById]
-                }))}
-                onChange={handleFilterChange}
-              />
-          </div>
-          {isFolderLoading
-            ? <div className={s.folderLoading}><Spin/></div>
-            :
+        <div className={s.header__wrapper}>
+          <h1 className={"title"}>
+            Список тестов
+          </h1>
+          <Select
+            defaultValue={filterById}
+            className={s.select}
+            options={Object.keys(EFilterTranslate).map((el, index) => ({
+              label: EFilterTranslate[el],
+              value: EFilterById[el as TFilterById]
+            }))}
+            onChange={handleFilterChange}
+          />
+        </div>
+        {isFolderLoading
+          ? <div className={s.folderLoading}><Spin/></div>
+          :
             allFolder && allFolder.length > 0 &&
             <Segmented
               value={folderId || 0}
               defaultValue={folderId || 0}
               onChange={handleFolderChange}
+              maxLength={5}
               style={{marginTop: 15, marginBottom: 15}}
               options={
                   [

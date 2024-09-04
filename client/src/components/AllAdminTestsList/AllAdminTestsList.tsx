@@ -29,9 +29,9 @@ import {useSelectTestsStore} from "../../store/folders/useSelectTestsStore";
 const getTestStatusTextForBtn = (status: testStatusType) => {
     switch (status) {
         case "Open":
-            return 'Закрыть тест для всех'
+            return 'Закрыть для всех'
         default:
-            return 'Открыть тест для всех'
+            return 'Открыть для всех'
     }
 }
 
@@ -258,7 +258,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                                             }
                                         }}
                                       >
-                                          Редактировать тест
+                                          Редактировать
                                       </Button>
                                       <Button
                                         className={s.btn}

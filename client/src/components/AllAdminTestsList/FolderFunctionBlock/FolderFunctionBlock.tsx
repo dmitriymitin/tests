@@ -5,7 +5,7 @@ import {useMutation} from "react-query";
 import {deleteFolder} from "../../../api/test";
 import {useAllTest} from "../../../http/hooks/useAllTest";
 import {useAllFolder} from "../../../http/hooks/useAllFolder";
-import CreateNewForder from "../../AdminForm/CreateNewForder/CreateNewForder";
+import CreateNewForder from "../../AdminTestsListForm/CreateNewForder/CreateNewForder";
 
 interface IFolderFunctionBlockProps {
   folderId: string

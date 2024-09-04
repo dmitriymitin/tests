@@ -3,8 +3,8 @@ import React, {FC, memo, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Button, Form, Layout, message, Spin} from "antd";
 import CreateCustomTestForm from "../../components/CreateCustomTestForm/CreateCustomTestForm";
-import CreateCustomTestDescriptionForm
-    from "../../components/CreateCustomTestDescriptionForm/CreateCustomTestDescriptionForm";
+import EditorWrapper
+    from "../../components/EditorWrapper/EditorWrapper";
 import ChangeCustomTestTitle from "../../components/CreateCustomTestForm/ChangeCustomTestTitle/ChangeCustomTestTitle";
 import {useForm} from "antd/es/form/Form";
 import {getOneTest, onUpdateTestInfo} from "../../api/test";
@@ -13,7 +13,7 @@ import ChangeTestTitleWithDescription
     from "../../components/CreateCustomTestForm/ChangeTestTitleWithDescription/ChangeTestTitleWithDescription";
 import ChangeCustomTestWithDescriptionCountQuestion
     from "../../components/CreateCustomTestForm/ChangeCustomTestWithDescriptionCountQuestion/ChangeCustomTestWithDescriptionCountQuestion";
-import exampleData from "../../components/CreateCustomTestDescriptionForm/Editor/exampleData";
+import exampleData from "../../components/EditorWrapper/Editor/exampleData";
 
 interface CreateCustomTestDescriptionProps {}
 
@@ -84,12 +84,7 @@ const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({
                 </div>
 
                 <div className={s.test__block}>
-                    <ChangeTestTitleWithDescription
-                        testId={testId}
-                        refetch={tefetchTestData}
-                        getFieldTestTitle={getFieldTestTitle}
-                        title={testData?.title || 'Название теста'}
-                    />
+                    <ChangeTestTitleWithDescription title={testData?.title || 'Название теста'}/>
                     <ChangeCustomTestWithDescriptionCountQuestion
                         testId={testId}
                         refetch={tefetchTestData}
@@ -100,11 +95,9 @@ const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({
                 <h2>
                     Описание теста
                 </h2>
-                <CreateCustomTestDescriptionForm
-                    id={testId}
+                <EditorWrapper
                     descriptionPARSE={testData?.descriptionEditor || exampleData}
                     setDescriptionPARSE={setDescriptionPARSE}
-                    refetch={tefetchTestData}
                 />
                 <div className={s.btnSaveWrapper}>
                     <Button

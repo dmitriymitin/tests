@@ -1,0 +1,32 @@
+@each $size in 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 25, 28, 32, 40, 50, 80, 100, 150 {
+  .fs-#{$size} {
+    font-size: #{$size}px;
+  }
+}
+
+@each $size in 0, 1, 2, 3, 5, 6, 7, 8, 10, 12, 15, 20, 21, 22, 25, 30, 35, 40, 43, 50, 55, 60, 100, 115, 150, 160 {
+  .mt-#{$size} {
+    margin-top: #{$size}px;
+  }
+  .gap-#{$size} {
+    gap: #{$size}px;
+  }
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+
+  &.inline {
+    display: inline-flex;
+  }
+}
+
+.flex-center {
+  justify-content: center;
+  text-align: center;
+}
+
+.flex-middle {
+  align-items: center;
+}

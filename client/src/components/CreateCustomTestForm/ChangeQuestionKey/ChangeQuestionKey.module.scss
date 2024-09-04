@@ -1,19 +1,20 @@
 .title__block {
   display: flex;
   padding: 15px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 3px 3px 6px 0 rgba(0,0,0,0.04);
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.16);
+  border-radius: 15px;
   flex-direction: column;
 
-
   .title {
-    font-size: 26px;
+    font-size: 30px;
   }
 }
 
 .title__wrapper {
   width: 100%;
+  margin-top: 10px;
   display: flex;
   gap: 10px;
   align-items: center;
@@ -31,9 +32,13 @@
   justify-content: flex-end;
 }
 
-.formTestTitle {
+.form {
   overflow-wrap: break-word;
-  width: 100%;
+  width: 50%;
+
+  :global(.ant-form-item-label) > label {
+    font-size: 22px;
+  }
 }
 
 .clearBtn {
@@ -48,5 +53,7 @@
 }
 
 .text__area__title {
-  border-radius: 12px;
+  height: 40px;
+  font-size: 16px;
+  border-radius: 8px;
 }

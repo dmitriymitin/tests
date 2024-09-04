@@ -8,7 +8,7 @@ import {PlusOutlined} from "@ant-design/icons";
 import s from "../../AdminFloatButton.module.scss";
 import clsx from "clsx";
 import NewTestModalDrawer from "../../../NewTestModalDrawer";
-import CreateNewForder from "../../../AdminForm/CreateNewForder/CreateNewForder";
+import CreateNewForder from "../../../AdminTestsListForm/CreateNewForder/CreateNewForder";
 import gs from "../../../../GlobalStyles.module.scss"
 import {useMedia} from "react-use";
 import {useSelectTestsStore} from "../../../../store/folders/useSelectTestsStore";

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {FloatButton} from "antd";
 import {FolderAddOutlined} from "@ant-design/icons";
 import s from "../../AdminFloatButton.module.scss";
-import CreateNewForder from "../../../AdminForm/CreateNewForder/CreateNewForder";
+import CreateNewForder from "../../../AdminTestsListForm/CreateNewForder/CreateNewForder";
 import {IconAddNewTest} from "../../../../utils/ui/icons/IconAddNewTest";
 import {useMedia} from "react-use";
 import {useSelectTestsStore} from "../../../../store/folders/useSelectTestsStore";

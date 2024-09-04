@@ -1,47 +1,75 @@
 import React from 'react';
 import {useTypedSelector} from "../hooks/useTypedSelector";
-import {useNavigate} from 'react-router-dom'
-import iconStudent from '../utils/ui/images/searchStudent.png'
+import {useLocation, useNavigate} from 'react-router-dom'
+import {RouteNames} from "../router";
+import clsx from "clsx";
 
 const Navbar = () => {
-    const navigate = useNavigate();
-    const {isAuth} = useTypedSelector(state => state.auth)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname
+  const {isAuth} = useTypedSelector(state => state.auth)
 
-    return (
-      <div className="navbar">
-          <div className={"container"}>
-              <div style={{
-                  display: "flex",
-                  justifyContent: "space-between"
+  return (
+    <div className="navbar">
+      <div className={"container"}>
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between"
+        }}>
+          <button
+            className={clsx('clearButton', 'text')}
+            onClick={() => navigate('/')}
+          >
+            Главная
+          </button>
+          {isAuth &&
+              <div className={'btnNavbarWrapper'} style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 20
               }}>
-                  <button className={'clearButton'} onClick={() => navigate('/')}>
-                      Главная страница
+                  <button
+                      className={clsx('clearButton', 'text', {active: [RouteNames.ADMIN_QUESTIONS_LIST, RouteNames.ADMIN_QUESTION_CREATE, RouteNames.ADMIN_QUESTION_UPDATE].includes(pathname as any)})}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        navigate(RouteNames.ADMIN_QUESTIONS_LIST);
+                      }}
+                  >
+                      Вопросы
                   </button>
-                  {isAuth &&
-                    <div className={'btnNavbarWrapper'} style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 20
-                    }}>
-                        <button className={'clearButton'} onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            navigate('/admin/searchStudents');
-                        }}>
-                           <img style={{
-                             width: 35,
-                             height: 35
-                           }} src={iconStudent} alt={'иконка поиска студентов'}/>
-                        </button>
-                        <button className={'clearButton'} onClick={() => navigate('/admin')}>
-                            Админ
-                        </button>
-                    </div>
-                  }
+                  <button
+                      className={clsx('clearButton', 'text', {active: pathname === RouteNames.ADMIN_TESTS_LIST})}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        navigate(RouteNames.ADMIN_TESTS_LIST);
+                      }}
+                  >
+                      Тесты
+                  </button>
+                  <button
+                      className={clsx('clearButton', 'text', {active: pathname === RouteNames.ADMIN_SEARCH_STUDENTS})}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        navigate(RouteNames.ADMIN_SEARCH_STUDENTS);
+                      }}>
+                      Результаты студентов
+                  </button>
+                  <button
+                      className={clsx('clearButton', 'text', {active: pathname === RouteNames.ADMIN})}
+                      onClick={() => navigate(RouteNames.ADMIN)}
+                  >
+                      Админ
+                  </button>
               </div>
-          </div>
+          }
+        </div>
       </div>
-    );
+    </div>
+  );
 };
 
 export default Navbar;

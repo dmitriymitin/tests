@@ -36,7 +36,7 @@ const AdminSearchStudentsBlock = () => {
     return (
         <div className={s.wrapper}>
             <h1 className={"title"}>
-                Поиск результатов студентов
+                Результаты студентов
             </h1>
             <div className={s.searchBlock}>
                 <div className={s.studentBlockSearch}>

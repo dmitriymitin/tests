@@ -9,7 +9,7 @@ import {
     ITestUpdateStatusModelRequest, TypeCustomTestQuestionAnswer
 } from "./type";
 import $api from "../../http";
-import exampleData from "../../components/CreateCustomTestDescriptionForm/Editor/exampleData";
+import exampleData from "../../components/EditorWrapper/Editor/exampleData";
 import {ITest} from "../../models/ITest";
 import {TCurrentAction} from "../../store/folders/useSelectTestsStore";
 import {testStatusType} from "../../type/test/type";
