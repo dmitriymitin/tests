@@ -146,11 +146,13 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder,isShowBadge}:
                 const isShowTestInFolder = isShowBadge ? showTestInFolder : false;
                 const isActiveTest = selectTestsStore.selectTests.includes(el._id)
                 return (
-                  <Badge.Ribbon text={folderName} color="gold" style={{
+                  <Badge.Ribbon
+                    key={el._id + index}
+                    text={folderName} color="gold" style={{
                       display: isShowTestInFolder ? folderName ? 'block' : 'none' : 'none',
                   }}>
                       <div
-                        key={el._id}
+                        key={el._id + index}
                         className={
                           clsx(s.all__tests__list__wrapper,
                             {

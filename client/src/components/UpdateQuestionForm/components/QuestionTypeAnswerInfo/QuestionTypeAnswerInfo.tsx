@@ -20,6 +20,7 @@ const FormWrapper = (props: any) => {
   }
   return (
     <Form.Item
+      noStyle
       name="answerFieldsData"
       rules={rules}
     >
@@ -31,7 +32,7 @@ const FormWrapper = (props: any) => {
 const QuestionTypeAnswerInfo: FC<IQuestionTypeAnswerSettingProps> = ({answerType}) => {
   if (answerType === AnswerType.Text) {
     return (
-      <FormWrapper>
+      <FormWrapper key={'1'}>
         <QuestionTypeAnswerInput/>
       </FormWrapper>
     )
@@ -39,14 +40,14 @@ const QuestionTypeAnswerInfo: FC<IQuestionTypeAnswerSettingProps> = ({answerType
 
   if (answerType === AnswerType.Radio) {
     return (
-      <FormWrapper message={'Все ключи должны быть уникальны'}>
+      <FormWrapper key={'2'} message={'Все ключи должны быть уникальны'}>
         <QuestionTypeAnswerRadio />
       </FormWrapper>
     )
   }
 
   return (
-    <FormWrapper message={'Все ключи должны быть уникальны'}>
+    <FormWrapper key={'3'} message={'Все ключи должны быть уникальны'}>
       <QuestionTypeAnswerCheckbox />
     </FormWrapper>
   );

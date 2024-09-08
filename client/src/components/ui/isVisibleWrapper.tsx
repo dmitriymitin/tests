@@ -5,7 +5,7 @@ interface IIsVisibleWrapperProps {
   children: ReactNode
 }
 
-const IsVisibleWrapper: FC<IIsVisibleWrapperProps> = ({isVisible, children}) => {
+const IsVisible: FC<IIsVisibleWrapperProps> = ({isVisible, children}) => {
   if (!isVisible) {
     return null;
   }
@@ -17,4 +17,4 @@ const IsVisibleWrapper: FC<IIsVisibleWrapperProps> = ({isVisible, children}) => 
   );
 };
 
-export default IsVisibleWrapper;
+export default IsVisible;

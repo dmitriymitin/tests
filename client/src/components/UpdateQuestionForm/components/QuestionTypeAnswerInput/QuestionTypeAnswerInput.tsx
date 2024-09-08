@@ -2,22 +2,24 @@ import React, {useEffect, useState} from 'react';
 import {Input} from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import {AnswerType} from "../../../../models/question";
+import {useIsMounted} from "../../../../http/hooks/useIsMounted";
 
 const QuestionTypeAnswerInput = () => {
-  const [value, setValue] = useState('');
+  const [keys, setKeys] = useState('');
   const formInstance = useFormInstance();
 
   useEffect(() => {
+    formInstance.submit();
     formInstance.setFieldValue('answerFieldsData', {
       [AnswerType.Text]: {
-        value
+        keys: keys ? [keys] : []
       }
     });
-  }, [formInstance, value]);
+  }, [formInstance, keys]);
 
   return (
     <>
-      <Input style={{maxWidth: 400}} value={value} onChange={(e) => setValue(e.target.value)}/>
+      <Input className="boxShadow1" style={{maxWidth: 400}} value={keys} onChange={(e) => setKeys(e.target.value)}/>
     </>
   );
 };

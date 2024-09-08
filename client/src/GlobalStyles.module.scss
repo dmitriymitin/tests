@@ -106,6 +106,27 @@
   }
 }
 
+.btnTitleSmall {
+  @extend .btnTitle;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px;
+  font-size: 12px;
+  height: 20px;
+  width: max-content;
+  gap: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #363e45 !important;
+  color: white;
+
+  &:hover {
+    opacity: 0.66;
+  }
+}
+
 .btnLucky {
   @extend .btn;
   border: 1px solid black !important;

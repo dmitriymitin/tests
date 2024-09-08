@@ -46,6 +46,10 @@ body {
     background: gray;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -107,6 +111,13 @@ body {
     &:hover {
         opacity: .66;
     }
+}
+
+.customErrorBox {
+    padding: 5px 10px;
+    background: red;
+    border-radius: 8px;
+    color: white;
 }
 
 .dangerColor {
@@ -176,6 +187,15 @@ body {
     padding: 15px;
 }
 
+.boxShadow1 {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.btnSaveWrapper {
+    display: flex;
+    justify-content: flex-start;
+}
+
 .statusClose {
     color: red;
 }
@@ -218,4 +238,47 @@ body {
 .text-container > *,
 .editor-container > * {
     text-align: left;
+}
+
+.pillar-list {
+    display: grid;
+    grid-template-columns: 310px 1fr;
+    min-height: 300px;
+    padding-bottom: 30px;
+}
+
+.base-table-box {
+    background-color: #fff;;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.pillar-col {
+    border-right: 1px solid #f5f5f5;
+}
+
+.pillar-head {
+    background-color: #dddee3;
+    padding: 12px;
+    font-weight: bold;
+    height: 45px;
+}
+
+.pillar-row {
+    &:nth-child(even) {
+        background-color: #f5f5f5;
+    }
+
+    &:hover {
+        background-color: #ececec;
+        cursor: pointer;
+    }
+}
+
+.status-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

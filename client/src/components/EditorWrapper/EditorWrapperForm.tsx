@@ -22,7 +22,7 @@ const EditorWrapperForm: FC<IEditorWrapperForm> = ({}) => {
 
   return (
     <>
-      <Form.Item name={'descriptionParse'}>
+      <Form.Item noStyle name={'descriptionParse'}>
       <div className={s.editorContainer}>
         <Editor data={descriptionPARSE} setData={setDescriptionPARSE} />
       </div>

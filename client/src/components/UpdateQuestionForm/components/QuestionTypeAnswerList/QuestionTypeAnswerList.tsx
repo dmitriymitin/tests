@@ -7,8 +7,9 @@ import s from './QuestionTypeAnswerList.module.scss';
 import clsx from "clsx";
 import {IconAnswerTypeCheckbox} from "../../../../utils/ui/icons/IconAnswerTypeCheckbox";
 import {IconAnswerTypeRadio} from "../../../../utils/ui/icons/IconAnswerTypeRadio";
-import IsVisibleWrapper from "../../../ui/isVisibleWrapper";
+import IsVisible from "../../../ui/isVisibleWrapper";
 import {BulbOutlined} from "@ant-design/icons";
+import {useMedia} from "react-use";
 
 const componentArray = [
   {title: 'Текстовый', type: AnswerType.Text, content: IconAnswerTypeText, fs: '150px'},
@@ -21,6 +22,7 @@ interface IQuestionTypeAnswerListProps {
 }
 
 export const QuestionTypeAnswerList: FC<IQuestionTypeAnswerListProps> = ({isInfoBlock}) => {
+  const is600px = useMedia('(max-width: 750px)');
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const form = useFormInstance();
 
@@ -44,6 +46,7 @@ export const QuestionTypeAnswerList: FC<IQuestionTypeAnswerListProps> = ({isInfo
   return (
     <>
       <Form.Item
+        noStyle
         name={'answerType'}
         rules={[
           {
@@ -53,11 +56,11 @@ export const QuestionTypeAnswerList: FC<IQuestionTypeAnswerListProps> = ({isInfo
         ]}
       >
         <List
-          grid={{gutter: 16, column: 4}}
+          grid={{gutter: 16, column: is600px ? 2 : 3}}
           dataSource={componentArray}
           renderItem={(item, index) => {
             const isActiveCard = index === activeIndex;
-            const className = clsx(s.card, {[s.active]: isActiveCard});
+            const className = clsx("boxShadow1", s.card, {[s.active]: isActiveCard});
             const style = {fontSize: item.fs || '100px'}
             return (
               <List.Item>
@@ -74,12 +77,12 @@ export const QuestionTypeAnswerList: FC<IQuestionTypeAnswerListProps> = ({isInfo
           }}
         />
       </Form.Item>
-      <IsVisibleWrapper isVisible={isInfoBlock && activeIndex !== null}>
-        <div className={clsx(s.infoBlock, "flex-row flex-middle gap-20")}>
-          <BulbOutlined style={{fontSize: 25}}/>
-          Не забудьте ввести или выбрать правильный ответ. Обратите внимание, что в случае одиночного или множественного варианта ответов ключи по умолчанию генерируются автоматически, но вы также можете их изменить.
-        </div>
-      </IsVisibleWrapper>
+      {/*<IsVisible isVisible={isInfoBlock && activeIndex !== null}>*/}
+      {/*  <div className={clsx(s.infoBlock, "flex-row flex-middle gap-20")}>*/}
+      {/*    <BulbOutlined style={{fontSize: 25}}/>*/}
+      {/*    Не забудьте ввести или выбрать правильный ответ. Обратите внимание, что в случае одиночного или множественного варианта ответов ключи по умолчанию генерируются автоматически, но вы также можете их изменить.*/}
+      {/*  </div>*/}
+      {/*</IsVisibleWrapper>*/}
     </>
   );
 };

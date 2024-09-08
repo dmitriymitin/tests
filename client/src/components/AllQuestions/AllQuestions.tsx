@@ -1,40 +1,35 @@
-import sC from './AllQuestions.module.scss'
-import React from 'react';
-import {useNavigate} from "react-router-dom";
-import {useQuery} from "react-query";
-import {getUsersAllTests} from "../../api/test";
-import {Button, message, Spin} from "antd";
-import s from "../AllTest/AllTest.module.scss";
-import clsx from "clsx";
-import gs from "../../GlobalStyles.module.scss";
-import {PlusOutlined} from "@ant-design/icons";
-import {RouteNames} from "../../router";
-import {getFormateDate} from "../../utils/getFormateDate";
+import sC from './AllQuestions.module.scss';
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useQuery} from 'react-query';
+import {getUsersAllTests} from '../../api/test';
+import {Button, Empty, message, Spin} from 'antd';
+import s from '../AllTest/AllTest.module.scss';
+import clsx from 'clsx';
+import gs from '../../GlobalStyles.module.scss';
+import {PlusOutlined} from '@ant-design/icons';
+import {RouteNames} from '../../router';
+import {getFormateDate} from '../../utils/getFormateDate';
+import {useAllTest} from '../../http/hooks/useAllTest';
+import {useAllQuestion} from '../../http/hooks/useAllQuestion';
+import IsVisible from '../ui/isVisibleWrapper';
+import PillarHead from './PillarHead/PillarHead';
+import AllQuestionsSpins from './AllQuestionsSpins';
+import {useTypedSelector} from '../../hooks/useTypedSelector';
+import AllQuestionsEmpty from './AllQuestionsEmpty';
+import questions from '../../pages/Questions';
+import Question from './Question/Question';
+import {useAllGroupQuestion} from '../../http/hooks/useAllGroupQuestion';
+import AddNewThemeModalDrawer from './AddNewThemeModalDrawer/AddNewThemeModalDrawer';
 
 const AllQuestions = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const {
-    data: allTest,
-    isLoading: isAllTestLoading,
-    isFetching
-  } = useQuery('allUsersTests', getUsersAllTests, {
-    refetchOnWindowFocus: false
-  });
-
-
-  if (!allTest || isAllTestLoading || isFetching) {
-    return (
-      <div style={{
-        height: '500px',
-        display: "flex",
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
-        <Spin size={'large'}/>
-      </div>
-    )
-  }
+  const {data: allQuestion, isLoading: isAllQuestionLoading, isFetching: isAllQuestionFetching} = useAllQuestion();
+  const {data: allGroupQuestion, isLoading: isAllQuestionGroupLoading, isFetching: isAllQuestionGroupFetching} = useAllGroupQuestion();
+  const isLoadingQuestions = !allQuestion || isAllQuestionLoading || isAllQuestionFetching;
+  const isLoadingThemes = !allGroupQuestion || isAllQuestionGroupLoading || isAllQuestionGroupFetching;
 
   const addQuestionBtn = (
     <button
@@ -44,42 +39,56 @@ const AllQuestions = () => {
       <PlusOutlined/>
       Добавить вопрос
     </button>
-  )
+  );
 
-  if (allTest.length === 0) {
+  if (allQuestion?.length === 0) {
     return (
       <div className={sC.noQuestion}>
         Вопросов пока нет
         {addQuestionBtn}
       </div>
-    )
+    );
   }
 
   return (
     <div className={sC.wrapper}>
+      <AddNewThemeModalDrawer open={isModalOpen} setOpen={setIsModalOpen}/>
       <div className={sC.header}>
-        <h1 className={"title"}>
+        <h1 className={'title'}>
           Список вопросов
         </h1>
-        {addQuestionBtn}
       </div>
-      <div className={s.all__tests__list}>
-        {allTest.map(el =>
-          <div key={el._id} className={clsx(s.all__tests__list__test__item, 'testBackground')}>
-            <p className={s.title}>
-              {el.title}
-            </p>
-
-            <div className={s.btns}>
-              <Button
-                type={'primary'}
-                onClick={() => navigate(`/tests/${el._id}`)}
-              >
-                Пройти
-              </Button>
+      <div className="pillar-list base-table-box">
+        <div className="pillar-col">
+          <PillarHead title={'Темы'} btnText={'Добавить тему'}
+                      btnClick={() => setIsModalOpen(true)}/>
+          <AllQuestionsSpins isLoading={isLoadingThemes}/>
+          <IsVisible isVisible={!isLoadingThemes && !allGroupQuestion.length}>
+            <AllQuestionsEmpty text={''}/>
+          </IsVisible>
+          <IsVisible isVisible={!isLoadingThemes}>
+            {allGroupQuestion?.map((el, index) => (
+              <div key={el._id} className="pillar-row flex-row">
+                {el.name}
+              </div>
+            ))}
+          </IsVisible>
+        </div>
+        <div className="pillar-col">
+          <PillarHead title={'Вопросы'} btnText={'Добавить вопрос'}
+                      btnClick={() => navigate(RouteNames.ADMIN_QUESTION_CREATE)}/>
+          <AllQuestionsSpins isLoading={isLoadingQuestions}/>
+          <IsVisible isVisible={!isLoadingQuestions && !allQuestion.length}>
+            <AllQuestionsEmpty text={'Вопросов пока нет'}/>
+          </IsVisible>
+          <IsVisible isVisible={!isLoadingQuestions}>
+            <div className="pillar-row flex-row">
+              {allQuestion?.map((el, index) => (
+                <Question key={el._id} question={el}/>
+              ))}
             </div>
-          </div>
-        )}
+          </IsVisible>
+        </div>
       </div>
     </div>
 

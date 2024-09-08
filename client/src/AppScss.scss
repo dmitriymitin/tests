@@ -4,9 +4,25 @@
   }
 }
 
+@each $size in 0, 20, 50, 60, 80, 100, 110, 150, 220, 300, 500, 550 {
+  .h#{$size}p {
+    height: #{$size}px;
+  }
+  .h#{$size}vh {
+    height: #{$size}vh;
+  }
+
+  .mh-#{$size} {
+    min-height: #{$size}[px] !important;
+  }
+}
+
 @each $size in 0, 1, 2, 3, 5, 6, 7, 8, 10, 12, 15, 20, 21, 22, 25, 30, 35, 40, 43, 50, 55, 60, 100, 115, 150, 160 {
   .mt-#{$size} {
     margin-top: #{$size}px;
+  }
+  .mb-#{$size} {
+    margin-bottom: #{$size}px;
   }
   .gap-#{$size} {
     gap: #{$size}px;
@@ -22,6 +38,11 @@
   }
 }
 
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .flex-center {
   justify-content: center;
   text-align: center;
@@ -29,4 +50,9 @@
 
 .flex-middle {
   align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
 }

@@ -43,7 +43,7 @@ const PutInFolderBtn = ({id}:{id?: string}) => {
       title={
         <div className={clsx('tooltipWrapper', s.tooltipWrapperMain)}>
           {data?.map((el, index) => (
-            <div className={s.tooltipItem} onClick={(e) => {
+            <div key={index} className={s.tooltipItem} onClick={(e) => {
               e.stopPropagation();
               handlePut(el._id)
             }}>

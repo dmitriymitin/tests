@@ -102,8 +102,8 @@ const QuestionTypeAnswerCheckbox = () => {
         >
           <Space direction="vertical">
             {arrayIds.map((id, index) => (
-              <div key={id} className="flex-row flex-middle flex-center gap-20">
-                <div className="flex-row flex-middle flex-center gap-20 testBackground">
+              <div key={id} className="flex-row flex-middle flex-center gap-20 ">
+                <div className="flex-row flex-middle flex-center gap-20 testBackground boxShadow1">
                   <Row wrap={false} className={s.row}>
                     <Checkbox value={id}/>
                     <Form.Item noStyle name={`title-${id}`}>
@@ -126,9 +126,9 @@ const QuestionTypeAnswerCheckbox = () => {
                 </button>
               </div>
             ))}
-            <div className="flex-row flex-middle gap-20 mt-10">
+            <div className="flex-row flex-between gap-20 mt-10 mb-10">
               <Button onClick={handleAddEl}>Добавить вариант ответа</Button>
-              <Button danger onClick={() => setFormFields(false)}>Сбросить ключи</Button>
+              <Button style={{marginRight: 40}} danger onClick={() => setFormFields(false)}>Сбросить ключи</Button>
             </div>
           </Space>
         </Form>
