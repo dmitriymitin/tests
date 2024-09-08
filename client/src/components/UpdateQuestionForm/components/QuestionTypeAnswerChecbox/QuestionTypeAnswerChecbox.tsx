@@ -1,12 +1,12 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import s from './QuestionTypeAnswerChecbox.module.scss'
-import {Button, Checkbox, Form, GetProp, Input, Row, Space} from "antd";
-import {CloseOutlined} from "@ant-design/icons";
-import {useForm} from "antd/es/form/Form";
-import {russianAlphabet} from "../../../../utils/russianAlphabet";
-import useFormInstance from "antd/es/form/hooks/useFormInstance";
-import {areAllUniqueInArrString, getUniqId} from "../../../../utils/helpers";
-import {AnswerType} from "../../../../models/question";
+import s from './QuestionTypeAnswerChecbox.module.scss';
+import {Button, Checkbox, Form, GetProp, Input, Row, Space} from 'antd';
+import {CloseOutlined} from '@ant-design/icons';
+import {useForm} from 'antd/es/form/Form';
+import {russianAlphabet} from '../../../../utils/russianAlphabet';
+import useFormInstance from 'antd/es/form/hooks/useFormInstance';
+import {areAllUniqueInArrString, getUniqId} from '../../../../utils/helpers';
+import {AnswerType} from '../../../../models/question';
 
 const QuestionTypeAnswerCheckbox = () => {
   const [arrayIds, setArrayIds] = useState([getUniqId()]);
@@ -18,7 +18,7 @@ const QuestionTypeAnswerCheckbox = () => {
     const correctKeysNew: string[] = [];
     const allKeys: string[] = [];
     const fieldsData = Object.entries(allFields).reduce((acc, el) => {
-      const splitArr = el[0].split('-')
+      const splitArr = el[0].split('-');
       const titOrKey = splitArr[0];
       const uniqId = splitArr[1];
       // @ts-ignore
@@ -29,42 +29,47 @@ const QuestionTypeAnswerCheckbox = () => {
         newObject['key'] = key;
         allKeys.push(key);
       }
+
       if (titOrKey === 'title') {
-        newObject['title'] = el[1] || ''
+        newObject['title'] = el[1] || '';
       }
+
       newObject['rang'] = arrayIds.indexOf(uniqId) + 1;
       const indexRightAnswer = checkedList?.indexOf(uniqId);
-      const isRightAnswer = (indexRightAnswer !== undefined && indexRightAnswer + 1) ? true : undefined
-      if (isRightAnswer && el[1]) correctKeysNew.push(el[1] as string);
+      const isRightAnswer = indexRightAnswer !== undefined && indexRightAnswer + 1 ? true : undefined;
+      if (isRightAnswer && el[1]) {
+        correctKeysNew.push(el[1] as string);
+      }
+
       return {...acc, [uniqId]: newObject};
-    }, {})
+    }, {});
 
     const isAllUniqKeysNew = areAllUniqueInArrString(allKeys);
 
-    formInstance.setFieldValue('answerFieldsData', isAllUniqKeysNew ?  {
+    formInstance.setFieldValue('answerFieldsData', isAllUniqKeysNew ? {
       [AnswerType.Checkbox]: {
         keys: correctKeysNew,
         values: fieldsData
       }
     } : null);
     formInstance.submit();
-  }, [arrayIds, checkedList, formInstance])
+  }, [arrayIds, checkedList, formInstance]);
 
-  const setFormFields = useCallback((isCheckField?: boolean, isSetInstance: boolean = true) => {
+  const setFormFields = useCallback((isCheckField?: boolean, isSetInstance = true) => {
     arrayIds.forEach((id, index) => {
-      if (!isCheckField || (isCheckField && !formCheckbox.getFieldValue(`key-${id}`))) {
-        formCheckbox.setFieldValue(`key-${id}`, russianAlphabet[index] || '')
+      if (!isCheckField || isCheckField && !formCheckbox.getFieldValue(`key-${id}`)) {
+        formCheckbox.setFieldValue(`key-${id}`, russianAlphabet[index] || '');
       }
-    })
+    });
     if (isSetInstance) {
       const allFields = formCheckbox.getFieldsValue();
       setFieldsValueInFormInstance(allFields);
     }
-  }, [arrayIds, formCheckbox, setFieldsValueInFormInstance])
+  }, [arrayIds, formCheckbox, setFieldsValueInFormInstance]);
 
   useEffect(() => {
     setFormFields(true);
-  }, [arrayIds, setFormFields])
+  }, [arrayIds, setFormFields]);
 
   const onCheckboxChange: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
     setCheckedList(checkedValues as any);
@@ -77,14 +82,17 @@ const QuestionTypeAnswerCheckbox = () => {
   const deleteEl = (id: string) => {
     setArrayIds(prev => [...prev.filter(el => el !== id)]);
     setCheckedList(prev => {
-      if (!prev) return [];
+      if (!prev) {
+        return [];
+      }
+
       return [...prev.filter(el => el !== id)];
     });
-  }
+  };
 
   return (
-      <Checkbox.Group value={checkedList} onChange={onCheckboxChange}>
-        <Form
+    <Checkbox.Group value={checkedList} onChange={onCheckboxChange}>
+      <Form
           form={formCheckbox}
           onFieldsChange={(_, allFields) => {
             // @ts-ignore
@@ -92,47 +100,48 @@ const QuestionTypeAnswerCheckbox = () => {
               if (!el || !el?.name?.[0]) {
                 return acc;
               }
+
               // @ts-ignore
               acc[el?.name[0]] = el?.value || '';
               return acc;
             }, {});
 
-            setFieldsValueInFormInstance(allFieldsNew)
+            setFieldsValueInFormInstance(allFieldsNew);
           }}
-        >
-          <Space direction="vertical">
-            {arrayIds.map((id, index) => (
-              <div key={id} className="flex-row flex-middle flex-center gap-20 ">
-                <div className="flex-row flex-middle flex-center gap-20 testBackground boxShadow1">
-                  <Row wrap={false} className={s.row}>
-                    <Checkbox value={id}/>
-                    <Form.Item noStyle name={`title-${id}`}>
-                      <Input/>
-                    </Form.Item>
-                  </Row>
-                  <div key={id} className="flex-row flex-middle flex-center gap-10">
-                    <div className="fs-16">Ключ:</div>
-                    <Form.Item noStyle name={`key-${id}`}>
-                      <Input/>
-                    </Form.Item>
-                  </div>
+      >
+        <Space direction="vertical">
+          {arrayIds.map((id, index) => (
+            <div key={id} className="flex-row flex-middle flex-center gap-20 ">
+              <div className="flex-row flex-middle flex-center gap-20 testBackground boxShadow1">
+                <Row wrap={false} className={s.row}>
+                  <Checkbox value={id}/>
+                  <Form.Item noStyle name={`title-${id}`}>
+                    <Input/>
+                  </Form.Item>
+                </Row>
+                <div key={id} className="flex-row flex-middle flex-center gap-10">
+                  <div className="fs-16">Ключ:</div>
+                  <Form.Item noStyle name={`key-${id}`}>
+                    <Input/>
+                  </Form.Item>
                 </div>
-                <button
+              </div>
+              <button
                   disabled={arrayIds.length === 1}
                   onClick={() => deleteEl(id)}
                   className="clearButton hoverButton fs-18 dangerColor"
-                >
-                  <CloseOutlined/>
-                </button>
-              </div>
-            ))}
-            <div className="flex-row flex-between gap-20 mt-10 mb-10">
-              <Button onClick={handleAddEl}>Добавить вариант ответа</Button>
-              <Button style={{marginRight: 40}} danger onClick={() => setFormFields(false)}>Сбросить ключи</Button>
+              >
+                <CloseOutlined/>
+              </button>
             </div>
-          </Space>
-        </Form>
-      </Checkbox.Group>
+          ))}
+          <div className="flex-row flex-between gap-20 mt-10 mb-10">
+            <Button onClick={handleAddEl}>Добавить вариант ответа</Button>
+            <Button style={{marginRight: 40}} danger onClick={() => setFormFields(false)}>Сбросить ключи</Button>
+          </div>
+        </Space>
+      </Form>
+    </Checkbox.Group>
   );
 };
 

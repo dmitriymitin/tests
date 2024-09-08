@@ -1,21 +1,21 @@
 import React, {FC} from 'react';
-import {Spin} from "antd";
+import {Spin} from 'antd';
 type LoaderProps = {
-    mt?:  string | number
+    mt?: string | number;
 }
 const Loader:FC<LoaderProps> = ({mt}) => {
-    return (
-        <Spin tip="Loading" size="large">
-            <div
+  return (
+    <Spin tip="Loading" size="large">
+      <div
                 style={{
-                    display:'flex',
-                    height: '100vh',
-                    width: '100vh',
+                  display: 'flex',
+                  height: '100vh',
+                  width: '100vh',
                 }}
                 className="content"
-            />
-        </Spin>
-    );
+      />
+    </Spin>
+  );
 };
 
 export default Loader;

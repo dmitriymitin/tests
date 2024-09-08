@@ -1,5 +1,5 @@
 import React from 'react';
-import {IQuestion} from "../../../api/question/type";
+import {IQuestion} from '../../../api/question/type';
 
 interface IQuestionProps {
   question: IQuestion;

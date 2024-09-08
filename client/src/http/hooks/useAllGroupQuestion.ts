@@ -1,6 +1,6 @@
-import {QueryKey, useQuery, useQueryClient} from "react-query";
-import {getAllQuestion} from "../../api/question";
-import {getAllGroupQuestion} from "../../api/questionGroup";
+import {QueryKey, useQuery, useQueryClient} from 'react-query';
+import {getAllQuestion} from '../../api/question';
+import {getAllGroupQuestion} from '../../api/questionGroup';
 
 export const useAllGroupQuestion = () => {
   const queryClient = useQueryClient();
@@ -9,7 +9,7 @@ export const useAllGroupQuestion = () => {
     refetchOnWindowFocus: false
   });
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['allGroupQuestion'] });
+  const invalidate = () => queryClient.invalidateQueries({queryKey: ['allGroupQuestion']});
 
   return {
     invalidate,

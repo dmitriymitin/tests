@@ -1,21 +1,21 @@
 import React, {useState} from 'react';
-import {FloatButton} from "antd";
-import {FolderAddOutlined} from "@ant-design/icons";
-import s from "../../AdminFloatButton.module.scss";
-import CreateNewForder from "../../../AdminTestsListForm/CreateNewForder/CreateNewForder";
-import {IconAddNewTest} from "../../../../utils/ui/icons/IconAddNewTest";
-import {useMedia} from "react-use";
-import {useSelectTestsStore} from "../../../../store/folders/useSelectTestsStore";
+import {FloatButton} from 'antd';
+import {FolderAddOutlined} from '@ant-design/icons';
+import s from '../../AdminFloatButton.module.scss';
+import CreateNewForder from '../../../AdminTestsListForm/CreateNewForder/CreateNewForder';
+import {IconAddNewTest} from '../../../../utils/ui/icons/IconAddNewTest';
+import {useMedia} from 'react-use';
+import {useSelectTestsStore} from '../../../../store/folders/useSelectTestsStore';
 
 const AdminAddFolderGroup = () => {
   const isPC = useMedia('(min-width: 768px)');
-  const selectTestsStore = useSelectTestsStore(store => store)
+  const selectTestsStore = useSelectTestsStore(store => store);
   const [newFolderOpen, setNewFolderOpen] = useState(false);
 
   const handleCreateFolder = () => {
     selectTestsStore.setCurrentAction(undefined);
     setNewFolderOpen(true);
-  }
+  };
 
   return (
     <>

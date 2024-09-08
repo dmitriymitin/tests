@@ -1,17 +1,17 @@
 import React from 'react';
-import {useSelectTestsStore} from "../../../../store/folders/useSelectTestsStore";
-import {Button, message, Space} from "antd";
-import clsx from "clsx";
-import s from '../../AdminFloatButton.module.scss'
-import {BtnsTextBlockInfo, currentActionForApi} from "../../../../store/folders/const";
-import {useMutation, useQueryClient} from "react-query";
+import {useSelectTestsStore} from '../../../../store/folders/useSelectTestsStore';
+import {Button, message, Space} from 'antd';
+import clsx from 'clsx';
+import s from '../../AdminFloatButton.module.scss';
+import {BtnsTextBlockInfo, currentActionForApi} from '../../../../store/folders/const';
+import {useMutation, useQueryClient} from 'react-query';
 import {
   actionManyTest,
   clearAllTestResultsFetcher,
   closeAllTestFetcher,
   openAllTestFetcher
-} from "../../../../api/test";
-import {useAllTest} from "../../../../http/hooks/useAllTest";
+} from '../../../../api/test';
+import {useAllTest} from '../../../../http/hooks/useAllTest';
 
 const InfoBlockBtns = () => {
   const currentAction = useSelectTestsStore(store => store.lastCurrentAction);
@@ -23,59 +23,59 @@ const InfoBlockBtns = () => {
   const {
     mutateAsync: actionManyTestsTrigger,
     isLoading: actionManyTestsLoading
-  } = useMutation(actionManyTest)
+  } = useMutation(actionManyTest);
 
   const {
     mutateAsync: openAllTestTrigger
-  } = useMutation(openAllTestFetcher)
+  } = useMutation(openAllTestFetcher);
 
   const {
     mutateAsync: closeAllTestTrigger
-  } = useMutation(closeAllTestFetcher)
+  } = useMutation(closeAllTestFetcher);
 
   const {
     mutateAsync: clearAllTestResultsTrigger
-  } = useMutation(clearAllTestResultsFetcher)
+  } = useMutation(clearAllTestResultsFetcher);
 
   const handleOpenAllTest = async () => {
     try {
       await openAllTestTrigger();
-      await queryClient.invalidateQueries({ queryKey: ['allTests'] })
-      message.success('Все тесты успешно открыты!')
+      await queryClient.invalidateQueries({queryKey: ['allTests']});
+      message.success('Все тесты успешно открыты!');
     } catch (e) {
-      message.error('Ошибка при открытии всех тестов!')
+      message.error('Ошибка при открытии всех тестов!');
     }
-  }
+  };
 
   const handleCloseAllTest = async () => {
     try {
       await closeAllTestTrigger();
-      await queryClient.invalidateQueries({ queryKey: ['allTests'] })
-      message.success('Все тесты успешно закрыты!')
+      await queryClient.invalidateQueries({queryKey: ['allTests']});
+      message.success('Все тесты успешно закрыты!');
     } catch (e) {
-      message.error('Ошибка при закрытии всех тестов!')
+      message.error('Ошибка при закрытии всех тестов!');
     }
-  }
+  };
 
   const handleClearResultsAllTest = async () => {
     try {
       await clearAllTestResultsTrigger();
-      message.success('Все результаты тестов успешно очищены!')
+      message.success('Все результаты тестов успешно очищены!');
     } catch (e) {
-      message.error('Ошибка при очистке результатов тестов!')
+      message.error('Ошибка при очистке результатов тестов!');
     }
-  }
+  };
 
   const handleAllClick = () => {
     switch (currentAction) {
       case 'openTests':
-        return handleOpenAllTest()
+        return handleOpenAllTest();
       case 'closeTests':
-        return handleCloseAllTest()
+        return handleCloseAllTest();
       case 'clearResults':
-        return handleClearResultsAllTest()
+        return handleClearResultsAllTest();
     }
-  }
+  };
 
   const handleManyClick = async () => {
     try {
@@ -86,11 +86,11 @@ const InfoBlockBtns = () => {
       });
       await invalidate();
       selectTestsStore.setCurrentAction(undefined);
-      message.success('Действие к выбранным тестам успешно применено!')
+      message.success('Действие к выбранным тестам успешно применено!');
     } catch (e) {
-      message.error('Ошибка при применении действия к выбранным тестам')
+      message.error('Ошибка при применении действия к выбранным тестам');
     }
-  }
+  };
 
   return (
     <div className={s.spaceWrapper}>

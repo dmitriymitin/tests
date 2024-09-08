@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
-import s from "./FolderFunctionBlock.module.scss";
-import {Button, Collapse, message, Popconfirm} from "antd";
-import {useMutation} from "react-query";
-import {deleteFolder} from "../../../api/test";
-import {useAllTest} from "../../../http/hooks/useAllTest";
-import {useAllFolder} from "../../../http/hooks/useAllFolder";
-import CreateNewForder from "../../AdminTestsListForm/CreateNewForder/CreateNewForder";
+import s from './FolderFunctionBlock.module.scss';
+import {Button, Collapse, message, Popconfirm} from 'antd';
+import {useMutation} from 'react-query';
+import {deleteFolder} from '../../../api/test';
+import {useAllTest} from '../../../http/hooks/useAllTest';
+import {useAllFolder} from '../../../http/hooks/useAllFolder';
+import CreateNewForder from '../../AdminTestsListForm/CreateNewForder/CreateNewForder';
 
 interface IFolderFunctionBlockProps {
-  folderId: string
+  folderId: string;
   folderName?: string;
 }
 
@@ -16,7 +16,7 @@ const FolderFunctionBlock = ({folderId, folderName = ''}: IFolderFunctionBlockPr
   const [isChangeModalShow, setIsChangeModalShow] = useState(false);
   const {
     mutateAsync: deleteFolderTrigger
-  } = useMutation(deleteFolder)
+  } = useMutation(deleteFolder);
   const {data, invalidate} = useAllTest();
   const {invalidate: invalidateFolder} = useAllFolder();
   const handleDeleteFolder = async () => {
@@ -28,7 +28,7 @@ const FolderFunctionBlock = ({folderId, folderName = ''}: IFolderFunctionBlockPr
     } catch (e) {
       message.error('Ошибка при удалениии папки');
     }
-  }
+  };
 
   const items: any = [
     {
@@ -38,7 +38,7 @@ const FolderFunctionBlock = ({folderId, folderName = ''}: IFolderFunctionBlockPr
         <Button
           size={'large'}
           className={s.btn}
-          type={"primary"}
+          type={'primary'}
           onClick={() => setIsChangeModalShow(true)}
         >
           Изменить папку
@@ -64,14 +64,17 @@ const FolderFunctionBlock = ({folderId, folderName = ''}: IFolderFunctionBlockPr
 
   return (
     <div>
-      {/*<Collapse items={items}/>*/}
+      {/* <Collapse items={items}/> */}
       <CreateNewForder
         open={isChangeModalShow}
         setOpen={setIsChangeModalShow}
         folderId={folderId}
         activeTestIdsDefault={data?.reduce((acc, el, index) => {
-          if (el.folderId === folderId) acc.push(el._id)
-          return acc
+          if (el.folderId === folderId) {
+            acc.push(el._id);
+          }
+
+          return acc;
         }, [] as string[])}
         isChange={true}
         titleFolder={folderName}

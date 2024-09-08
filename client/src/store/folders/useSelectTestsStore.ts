@@ -1,7 +1,7 @@
 
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import {create} from 'zustand';
+import {devtools, persist} from 'zustand/middleware';
+import {immer} from 'zustand/middleware/immer';
 
 export type TCurrentAction = 'openTests' | 'closeTests' | 'clearResults' | 'addInFolder' | 'deleteTests'
 
@@ -18,7 +18,7 @@ interface ISelectTestsStore {
 }
 
 export const useSelectTestsStore = create<ISelectTestsStore>()(
-  (persist(devtools(
+  persist(devtools(
     immer((setState) => ({
       currentAction: undefined,
       lastCurrentAction: 'openTests',
@@ -31,18 +31,21 @@ export const useSelectTestsStore = create<ISelectTestsStore>()(
         store.lastCurrentAction = action;
       }),
       setCurrentAction: (action: TCurrentAction | undefined) => setState((store) => {
-        if (!action) store.selectTests = [];
+        if (!action) {
+          store.selectTests = [];
+        }
+
         store.onlyMakeTestsAction = 0;
         store.currentAction = action;
       }),
       addTest: (id: string) => setState((store) => {
-        store.selectTests.push(id)
+        store.selectTests.push(id);
       }),
       removeTest: (id: string) => setState((store) => {
-        store.selectTests = store.selectTests.filter(el => el !== id)
+        store.selectTests = store.selectTests.filter(el => el !== id);
       }),
     }))
   ), {
-    name: "Folders", version: 1
-  }))
+    name: 'Folders', version: 1
+  })
 );

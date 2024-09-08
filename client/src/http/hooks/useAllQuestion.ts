@@ -1,5 +1,5 @@
-import {QueryKey, useQuery, useQueryClient} from "react-query";
-import {getAllQuestion} from "../../api/question";
+import {QueryKey, useQuery, useQueryClient} from 'react-query';
+import {getAllQuestion} from '../../api/question';
 
 export const useAllQuestion = () => {
   const queryClient = useQueryClient();
@@ -8,7 +8,7 @@ export const useAllQuestion = () => {
     refetchOnWindowFocus: false
   });
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['allQuestion'] });
+  const invalidate = () => queryClient.invalidateQueries({queryKey: ['allQuestion']});
 
   return {
     invalidate,

@@ -1,15 +1,15 @@
-import {QueryKey, useQuery, useQueryClient} from "react-query";
-import {getAdminAllTests, getAllFolder} from "../../api/test";
+import {QueryKey, useQuery, useQueryClient} from 'react-query';
+import {getAdminAllTests, getAllFolder} from '../../api/test';
 
 export const useAllFolder = () => {
   const queryClient = useQueryClient();
-  const queryKey: QueryKey = ['allFolder']
+  const queryKey: QueryKey = ['allFolder'];
   const results = useQuery(queryKey, () => getAllFolder(), {
     refetchOnWindowFocus: false
   });
 
   return {
-    invalidate: () => queryClient.invalidateQueries({ queryKey }),
+    invalidate: () => queryClient.invalidateQueries({queryKey}),
     ...results
   };
 };

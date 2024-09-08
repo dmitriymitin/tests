@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Form, Input, InputNumber, Popover, Segmented, Select} from "antd";
-import useFormInstance from "antd/es/form/hooks/useFormInstance";
-import IsVisible from "../../../ui/isVisibleWrapper";
-import {QuestionCircleOutlined} from "@ant-design/icons";
-import {pluralization} from "../../../../utils/helpers";
+import {Form, Input, InputNumber, Popover, Segmented, Select} from 'antd';
+import useFormInstance from 'antd/es/form/hooks/useFormInstance';
+import IsVisible from '../../../ui/isVisibleWrapper';
+import {QuestionCircleOutlined} from '@ant-design/icons';
+import {pluralization} from '../../../../utils/helpers';
 
 export type TQuestionType = 'yesNo' | 'time'
 
@@ -16,17 +16,18 @@ interface IQuestionSettingSegmentedProps {
 
 const QuestionSettingSegmented = ({formName, text, type = 'yesNo', description}: IQuestionSettingSegmentedProps) => {
   const formInstance = useFormInstance();
-  const defaultValue = type === 'time' ? undefined : (formInstance.getFieldValue(formName) || 0);
+  const defaultValue = type === 'time' ? undefined : formInstance.getFieldValue(formName) || 0;
   const [value, setValue] = useState<number>(defaultValue);
   const [valueSec, setValueSec] = useState<number>(undefined);
 
   useEffect(() => {
     if (type === 'yesNo') {
-      formInstance.setFieldValue(formName, value)
+      formInstance.setFieldValue(formName, value);
     }
+
     if (type === 'time') {
-      const valueTime = valueSec ? (value + '.' + valueSec) : value;
-      formInstance.setFieldValue(formName, valueTime)
+      const valueTime = valueSec ? value + '.' + valueSec : value;
+      formInstance.setFieldValue(formName, valueTime);
     }
   }, [formInstance, formName, type, value, valueSec]);
 
@@ -41,13 +42,13 @@ const QuestionSettingSegmented = ({formName, text, type = 'yesNo', description}:
             block
             style={{maxWidth: 200, width: '100%'}}
             options={[
-              { label: 'Да', value: 1},
-              { label: 'Нет',  value: 0}
+              {label: 'Да', value: 1},
+              {label: 'Нет', value: 0}
             ]}
           />
         </IsVisible>
         <IsVisible isVisible={type === 'time'}>
-          <div className={"flex-row flex-middle gap-10"}>
+          <div className={'flex-row flex-middle gap-10'}>
             <InputNumber
               placeholder={'Не учитывается'}
               type={'number'}

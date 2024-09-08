@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import s from './ContextMenuWrapper.module.scss';
 import gs from '../../../GlobalStyles.module.scss';
-import clsx from "clsx";
+import clsx from 'clsx';
 
 interface IContextMenu {
-  position: { x: number, y: number };
+  position: { x: number; y: number };
   onClose: () => void;
   text: React.ReactNode;
   menuRef: React.RefObject<HTMLDivElement>;
   isClosing: boolean;
 }
 
-const ContextMenu = ({ position, onClose, text, menuRef, isClosing }: IContextMenu) => {
+const ContextMenu = ({position, onClose, text, menuRef, isClosing}: IContextMenu) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -67,9 +67,9 @@ interface IContextMenuWrapper {
   text?: React.ReactNode;
 }
 
-const ContextMenuWrapper = ({ children, text }: IContextMenuWrapper) => {
+const ContextMenuWrapper = ({children, text}: IContextMenuWrapper) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
   const [isClosing, setIsClosing] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -77,8 +77,10 @@ const ContextMenuWrapper = ({ children, text }: IContextMenuWrapper) => {
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
-      if (!showMenu) return;
-      if (!wrapperRef.current || !menuRef.current) return;
+      if (!showMenu) { return; }
+
+      if (!wrapperRef.current || !menuRef.current) { return; }
+
       if (!menuRef.current.contains(event.target as Node) && !wrapperRef.current.contains(event.target as Node)) {
         setIsClosing(true);
         setTimeout(() => {
@@ -103,6 +105,7 @@ const ContextMenuWrapper = ({ children, text }: IContextMenuWrapper) => {
       event.stopPropagation();
       return;
     }
+
     event.preventDefault();
     touchTimer.current = window.setTimeout(() => {
       setShowMenu(true);
@@ -140,7 +143,7 @@ const ContextMenuWrapper = ({ children, text }: IContextMenuWrapper) => {
 
   return (
     <div ref={wrapperRef} onTouchStart={handleLongPress} onTouchEnd={handleTouchEnd} onContextMenu={handleContextMenu}
-         style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+         style={{position: 'relative', display: 'inline-block', width: '100%'}}>
       <div>
         {children}
       </div>

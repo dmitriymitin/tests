@@ -1,6 +1,6 @@
 const months = [
-  "января", "февраля", "марта", "апреля", "мая", "июня",
-  "июля", "августа", "сентября", "октября", "ноября", "декабря"
+  'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+  'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
 ];
 
 export const getFormatUpdateDate = (dateString: string) => {
@@ -15,4 +15,4 @@ export const getFormatUpdateDate = (dateString: string) => {
   const minutes = date.getMinutes().toString().padStart(2, '0');
 
   return `${day} ${month} ${year} г. ${hours}:${minutes}`;
-}
+};

@@ -1,10 +1,10 @@
-import {QueryKey, useQuery, useQueryClient} from "react-query";
-import {getAllStudentsBySearch} from "../../api/test";
+import {QueryKey, useQuery, useQueryClient} from 'react-query';
+import {getAllStudentsBySearch} from '../../api/test';
 
 interface IUseAllTestParams {
-  sortId?: number,
-  page?: number,
-  limit?: number,
+  sortId?: number;
+  page?: number;
+  limit?: number;
   search?: string;
   isLastParams?: boolean;
 }
@@ -12,7 +12,7 @@ interface IUseAllTestParams {
 export const useAllStudents = ({isLastParams, ...params} : IUseAllTestParams) => {
   const queryClient = useQueryClient();
 
-  const queryKey: QueryKey = ['students' + params.search + params.page + params.limit + params.sortId]
+  const queryKey: QueryKey = ['students' + params.search + params.page + params.limit + params.sortId];
   const results = useQuery({
     queryKey: queryKey,
     queryFn: () => getAllStudentsBySearch({
@@ -22,10 +22,10 @@ export const useAllStudents = ({isLastParams, ...params} : IUseAllTestParams) =>
       sortId: params.sortId || 0
     }),
     refetchOnWindowFocus: false
-  })
+  });
 
   return {
-    invalidate: () => queryClient.invalidateQueries({ queryKey }),
+    invalidate: () => queryClient.invalidateQueries({queryKey}),
     ...results
   };
 };

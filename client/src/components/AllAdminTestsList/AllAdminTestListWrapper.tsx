@@ -1,19 +1,19 @@
-'use client'
-import s from "./AllAdminTestsList.module.scss";
-import React, {FC, memo, useEffect, useRef, useState} from "react";
-import AllAdminTestsList from "./AllAdminTestsList";
-import {message, Popconfirm, Segmented, Select, Spin} from "antd";
-import {EFilterById, EFilterTranslate, TFilterById} from "../../api/test/type";
-import {useAllFolder} from "../../http/hooks/useAllFolder";
-import FolderFunctionBlock from "./FolderFunctionBlock/FolderFunctionBlock";
-import ContextMenuWrapper from "../ui/ContextMenuWrapper/ContextMenuWrapper";
-import clsx from "clsx";
-import gs from "../../GlobalStyles.module.scss";
-import CreateNewForder from "../AdminTestsListForm/CreateNewForder/CreateNewForder";
-import {useAllTest} from "../../http/hooks/useAllTest";
-import {useMutation} from "react-query";
-import {deleteFolder} from "../../api/test";
-import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
+'use client';
+import s from './AllAdminTestsList.module.scss';
+import React, {FC, memo, useEffect, useRef, useState} from 'react';
+import AllAdminTestsList from './AllAdminTestsList';
+import {message, Popconfirm, Segmented, Select, Spin} from 'antd';
+import {EFilterById, EFilterTranslate, TFilterById} from '../../api/test/type';
+import {useAllFolder} from '../../http/hooks/useAllFolder';
+import FolderFunctionBlock from './FolderFunctionBlock/FolderFunctionBlock';
+import ContextMenuWrapper from '../ui/ContextMenuWrapper/ContextMenuWrapper';
+import clsx from 'clsx';
+import gs from '../../GlobalStyles.module.scss';
+import CreateNewForder from '../AdminTestsListForm/CreateNewForder/CreateNewForder';
+import {useAllTest} from '../../http/hooks/useAllTest';
+import {useMutation} from 'react-query';
+import {deleteFolder} from '../../api/test';
+import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
 
 interface AllAdminTestListWrapperProps {}
 
@@ -21,23 +21,23 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
   const [showTestInFolder, setShowTestInFolder] = useState<number>(0);
   const [filterById, setFilterById] = useState<string>('2');
   const [folderId, setFolderId] = useState<string | undefined>(localStorage.getItem('currentFolder') || undefined);
-  const [secondFolderId, setSecondFolderId] = useState<string | undefined>('')
-  const isMounted = useRef(false)
-    const {
-        data: allFolder,
-        isLoading: isFolderLoading,
-      invalidate: invalidateFolder
-    } = useAllFolder();
+  const [secondFolderId, setSecondFolderId] = useState<string | undefined>('');
+  const isMounted = useRef(false);
+  const {
+    data: allFolder,
+    isLoading: isFolderLoading,
+    invalidate: invalidateFolder
+  } = useAllFolder();
   const {
     mutateAsync: deleteFolderTrigger
-  } = useMutation(deleteFolder)
+  } = useMutation(deleteFolder);
   const [isChangeModalShow, setIsChangeModalShow] = useState(false);
   const {data, invalidate} = useAllTest();
 
-    useEffect(() => {
-      const id = localStorage.getItem('currentFolder')
-      setFolderId(id || undefined);
-    }, [allFolder]);
+  useEffect(() => {
+    const id = localStorage.getItem('currentFolder');
+    setFolderId(id || undefined);
+  }, [allFolder]);
 
   const handleDeleteFolder = async (id: string) => {
     try {
@@ -48,32 +48,31 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
     } catch (e) {
       message.error('Ошибка при удалениии папки');
     }
-  }
+  };
 
-    const handleFilterChange = (e: string) => {
-        setFilterById(e)
+  const handleFilterChange = (e: string) => {
+    setFilterById(e);
+  };
+
+  const handleFolderChange = (e: any) => {
+    if (!e) {
+      setFolderId(undefined);
+      setSecondFolderId(undefined);
+      localStorage.removeItem('currentFolder');
+    } else {
+      localStorage.setItem('currentFolder', e);
+      setSecondFolderId(e);
+      setFolderId(e);
     }
+  };
 
-    const handleFolderChange = (e: any) => {
-        if (!e) {
-          setFolderId(undefined)
-          setSecondFolderId(undefined);
-          localStorage.removeItem('currentFolder');
-        }
-        else {
-          localStorage.setItem('currentFolder', e);
-          setSecondFolderId(e);
-          setFolderId(e);
-        }
-    }
-
-    return (
-      <div className={s.all__tests__list}>
-        <div className={s.header__wrapper}>
-          <h1 className={"title"}>
-            Список тестов
-          </h1>
-          <Select
+  return (
+    <div className={s.all__tests__list}>
+      <div className={s.header__wrapper}>
+        <h1 className={'title'}>
+          Список тестов
+        </h1>
+        <Select
             defaultValue={filterById}
             className={s.select}
             options={Object.keys(EFilterTranslate).map((el, index) => ({
@@ -81,33 +80,32 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
               value: EFilterById[el as TFilterById]
             }))}
             onChange={handleFilterChange}
-          />
-        </div>
-        {isFolderLoading
-          ? <div className={s.folderLoading}><Spin/></div>
-          :
-            allFolder && allFolder.length > 0 &&
-            <Segmented
+        />
+      </div>
+      {isFolderLoading
+        ? <div className={s.folderLoading}><Spin/></div>
+        : allFolder && allFolder.length > 0 &&
+        <Segmented
               value={folderId || 0}
               defaultValue={folderId || 0}
               onChange={handleFolderChange}
               maxLength={5}
               style={{marginTop: 15, marginBottom: 15}}
               options={
-                  [
-                      {
-                          value: 0,
-                          label: 'Все тесты'
-                      },
-                      ...allFolder?.map((el, index) => ({
-                          value: el._id,
-                          label: <ContextMenuWrapper
+                [
+                  {
+                    value: 0,
+                    label: 'Все тесты'
+                  },
+                  ...allFolder?.map((el, index) => ({
+                    value: el._id,
+                    label: <ContextMenuWrapper
                             text={<>
                               <button
                                 className={clsx('clearButton', gs.btn)}
                                 onClick={() => {
                                   setSecondFolderId(el._id);
-                                  setIsChangeModalShow(true)
+                                  setIsChangeModalShow(true);
                                 }}
                               >
                                 <div className={s.btnChange}>
@@ -134,19 +132,19 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
                               </Popconfirm>
                             </>
                             }
-                          >
-                            {el.name}
-                          </ContextMenuWrapper>
-                      }))
-                  ]
+                    >
+                      {el.name}
+                    </ContextMenuWrapper>
+                  }))
+                ]
               }
               block
-            />
-          }
-          {!folderId && allFolder && allFolder.length > 0 &&
-              <div className={s.questionWrapper}>
-                  Отображать тесты, которые уже находятся в папке?
-                  <Segmented
+        />
+      }
+      {!folderId && allFolder && allFolder.length > 0 &&
+      <div className={s.questionWrapper}>
+        Отображать тесты, которые уже находятся в папке?
+        <Segmented
                       onChange={e => setShowTestInFolder(e as any)}
                       defaultValue={showTestInFolder}
                       block
@@ -155,32 +153,35 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
                         label: 'Да',
                         value: 1
                       },
-                        {
-                          label: 'Нет',
-                          value: 0
-                        }
+                      {
+                        label: 'Нет',
+                        value: 0
+                      }
                       ]}
-                  />
-              </div>
-          }
-        <AllAdminTestsList
+        />
+      </div>
+      }
+      <AllAdminTestsList
           showTestInFolder={folderId ? 1 : showTestInFolder}
           isShowBadge={!folderId}
           filterById={filterById}
           folderId={folderId}
-        />
-        <CreateNewForder
+      />
+      <CreateNewForder
           open={isChangeModalShow}
           setOpen={setIsChangeModalShow}
           folderId={secondFolderId}
           activeTestIdsDefault={data?.reduce((acc, el, index) => {
-            if (el.folderId === secondFolderId) acc.push(el._id)
-            return acc
+            if (el.folderId === secondFolderId) {
+              acc.push(el._id);
+            }
+
+            return acc;
           }, [] as string[])}
           isChange={true}
           titleFolder={allFolder?.find(el => el._id === secondFolderId)?.name}
-        />
-      </div>)
+      />
+    </div>);
 };
 
 export default memo(AllAdminTestListWrapper);

@@ -9,10 +9,19 @@ export function areAllUniqueInArrString(arr: string[]) {
 }
 
 export function pluralization(number: number, textForms: string[]): string {
-  const value = Math.abs(number) % 100
-  const last = value % 10
-  if (value > 10 && value < 20) return textForms[2]
-  if (last > 1 && last < 5) return textForms[1]
-  if (last === 1) return textForms[0]
-  return textForms[2]
+  const value = Math.abs(number) % 100;
+  const last = value % 10;
+  if (value > 10 && value < 20) {
+    return textForms[2];
+  }
+
+  if (last > 1 && last < 5) {
+    return textForms[1];
+  }
+
+  if (last === 1) {
+    return textForms[0];
+  }
+
+  return textForms[2];
 }

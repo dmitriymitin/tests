@@ -1,6 +1,6 @@
 import React from 'react';
-import IsVisible from "../ui/isVisibleWrapper";
-import {Empty, Spin} from "antd";
+import IsVisible from '../ui/isVisibleWrapper';
+import {Empty, Spin} from 'antd';
 
 interface IAllQuestionsEmptyProps {
   text?: string;

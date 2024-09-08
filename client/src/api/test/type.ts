@@ -1,6 +1,6 @@
-import {testStatusType} from "../../type/test/type";
+import {testStatusType} from '../../type/test/type';
 
-export type EditorDescriptionTest = {time: number, blocks: ({id: string, type: string, data: {text: string, level: number}} | {id: string, type: string, data: {text: string, level?: undefined}})[]}
+export type EditorDescriptionTest = {time: number; blocks: ({id: string; type: string; data: {text: string; level: number}} | {id: string; type: string; data: {text: string; level?: undefined}})[]}
 
 export interface ITestModelRequest {
     title: string;
@@ -10,37 +10,36 @@ export interface ITestModelRequest {
 
 export interface ITestUpdateStatusModelRequest {
     id: string;
-    status: testStatusType
+    status: testStatusType;
 }
 
 export interface ICustomTestQuestion {
     _id: string | null;
     description: string;
     answers: {
-        [key: string]: TypeCustomTestQuestionAnswer
-    } | null
+        [key: string]: TypeCustomTestQuestionAnswer;
+    } | null;
 }
 
-
 export interface IStudent {
-    _id: string,
-    FIOGroup: string,
-    answer: Record<string, string>,
-    testId: string,
+    _id: string;
+    FIOGroup: string;
+    answer: Record<string, string>;
+    testId: string;
 }
 
 export interface IFolderModel {
-    _id: string,
-    name: string
+    _id: string;
+    name: string;
 }
 
 export interface ITestModelResponse {
     firstQuestionTitle: string | null;
-    _id: string,
+    _id: string;
     title: string;
     descriptionEditor?: EditorDescriptionTest;
     quantityQuestion: number;
-    questions: ICustomTestQuestion[] | null
+    questions: ICustomTestQuestion[] | null;
     status: testStatusType;
     createDate: string;
     testKey: string | null;
@@ -49,12 +48,12 @@ export interface ITestModelResponse {
 }
 
 export type TypeCustomTestQuestionAnswer = {
-    name: string,
-    value: string
+    name: string;
+    value: string;
 }
 
 export interface ITestCustomModelResponse {
-    firstQuestionTitle: string | null,
+    firstQuestionTitle: string | null;
     _id: string;
     title: string;
     questions: ICustomTestQuestion[];
@@ -72,26 +71,26 @@ export interface IGetTestInfoCustomModelResponse {
         questions: ICustomTestQuestion[];
         status: testStatusType;
         testKey: string | null;
-    },
-    usersInfo: ISaveNewTestResponse[],
+    };
+    usersInfo: ISaveNewTestResponse[];
     testKey: string | null;
 }
 
 export interface ITestCustomModelRequest {
     description: string;
     answers: {
-        [key: string]: TypeCustomTestQuestionAnswer
-    }
+        [key: string]: TypeCustomTestQuestionAnswer;
+    };
 }
 
 export interface IGetOneTestInfoResponse {
-    test: ITestModelResponse & ITestCustomModelResponse,
-    usersInfo: ISaveNewTestResponse[]
+    test: ITestModelResponse & ITestCustomModelResponse;
+    usersInfo: ISaveNewTestResponse[];
     testKey: string | null;
 }
 
 export interface ISaveNewTestRequest {
-    FIOGroup: string,
+    FIOGroup: string;
     answer: {
         [key: string]: string;
     };
@@ -107,7 +106,6 @@ export interface ISaveNewTestResponse {
     testId: string;
 }
 
-
 export type TFilterById = 'byCreationDateDescending' | 'byCreationDateAscending' | 'byDateOfChangeDescending' | 'byDateOfChangeAscending'
 
 export enum EFilterById {
@@ -118,13 +116,13 @@ export enum EFilterById {
 }
 
 export const EFilterTranslate: {
-    [key: TFilterById | string]: string
+    [key: TFilterById | string]: string;
 } = {
-    byCreationDateDescending: 'По дате создания (сначала новые)',
-    byCreationDateAscending: 'По дате создания (сначала старые)',
-    byDateOfChangeDescending: 'По дате редактирования (сначала новые)',
-    byDateOfChangeAscending: 'По дате редакитрования (сначала старые)',
-}
+  byCreationDateDescending: 'По дате создания (сначала новые)',
+  byCreationDateAscending: 'По дате создания (сначала старые)',
+  byDateOfChangeDescending: 'По дате редактирования (сначала новые)',
+  byDateOfChangeAscending: 'По дате редакитрования (сначала старые)',
+};
 
 export enum EFilterStudentById {
     byWords,
@@ -135,10 +133,10 @@ export enum EFilterStudentById {
 export type TStudentFilterId = keyof typeof EFilterStudentById
 
 export const EFilterStudentsTranslate: {
-    [key: TStudentFilterId | string]: string
+    [key: TStudentFilterId | string]: string;
 } = {
-    byWords: 'По алфавиту',
-    byDoneDescending: 'По дате прохождения (сначала новые)',
-    byDoneAscending: 'По дате прохождения (сначала старые)'
-}
+  byWords: 'По алфавиту',
+  byDoneDescending: 'По дате прохождения (сначала новые)',
+  byDoneAscending: 'По дате прохождения (сначала старые)'
+};
 

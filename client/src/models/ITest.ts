@@ -1,5 +1,5 @@
 export interface ITest{
     _id: string;
-    name: string,
+    name: string;
     quantity: string;
 }

@@ -1,8 +1,8 @@
-import {QueryKey, useQuery, useQueryClient} from "react-query";
-import {getAdminAllTests} from "../../api/test";
-import {TCurrentAction, useSelectTestsStore} from "../../store/folders/useSelectTestsStore";
-import {testStatusType} from "../../type/test/type";
-import {useEffect} from "react";
+import {QueryKey, useQuery, useQueryClient} from 'react-query';
+import {getAdminAllTests} from '../../api/test';
+import {TCurrentAction, useSelectTestsStore} from '../../store/folders/useSelectTestsStore';
+import {testStatusType} from '../../type/test/type';
+import {useEffect} from 'react';
 
 export const useAllTest = (filterById = '2', folderId?: string, currentStatus?: testStatusType) => {
   const queryClient = useQueryClient();
@@ -11,7 +11,7 @@ export const useAllTest = (filterById = '2', folderId?: string, currentStatus?: 
     refetchOnWindowFocus: false
   });
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['allTests'] });
+  const invalidate = () => queryClient.invalidateQueries({queryKey: ['allTests']});
 
   return {
     invalidate,

@@ -1,4 +1,4 @@
-import {IUser} from "../../../models/IUser";
+import {IUser} from '../../../models/IUser';
 
 export interface AuthState {
     darkTheme: boolean;
@@ -9,10 +9,10 @@ export interface AuthState {
 }
 
 export enum AuthActionsEnum {
-    SET_AUTH = "SET_AUTH",
-    SET_ERROR = "SET_ERROR",
-    SET_USER = "SET_USER",
-    SET_IS_LOADING = "SET_IS_LOADING"
+    SET_AUTH = 'SET_AUTH',
+    SET_ERROR = 'SET_ERROR',
+    SET_USER = 'SET_USER',
+    SET_IS_LOADING = 'SET_IS_LOADING'
 }
 
 export interface SetAuthAction {

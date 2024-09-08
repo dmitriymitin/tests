@@ -6,6 +6,7 @@ export const UseClickOutside = (ref: any, callback: any) => {
       callback();
     }
   };
+
   React.useEffect(() => {
     document.addEventListener('click', handleClick);
     return () => {

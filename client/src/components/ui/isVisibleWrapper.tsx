@@ -1,8 +1,8 @@
 import React, {FC, Fragment, ReactNode} from 'react';
 
 interface IIsVisibleWrapperProps {
-  isVisible?: boolean,
-  children: ReactNode
+  isVisible?: boolean;
+  children: ReactNode;
 }
 
 const IsVisible: FC<IIsVisibleWrapperProps> = ({isVisible, children}) => {

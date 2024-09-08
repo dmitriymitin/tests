@@ -1,10 +1,10 @@
-import {useMedia} from "react-use";
-import {Button, Drawer, Form, Input, message, Modal} from "antd";
-import {useForm} from "antd/es/form/Form";
-import {useMutation, useQueryClient} from "react-query";
-import {createNewTest} from "../api/test";
-import {getFormateDate} from "../utils/getFormateDate";
-import drawerStyle from '../DrawerStyles.module.scss'
+import {useMedia} from 'react-use';
+import {Button, Drawer, Form, Input, message, Modal} from 'antd';
+import {useForm} from 'antd/es/form/Form';
+import {useMutation, useQueryClient} from 'react-query';
+import {createNewTest} from '../api/test';
+import {getFormateDate} from '../utils/getFormateDate';
+import drawerStyle from '../DrawerStyles.module.scss';
 
 interface NewTestModalDrawerProps {
     open: boolean;
@@ -12,109 +12,109 @@ interface NewTestModalDrawerProps {
 }
 
 const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
-    const isPC = useMedia('(min-width: 768px)');
-    const queryClient = useQueryClient()
+  const isPC = useMedia('(min-width: 768px)');
+  const queryClient = useQueryClient();
 
-    const {
-        mutateAsync: createNewTestTrigger,
-        isLoading: isCreateNewTestLoading
-    } = useMutation(createNewTest);
+  const {
+    mutateAsync: createNewTestTrigger,
+    isLoading: isCreateNewTestLoading
+  } = useMutation(createNewTest);
 
-    const [form] = useForm()
+  const [form] = useForm();
 
-    const onOk = async () => {
-        try {
-            await form.validateFields();
-            const testName = form.getFieldValue('testName')
-            const testQuestionNumber = form.getFieldValue('testQuestionNumber')
-            const date = new Date();
-            const createDate = getFormateDate(date)
-            await createNewTestTrigger({
-                title: testName,
-                quantityQuestion: testQuestionNumber,
-                createDate
-            })
-            await queryClient.invalidateQueries({ queryKey: ['allTests'] })
-            setOpen(false)
-        } catch (e) {
-            message.error('Ошибка при создании теста')
-        }
+  const onOk = async () => {
+    try {
+      await form.validateFields();
+      const testName = form.getFieldValue('testName');
+      const testQuestionNumber = form.getFieldValue('testQuestionNumber');
+      const date = new Date();
+      const createDate = getFormateDate(date);
+      await createNewTestTrigger({
+        title: testName,
+        quantityQuestion: testQuestionNumber,
+        createDate
+      });
+      await queryClient.invalidateQueries({queryKey: ['allTests']});
+      setOpen(false);
+    } catch (e) {
+      message.error('Ошибка при создании теста');
     }
+  };
 
-    const content = (
-        <Form
+  const content = (
+    <Form
             form={form}
-            autoComplete='off'
+            autoComplete="off"
             layout={'vertical'}
-        >
-            <Form.Item
+    >
+      <Form.Item
                 label={'Введите название теста'}
                 name={'testName'}
                 rules={[
-                    {
-                        required: true,
-                        message: 'Введите название теста'
-                    }
+                  {
+                    required: true,
+                    message: 'Введите название теста'
+                  }
                 ]}
-            >
-                <Input/>
-            </Form.Item>
-            <Form.Item
+      >
+        <Input/>
+      </Form.Item>
+      <Form.Item
                 label={'Введите кол-во вопросов'}
                 rules={[
-                    {
-                        required: true,
-                        message: 'Введите кол-во вопросов'
-                    }
-                    ]}
+                  {
+                    required: true,
+                    message: 'Введите кол-во вопросов'
+                  }
+                ]}
                 name={'testQuestionNumber'}
-            >
-                <Input type={'number'}/>
-            </Form.Item>
-        </Form>
-    )
+      >
+        <Input type={'number'}/>
+      </Form.Item>
+    </Form>
+  );
 
-    return (
-        <>
-            {isPC &&
-                <Modal
+  return (
+    <>
+      {isPC &&
+      <Modal
                     open={open}
                     title="Создание нового теста"
                     onCancel={() => setOpen(false)}
                     onOk={onOk}
-                    className={"modalWrapper"}
+                    className={'modalWrapper'}
                     footer={(
-                        <>
-                            <Button onClick={() => setOpen(false)}>Отмена</Button>
-                            <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
-                        </>
+                      <>
+                        <Button onClick={() => setOpen(false)}>Отмена</Button>
+                        <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
+                      </>
                     )}
-                >
-                    {content}
-                </Modal>
-            }
+      >
+        {content}
+      </Modal>
+      }
 
-            {!isPC &&
-                <Drawer
-                    placement={"bottom"}
+      {!isPC &&
+      <Drawer
+                    placement={'bottom'}
                     onClose={() => setOpen(false)}
                     open={open}
                     width={500}
                     height={'auto'}
                     className={drawerStyle.drawer}
                     destroyOnClose
-                >
-                    <div className={drawerStyle.drawerWrapper}>
-                        {content}
-                        <div className={drawerStyle.btns}>
-                            <Button onClick={() => setOpen(false)}>Отмена</Button>
-                            <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
-                        </div>
-                    </div>
-                </Drawer>
-            }
-        </>
-    )
+      >
+        <div className={drawerStyle.drawerWrapper}>
+          {content}
+          <div className={drawerStyle.btns}>
+            <Button onClick={() => setOpen(false)}>Отмена</Button>
+            <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
+          </div>
+        </div>
+      </Drawer>
+      }
+    </>
+  );
 };
 
 export default NewTestModalDrawer;

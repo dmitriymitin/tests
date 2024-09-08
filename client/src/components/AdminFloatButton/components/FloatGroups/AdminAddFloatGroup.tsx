@@ -1,24 +1,24 @@
 import React, {useState} from 'react';
-import {useNavigate} from "react-router-dom";
-import {useMutation, useQueryClient} from "react-query";
-import {createNewCustomTest, createNewTestWithDescription} from "../../../../api/test";
-import {getFormateDate} from "../../../../utils/getFormateDate";
-import {FloatButton, message} from "antd";
-import {PlusOutlined} from "@ant-design/icons";
-import s from "../../AdminFloatButton.module.scss";
-import clsx from "clsx";
-import NewTestModalDrawer from "../../../NewTestModalDrawer";
-import CreateNewForder from "../../../AdminTestsListForm/CreateNewForder/CreateNewForder";
-import gs from "../../../../GlobalStyles.module.scss"
-import {useMedia} from "react-use";
-import {useSelectTestsStore} from "../../../../store/folders/useSelectTestsStore";
+import {useNavigate} from 'react-router-dom';
+import {useMutation, useQueryClient} from 'react-query';
+import {createNewCustomTest, createNewTestWithDescription} from '../../../../api/test';
+import {getFormateDate} from '../../../../utils/getFormateDate';
+import {FloatButton, message} from 'antd';
+import {PlusOutlined} from '@ant-design/icons';
+import s from '../../AdminFloatButton.module.scss';
+import clsx from 'clsx';
+import NewTestModalDrawer from '../../../NewTestModalDrawer';
+import CreateNewForder from '../../../AdminTestsListForm/CreateNewForder/CreateNewForder';
+import gs from '../../../../GlobalStyles.module.scss';
+import {useMedia} from 'react-use';
+import {useSelectTestsStore} from '../../../../store/folders/useSelectTestsStore';
 
 const AdminAddFloatGroup = () => {
   const isPC = useMedia('(min-width: 768px)');
   const navigate = useNavigate();
   const [newTestOpen, setNewTestOpen] = useState(false);
-  const selectTestsStore = useSelectTestsStore(store => store)
-  const queryClient = useQueryClient()
+  const selectTestsStore = useSelectTestsStore(store => store);
+  const queryClient = useQueryClient();
 
   const {
     mutateAsync: createNewTestTrigger,
@@ -28,34 +28,34 @@ const AdminAddFloatGroup = () => {
   const handleCreateCustomTestWithDescription = async () => {
     try {
       const date = new Date();
-      const createDate = getFormateDate(date)
+      const createDate = getFormateDate(date);
       const res = await createNewTestTrigger({
         title: 'Тест с описанием',
         quantityQuestion: 1,
         createDate
       });
-      navigate(`/admin/testInfo/customTest/description/${res._id}`)
-      await queryClient.invalidateQueries({ queryKey: ['allTests'] })
+      navigate(`/admin/testInfo/customTest/description/${res._id}`);
+      await queryClient.invalidateQueries({queryKey: ['allTests']});
     } catch (e) {
-      message.error('Ошибка при создании теста')
+      message.error('Ошибка при создании теста');
     }
-  }
+  };
 
   const {
     mutateAsync: createCustomTestTrigger,
     isLoading: createCustomTestLoading,
-  } = useMutation(createNewCustomTest)
+  } = useMutation(createNewCustomTest);
 
   const handleCreateCustomTest = async () => {
     try {
       const date = new Date();
-      const createDate = getFormateDate(date)
+      const createDate = getFormateDate(date);
       const res = await createCustomTestTrigger(createDate);
-      navigate(`/admin/testInfo/customTest/${res._id}`)
+      navigate(`/admin/testInfo/customTest/${res._id}`);
     } catch (e) {
-      message.error('Ошибка при создании теста')
+      message.error('Ошибка при создании теста');
     }
-  }
+  };
 
   return (
     <>

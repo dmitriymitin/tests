@@ -1,6 +1,6 @@
 import React from 'react';
-import IsVisible from "../ui/isVisibleWrapper";
-import {Spin} from "antd";
+import IsVisible from '../ui/isVisibleWrapper';
+import {Spin} from 'antd';
 
 interface IAllQuestionsSpinsProps {
   isLoading?: boolean;

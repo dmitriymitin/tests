@@ -1,9 +1,9 @@
-import {EditorDescriptionTest} from "../../api/test/type";
-import React, {FC, memo, useEffect, useState} from "react";
-import s from "./EditorWrapper.module.scss";
-import Editor from "./Editor/Editor";
-import useFormInstance from "antd/es/form/hooks/useFormInstance";
-import {Form} from "antd";
+import {EditorDescriptionTest} from '../../api/test/type';
+import React, {FC, memo, useEffect, useState} from 'react';
+import s from './EditorWrapper.module.scss';
+import Editor from './Editor/Editor';
+import useFormInstance from 'antd/es/form/hooks/useFormInstance';
+import {Form} from 'antd';
 
 interface IEditorWrapperForm {
   // descriptionPARSE?: EditorDescriptionTest;
@@ -23,9 +23,9 @@ const EditorWrapperForm: FC<IEditorWrapperForm> = ({}) => {
   return (
     <>
       <Form.Item noStyle name={'descriptionParse'}>
-      <div className={s.editorContainer}>
-        <Editor data={descriptionPARSE} setData={setDescriptionPARSE} />
-      </div>
+        <div className={s.editorContainer}>
+          <Editor data={descriptionPARSE} setData={setDescriptionPARSE} />
+        </div>
       </Form.Item>
     </>
 

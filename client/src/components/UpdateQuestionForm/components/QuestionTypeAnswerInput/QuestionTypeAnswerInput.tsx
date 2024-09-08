@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Input} from "antd";
-import useFormInstance from "antd/es/form/hooks/useFormInstance";
-import {AnswerType} from "../../../../models/question";
-import {useIsMounted} from "../../../../http/hooks/useIsMounted";
+import {Input} from 'antd';
+import useFormInstance from 'antd/es/form/hooks/useFormInstance';
+import {AnswerType} from '../../../../models/question';
+import {useIsMounted} from '../../../../http/hooks/useIsMounted';
 
 const QuestionTypeAnswerInput = () => {
   const [keys, setKeys] = useState('');
