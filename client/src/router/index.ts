@@ -33,7 +33,7 @@ export enum RouteNames {
     ADMIN_QUESTIONS_LIST = '/admin/listQuestions',
     ADMIN_QUESTION_CREATE = '/admin/create/question',
     ADMIN_QUESTION_UPDATE = '/admin/update/question',
-    ADMIN_QUESTION_INFO = '/admin/info/question/:questionId',
+    ADMIN_QUESTION_INFO = '/admin/info/question',
     ADMIN_TESTS_LIST = '/admin/listTests',
     ADMIN_SETTING = '/admin/setting'
 }
@@ -106,12 +106,12 @@ export const privateRoutes : IRoute[] = [
     path: RouteNames.ADMIN_QUESTION_CREATE,
     component: CreateQuestionPage
   },
-  // {
-  //     path: RouteNames.ADMIN_QUESTION_INFO,
-  //     component: UpdateQuestionPage
-  // },
-  // {
-  //     path: RouteNames.ADMIN_QUESTION_UPDATE,
-  //     component: UpdateQuestionPage
-  // }
+  {
+    path: RouteNames.ADMIN_QUESTION_INFO + '/:questionId',
+    component: CreateQuestionPage
+  },
+  {
+    path: RouteNames.ADMIN_QUESTION_UPDATE + '/:questionId',
+    component: CreateQuestionPage
+  }
 ];

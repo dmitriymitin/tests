@@ -14,6 +14,7 @@ import {useMutation} from 'react-query';
 import {createQuestion} from '../../api/question';
 import {EditorDescriptionTest} from '../../api/test/type';
 import {IQuestionAnswer} from '../../api/question/type';
+import QuestionThemes from './components/QuestionThemes/QuestionThemes';
 
 interface IQuestionSetting {
   formName: string;
@@ -54,6 +55,7 @@ interface IFormData {
   isPublicQuestion: 0 | 1;
   isRandomAnswers: 0 | 1;
   timeForAnswer: string;
+  groupsId: string[];
 }
 
 interface IUpdateQuestionForm {}
@@ -116,19 +118,20 @@ const UpdateQuestionForm = ({}: IUpdateQuestionForm) => {
     }
 
     const formData = form.getFieldsValue();
-    console.log('save', formData);
     try {
-      const res = await createNewQuestionTrigger({
+      const dataToResponse = {
         answerType: formData.answerType,
         answers: formData.answerFieldsData,
+        groupsId: formData.groupsId,
+        descriptionEditor: formData.descriptionParse,
         setting: {
           timeForAnswer: formData?.timeForAnswer?.toString(),
           isPublicAnswer: Boolean(formData?.isPublicAnswer),
           isPublicQuestion: Boolean(formData?.isPublicQuestion),
           isRandomAnswers: Boolean(formData?.isRandomAnswers)
         }
-      });
-      console.log('res', res);
+      };
+      await createNewQuestionTrigger(dataToResponse);
     } catch (e) {
       message.error('Ошибка при создании вопроса');
     }
@@ -153,18 +156,21 @@ const UpdateQuestionForm = ({}: IUpdateQuestionForm) => {
     >
       <div className={sC.wrapper}>
         {/* <ChangeQuestionKey/> */}
+        <div className="testBackground mb-20">
+          <QuestionThemes />
+        </div>
         <div className="testBackground">
           {questionSetting.map((el, index) => (
             <QuestionSettingSegmented
-              key={index}
-              formName={el.formName}
-              text={el.text}
-              type={el.type}
-              description={el.description}
+                key={index}
+                formName={el.formName}
+                text={el.text}
+                type={el.type}
+                description={el.description}
             />
           ))}
         </div>
-        <div className={sC.title_block}> Описание </div>
+        <div className={sC.title_block}> Описание</div>
         <EditorWrapperForm/>
         <div className={sC.title_block}>Способ ответа</div>
         <div className="testBackground flex-center">
@@ -177,24 +183,24 @@ const UpdateQuestionForm = ({}: IUpdateQuestionForm) => {
         </div>
         <div className="btnSaveWrapper mt-20 flex-middle gap-10">
           <Button
-            loading={isCreateNewQuestionLoading}
-            disabled={errors.length !== 0}
-            onClick={onSubmit}
-            size={'large'}
-            type={'primary'}
+              loading={isCreateNewQuestionLoading}
+              disabled={errors.length !== 0}
+              onClick={onSubmit}
+              size={'large'}
+              type={'primary'}
           >
             Создать вопрос
           </Button>
           {!!errors.length &&
-          <div className="flex-wrap gap-10 flex-middle">
-            {errors
-              .filter(error => error)
-              .map((error, index) => (
-                <div key={index} className="customErrorBox fs-14">
-                  {error}
-                </div>
-              ))}
-          </div>
+            <div className="flex-wrap gap-10 flex-middle">
+              {errors
+                .filter(error => error)
+                .map((error, index) => (
+                  <div key={index} className="customErrorBox fs-14">
+                    {error}
+                  </div>
+                ))}
+            </div>
           }
         </div>
       </div>

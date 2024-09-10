@@ -4,6 +4,7 @@ const router = new Router();
 const authMiddleware = require('../middlewares/auth-middleware')
 
 router.post('/create',authMiddleware , questionGroupController.create);
-router.get('/get/all', questionGroupController.getAllGroupQuestion);
+router.get('/get/allGroupQuestion', questionGroupController.getAllGroupQuestion);
+router.delete('/deleteOne/:id', questionGroupController.deleteOne);
 
 module.exports = router;

@@ -9,7 +9,13 @@ export const createQuestion = async (params: Omit<IQuestion, '_id'>): Promise<IQ
   return data;
 };
 
+export const deleteOneQuestion = async (id: string): Promise<IQuestion[]> => {
+  const {data} = await $api.delete(`/question/deleteOne/${id}`);
+  return data;
+};
+
+
 export const getAllQuestion = async (): Promise<IQuestion[]> => {
-  const {data} = await $api.get('/question/get/all');
+  const {data} = await $api.get('/question/get/allQuestion');
   return data;
 };

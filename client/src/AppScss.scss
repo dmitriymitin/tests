@@ -24,9 +24,36 @@
   .mb-#{$size} {
     margin-bottom: #{$size}px;
   }
+  .p-#{$size} {
+    padding: #{$size}px;
+  }
+  .pt-#{$size} {
+    padding-top: #{$size}px;
+  }
+  .py-#{$size} {
+    padding-top: #{$size}px;
+    padding-bottom: #{$size}px;
+  }
+  .px-#{$size} {
+    padding-left: #{$size}px;
+    padding-right: #{$size}px;
+  }
+  .pr-#{$size} {
+    padding-right: #{$size}px;
+  }
+  .pb-#{$size} {
+    padding-bottom: #{$size}px;
+  }
+  .pl-#{$size} {
+    padding-left: #{$size}px;
+  }
   .gap-#{$size} {
     gap: #{$size}px;
   }
+}
+
+.bold {
+  font-weight: bold;
 }
 
 .flex-row {
@@ -36,6 +63,11 @@
   &.inline {
     display: inline-flex;
   }
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
 }
 
 .flex-wrap {
@@ -48,6 +80,10 @@
   text-align: center;
 }
 
+.flex-end {
+  justify-content: flex-end;
+}
+
 .flex-middle {
   align-items: center;
 }
@@ -55,4 +91,52 @@
 .flex-between {
   display: flex;
   justify-content: space-between;
+}
+
+.group-block {
+  padding: 7px 14px;
+
+  &.right-border {
+    border-radius: 8px 0 0 8px;
+    border-right: 1px solid rgba(44, 40, 40, 0.19);
+  }
+
+  &.left-border {
+    border-radius: 0 8px 8px 0;
+  }
+}
+
+.group-block-wrapper {
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  background-color: white;
+  transition: all 0.25s;
+
+  &:hover:not(&.active) {
+    opacity: 0.66;
+
+    .group-block {
+      background-color: rgba(138, 91, 91, 0.09) !important;
+    }
+  }
+
+  .group-block {
+    transition: all 0.25s;
+    background: #fff;
+  }
+
+  &.active {
+    .group-block {
+      color: white;
+      background-color: #363e45;
+
+      &.right-border {
+        border-right: 1px solid rgb(169, 234, 212);
+      }
+    }
+
+    &:hover {
+      opacity: 0.66;
+    }
+  }
 }

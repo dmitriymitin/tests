@@ -106,25 +106,24 @@
   }
 }
 
-.btnTitleSmall {
+.btnTitleMiddle {
   @extend .btnTitle;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 13px;
-  font-size: 12px;
+  padding: 14px;
+  font-size: 15px;
   height: 20px;
   width: max-content;
   gap: 5px;
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #363e45 !important;
-  color: white;
+}
 
-  &:hover {
-    opacity: 0.66;
-  }
+.btnTitleSmall {
+  @extend .btnTitle;
+  padding: 13px;
+  font-size: 14px;
+  height: 20px;
+  width: max-content;
+  gap: 5px;
+  border-radius: 8px;
 }
 
 .btnLucky {

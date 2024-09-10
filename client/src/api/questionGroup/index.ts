@@ -10,6 +10,11 @@ export const createGroupQuestion = async (params: Omit<IQuestionGroup, '_id'>): 
 };
 
 export const getAllGroupQuestion = async (): Promise<IQuestionGroup[]> => {
-  const {data} = await $api.get('/questionGroup/get/all');
+  const {data} = await $api.get('/questionGroup/get/allGroupQuestion');
+  return data;
+};
+
+export const deleteOneQuestion = async (id: string): Promise<any> => {
+  const {data} = await $api.delete(`/questionGroup/deleteOne/${id}`);
   return data;
 };

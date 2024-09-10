@@ -11,6 +11,16 @@ class QuestionGroupController{
         }
     }
 
+    async deleteOne(req, res, next){
+        try{
+            const {id} = req.params;
+            const response = await QuestionGroupService.deleteOne(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     async getAllGroupQuestion(req, res, next){
         try {
             const questions = await QuestionGroupService.getAll();

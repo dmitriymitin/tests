@@ -15,7 +15,7 @@ interface IPillarHeadProps {
 const PillarHead = ({title, btnText, btnClick}: IPillarHeadProps) => {
   const {isAuth} = useTypedSelector(state => state.auth);
   return (
-    <div className="pillar-head flex-row flex-middle gap-10">
+    <div className="pillar-head flex-row flex-middle gap-10 fs-16">
       <span>{title}</span>
       <IsVisible isVisible={isAuth}>
         <button

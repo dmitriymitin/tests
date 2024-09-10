@@ -8,8 +8,10 @@ import s from './AdminTestInfo.module.scss';
 import clsx from 'clsx';
 import ChangeCustomQuestion from '../../components/CreateCustomTestForm/ChangeCustomQuestion/ChangeCustomQuestion';
 import {ICustomTestQuestion} from '../../api/test/type';
-import {DownloadOutlined} from '@ant-design/icons';
+import {DownloadOutlined, PlusOutlined} from '@ant-design/icons';
 import {API_URL} from '../../http';
+import gs from '../../GlobalStyles.module.scss';
+import {RouteNames} from '../../router';
 
 const AdminTestInfo = () => {
   const navigate = useNavigate();
@@ -118,7 +120,7 @@ const AdminTestInfo = () => {
         Ключ {testInfoData.testKey || 'не установлен'}
         <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/key/${currentTest._id}`)}>Изменить ключ</Button>
         {testInfoData.test.questions &&
-        <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/customTest/${currentTest._id}`)}>Редакитровать тест</Button>
+        <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/customTest/${currentTest._id}`)}>Редактировать тест</Button>
         }
       </div>
       <Input placeholder={'Введите ФИО студента для поиска'} value={search} onChange={e => setSearch(e.target.value)}/>
@@ -135,20 +137,29 @@ const AdminTestInfo = () => {
             {isFullInfo && (
               <div className={s.downloadBtnWrapper}>
                 <Link
-                                    to={`${API_URL}/test/downloadTest/${testId}`}
-                                    className={s.downloadBtn}
-                ><DownloadOutlined/></Link>
+                  to={`${API_URL}/test/downloadTest/${testId}`}>
+                  <button
+                  className={clsx('clearButton fs-14 gap-10', gs.btnTitleSmall)}
+                  >
+                    <DownloadOutlined/>
+                    Скачать EXEL
+                  </button>
+                </Link>
+                {/* <Link */}
+                {/*  to={`${API_URL}/test/downloadTest/${testId}`} */}
+                {/*  className={s.downloadBtn} */}
+                {/* ><DownloadOutlined/></Link> */}
               </div>
             )}
             {testInfoUsersResult &&
             <AdminTestInfoTable
-                                isFullInfo={isFullInfo}
-                                firstQuestionTitle={currentTest.firstQuestionTitle || 'Фамилия, номер группы'}
-                                usersTestInfo={testInfoUsersResult}
-                                questions={currentTest.questions}
-                                countAnswers={currentTest.quantityQuestion || currentTest.questions.length}
-                                setCurrentQuestion={setCurrentQuestion}
-                                testKey={testInfoData.testKey}
+                    isFullInfo={isFullInfo}
+                    firstQuestionTitle={currentTest.firstQuestionTitle || 'Фамилия, номер группы'}
+                    usersTestInfo={testInfoUsersResult}
+                    questions={currentTest.questions}
+                    countAnswers={currentTest.quantityQuestion || currentTest.questions.length}
+                    setCurrentQuestion={setCurrentQuestion}
+                    testKey={testInfoData.testKey}
             />
             }
           </div>

@@ -19,7 +19,7 @@ export interface IQuestion {
   answers: IQuestionAnswer;
   answerType: TAnswerType;
   descriptionEditor?: EditorDescriptionTest;
-  groupId?: string[];
+  groupsId?: string[];
   setting: {
     isRandomAnswers?: boolean;
     timeForAnswer?: string;

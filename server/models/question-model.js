@@ -5,7 +5,7 @@ const QuestionSchema = new Schema({
     answerType: {type: String, required: true},
     descriptionEditor: {type: Object, required: false},
     setting: {type: Object, required: false},
-    groupId: {type: Array, required: false}
+    groupsId: {type: Array, required: false}
 })
 
 module.exports = model('QuestionSchema', QuestionSchema);

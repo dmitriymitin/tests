@@ -110,7 +110,7 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
                               >
                                 <div className={s.btnChange}>
                                   <EditOutlined style={{fontSize: 16}}/>
-                                  Настроить папку
+                                  Изменить папку
                                 </div>
                               </button>
                               <Popconfirm

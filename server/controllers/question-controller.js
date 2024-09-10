@@ -11,6 +11,16 @@ class QuestionController{
         }
     }
 
+    async deleteOne(req, res, next) {
+        try {
+            const {id} = req.params;
+            const response = await QuestionService.deleteOne(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     async getAllQuestion(req, res, next){
         try {
             const questions = await QuestionService.getAll();

@@ -65,9 +65,10 @@ const ContextMenu = ({position, onClose, text, menuRef, isClosing}: IContextMenu
 interface IContextMenuWrapper {
   children: React.ReactNode;
   text?: React.ReactNode;
+  isFullWidth?: boolean;
 }
 
-const ContextMenuWrapper = ({children, text}: IContextMenuWrapper) => {
+const ContextMenuWrapper = ({children, text, isFullWidth = true}: IContextMenuWrapper) => {
   const [showMenu, setShowMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({x: 0, y: 0});
   const [isClosing, setIsClosing] = useState(false);
@@ -143,7 +144,7 @@ const ContextMenuWrapper = ({children, text}: IContextMenuWrapper) => {
 
   return (
     <div ref={wrapperRef} onTouchStart={handleLongPress} onTouchEnd={handleTouchEnd} onContextMenu={handleContextMenu}
-         style={{position: 'relative', display: 'inline-block', width: '100%'}}>
+         style={{position: 'relative', display: 'inline-block', width: isFullWidth ? '100%' : 'max-content'}}>
       <div>
         {children}
       </div>
