@@ -17,6 +17,7 @@ import {IQuestionAnswer} from '../../api/question/type';
 import QuestionThemes from './components/QuestionThemes/QuestionThemes';
 import {RouteNames} from '../../router';
 import {useNavigate} from 'react-router-dom';
+import {useAllGroupQuestion} from "../../http/hooks/useAllGroupQuestion";
 
 interface IQuestionSetting {
   formName: string;
@@ -76,6 +77,7 @@ const UpdateQuestionForm = ({questionId}: IUpdateQuestionForm) => {
   const [fieldsData, setFieldsDate] = useState<IFormFields>({});
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const {invalidate: groupInvalidate} = useAllGroupQuestion(false);
 
   const queryKey = `question${questionId}`;
 
@@ -161,6 +163,7 @@ const UpdateQuestionForm = ({questionId}: IUpdateQuestionForm) => {
       } else {
         await updateQuestionTrigger({id: questionId, data: dataToResponse});
         await queryClient.invalidateQueries(queryKey);
+        await groupInvalidate();
       }
 
       message.success('Вопрос успешно создан');

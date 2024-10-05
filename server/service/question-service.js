@@ -36,9 +36,10 @@ class QuestionService {
     async update(params){
         const id = params.id;
         const data = params.data;
-        console.log('id', id);
-        console.log('data', data);
+        const questionOld = await QuestionModel.findById(id);
         const question = await QuestionModel.updateOne({_id: id}, data);
+        await changeCountInGroupsId(questionOld.groupsId, 'remove');
+        await changeCountInGroupsId(question.groupsId, 'add');
         return question;
     }
 
