@@ -4,32 +4,33 @@ import {useMutation} from 'react-query';
 import s from './AddNewThemeModalDrawer.module.scss';
 import {Button, Drawer, Form, Input, message, Modal} from 'antd';
 import {useForm} from 'antd/es/form/Form';
-import {createGroupQuestion} from '../../../api/questionGroup';
+import {createGroupQuestion, updateGroupQuestion} from '../../../api/questionGroup';
 import {useAllGroupQuestion} from '../../../http/hooks/useAllGroupQuestion';
+import {IQuestionGroup} from "../../../api/questionGroup/type";
 
 interface IFormData {
-    name: string;
+  name: string;
 }
 
-interface AddNewQuestionModalDrawerProps {
-    open: boolean;
-    setOpen: (val: boolean) => void;
-    defaultName?: string;
+interface UpdateNewQuestionModalDrawerProps {
+  open: boolean;
+  setOpen: (val: boolean) => void;
+  group?: IQuestionGroup;
 }
 
-const AddNewThemeModalDrawer = ({open, setOpen, defaultName}: AddNewQuestionModalDrawerProps) => {
+const ChangeNewThemeModalDrawer = ({open, setOpen, group}: UpdateNewQuestionModalDrawerProps) => {
   const [form] = useForm<IFormData>();
   const isPC = useMedia('(min-width: 768px)');
 
   const {
-    mutateAsync: addQuestionGroupTrigger,
-    isLoading: isAddQuestionGroupLoading
-  } = useMutation(createGroupQuestion);
+    mutateAsync: changeQuestionGroupTrigger,
+    isLoading: isChangeQuestionGroupLoading
+  } = useMutation(updateGroupQuestion);
 
   const {invalidate} = useAllGroupQuestion();
 
   useEffect(() => {
-    form.setFieldValue('name', defaultName);
+    form.setFieldValue('name', group?.name);
   }, []);
 
   const onOk = async () => {
@@ -41,12 +42,12 @@ const AddNewThemeModalDrawer = ({open, setOpen, defaultName}: AddNewQuestionModa
 
     try {
       const formData = form.getFieldsValue();
-      await addQuestionGroupTrigger({name: formData.name});
+      await changeQuestionGroupTrigger({_id: group?._id, name: formData.name});
       await invalidate();
       setOpen(false);
-      message.success('Тема была успешно добавлена!');
+      message.success('Тема была успешно изменена!');
     } catch (e) {
-      message.error('Ошибка при добавлении темы');
+      message.error('Ошибка при изменении темы');
     }
   };
 
@@ -56,19 +57,19 @@ const AddNewThemeModalDrawer = ({open, setOpen, defaultName}: AddNewQuestionModa
 
   const content = (
     <Form
-        onSubmitCapture={onOk}
-        layout={'vertical'}
-        form={form}
-        className={s.test__body}
+      onSubmitCapture={onOk}
+      layout={'vertical'}
+      form={form}
+      className={s.test__body}
     >
       <Form.Item
-            className={s.description}
-            label={'Название темы: '}
-            rules={[{
-              required: true,
-              message: 'Пожалуйста, введите название темы'
-            }]}
-            name={'name'}
+        className={s.description}
+        label={'Название темы: '}
+        rules={[{
+          required: true,
+          message: 'Пожалуйста, введите название темы'
+        }]}
+        name={'name'}
       >
         <Input/>
       </Form.Item>
@@ -79,10 +80,10 @@ const AddNewThemeModalDrawer = ({open, setOpen, defaultName}: AddNewQuestionModa
     <>
       <Button onClick={onCancel}>Отмена</Button>
       <Button
-            loading={isAddQuestionGroupLoading}
-            type={'primary'}
-            onClick={onOk}>
-        Добавить тему
+        loading={isChangeQuestionGroupLoading}
+        type={'primary'}
+        onClick={onOk}>
+        Изменить тему
       </Button>
     </>
   );
@@ -92,7 +93,7 @@ const AddNewThemeModalDrawer = ({open, setOpen, defaultName}: AddNewQuestionModa
       {isPC &&
       <Modal
               open={open}
-              title="Добавление темы"
+              title="Изменение темы"
               onCancel={() => setOpen(false)}
               onOk={onOk}
               width={600}
@@ -125,4 +126,4 @@ const AddNewThemeModalDrawer = ({open, setOpen, defaultName}: AddNewQuestionModa
   );
 };
 
-export default AddNewThemeModalDrawer;
+export default ChangeNewThemeModalDrawer;

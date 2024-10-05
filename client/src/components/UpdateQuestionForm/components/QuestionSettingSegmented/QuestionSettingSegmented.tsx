@@ -16,9 +16,12 @@ interface IQuestionSettingSegmentedProps {
 
 const QuestionSettingSegmented = ({formName, text, type = 'yesNo', description}: IQuestionSettingSegmentedProps) => {
   const formInstance = useFormInstance();
-  const defaultValue = type === 'time' ? undefined : formInstance.getFieldValue(formName) || 0;
+  const formFieldValue: string | undefined = formInstance.getFieldValue(formName);
+  const defaultValue = type === 'time'
+    ? (formFieldValue ? Number(formFieldValue?.toString()?.split('.')[0]) : undefined)
+    : (Number(formFieldValue) || 0);
   const [value, setValue] = useState<number>(defaultValue);
-  const [valueSec, setValueSec] = useState<number>(undefined);
+  const [valueSec, setValueSec] = useState<number>(type === 'time' && formFieldValue ? Number(formFieldValue?.toString()?.split('.')[1]) : undefined);
 
   useEffect(() => {
     if (type === 'yesNo') {

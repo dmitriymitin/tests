@@ -9,10 +9,23 @@ import {russianAlphabet} from '../../../../utils/russianAlphabet';
 import {AnswerType} from '../../../../models/question';
 
 const QuestionTypeAnswerRadio = () => {
-  const [arrayIds, setArrayIds] = useState([getUniqId()]);
-  const [checked, setChecked] = useState<string | undefined>();
-  const [formRadio] = useForm();
   const formInstance = useFormInstance();
+  const defaultFieldForm = formInstance.getFieldValue('answerFieldsData');
+  // @ts-ignore
+  const defaultArrayIds = defaultFieldForm && defaultFieldForm?.radio ? Object.keys(defaultFieldForm?.radio?.values).sort((a, b) => {
+    return defaultFieldForm?.radio?.values[a].rang - defaultFieldForm?.radio?.values[b].rang;
+  }) : undefined;
+  const [arrayIds, setArrayIds] = useState(defaultArrayIds || [getUniqId()]);
+  const defaultChecked = defaultFieldForm?.radio?.keys?.[0];
+  const [checked, setChecked] = useState<string | undefined>(defaultChecked || undefined);
+  const [formRadio] = useForm();
+
+  useEffect(() => {
+    arrayIds.forEach(el => {
+      formRadio.setFieldValue('key-' + el, defaultFieldForm?.radio?.values?.[el]?.key);
+      formRadio.setFieldValue('title-' + el, defaultFieldForm?.radio?.values?.[el]?.title);
+    });
+  }, []);
 
   const setFieldsValueInFormInstance = useCallback((allFields: {}) => {
     const allKeys: string[] = [];
@@ -26,6 +39,7 @@ const QuestionTypeAnswerRadio = () => {
       if (titOrKey === 'key') {
         const key = el[1] as string || '';
         newObject['key'] = key;
+        newObject['keyId'] = uniqId;
         allKeys.push(key);
       }
 
@@ -41,7 +55,7 @@ const QuestionTypeAnswerRadio = () => {
 
     formInstance.setFieldValue('answerFieldsData', isAllUniqKeysNew ? {
       [AnswerType.Radio]: {
-        keys: fieldsData[checked]?.key ? [fieldsData[checked]?.key] : [],
+        keys: fieldsData[checked]?.keyId ? [fieldsData[checked]?.keyId] : [],
         values: fieldsData
       }
     } : null);

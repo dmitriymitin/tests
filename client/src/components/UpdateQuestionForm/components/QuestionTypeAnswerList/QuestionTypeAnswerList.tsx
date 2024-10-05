@@ -17,14 +17,19 @@ const componentArray = [
   {title: 'Множество вариантов', type: AnswerType.Checkbox, content: IconAnswerTypeCheckbox, fs: '150px'}
 ];
 
+const getCurrentIndex = (type: AnswerType | undefined) => {
+  return componentArray.findIndex(el => el.type === type);
+};
+
 interface IQuestionTypeAnswerListProps {
   isInfoBlock?: boolean;
 }
 
 export const QuestionTypeAnswerList: FC<IQuestionTypeAnswerListProps> = ({isInfoBlock}) => {
   const is600px = useMedia('(max-width: 750px)');
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const form = useFormInstance();
+  const defaultType = form.getFieldValue('answerType');
+  const [activeIndex, setActiveIndex] = useState<number | null>(defaultType ? getCurrentIndex(defaultType) : null);
 
   useEffect(() => {
     if (activeIndex === null) {

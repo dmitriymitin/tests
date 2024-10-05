@@ -19,7 +19,7 @@ const Navbar = () => {
           justifyContent: 'space-between'
         }}>
           <button
-            className={clsx('clearButton', 'text')}
+            className={clsx('clearButton', 'text header')}
             onClick={() => navigate('/')}
           >
             Главная
@@ -31,7 +31,9 @@ const Navbar = () => {
           }}>
             <IsVisible isVisible={isAuth}>
               <button
-                    className={clsx('clearButton', 'text', {active: [RouteNames.ADMIN_QUESTIONS_LIST, RouteNames.ADMIN_QUESTION_CREATE, RouteNames.ADMIN_QUESTION_UPDATE].includes(pathname as any)})}
+                    className={clsx('clearButton', 'text header',
+                      {active: [RouteNames.ADMIN_QUESTIONS_LIST, RouteNames.ADMIN_QUESTION_CREATE,
+                        RouteNames.ADMIN_QUESTION_UPDATE].includes(pathname as any)})}
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -43,27 +45,33 @@ const Navbar = () => {
             </IsVisible>
             {isAuth && <>
               <button
-                        className={clsx('clearButton', 'text', {active: pathname === RouteNames.ADMIN_TESTS_LIST})}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          navigate(RouteNames.ADMIN_TESTS_LIST);
-                        }}
+                    className={clsx('clearButton', 'text header', {active: pathname === RouteNames.ADMIN_TESTS_LIST})}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      navigate(RouteNames.ADMIN_TESTS_LIST);
+                    }}
               >
                 Тесты
               </button>
               <button
-                        className={clsx('clearButton', 'text', {active: pathname === RouteNames.ADMIN_SEARCH_STUDENTS})}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          navigate(RouteNames.ADMIN_SEARCH_STUDENTS);
-                        }}>
+                    className={clsx('clearButton', 'text header', {active: pathname === RouteNames.ADMIN_SEARCH_STUDENTS})}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      navigate(RouteNames.ADMIN_SEARCH_STUDENTS);
+                    }}>
                 Результаты студентов
               </button>
               <button
-                        className={clsx('clearButton', 'text', {active: pathname === RouteNames.ADMIN})}
-                        onClick={() => navigate(RouteNames.ADMIN)}
+                    className={clsx('clearButton', 'text header', {active: pathname === RouteNames.ADMIN_SETTING})}
+                    onClick={() => navigate(RouteNames.ADMIN_SETTING)}
+              >
+                Настройки
+              </button>
+              <button
+                    className={clsx('clearButton', 'text header', {active: pathname === RouteNames.ADMIN})}
+                    onClick={() => navigate(RouteNames.ADMIN)}
               >
                 Админ
               </button>

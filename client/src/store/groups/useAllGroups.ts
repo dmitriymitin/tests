@@ -12,7 +12,7 @@ export const useAllGroupsStore = create<IGroupsStore>()(devtools(
   immer((setState) => ({
     currentActiveGroups: [],
     setCurrentActiveGroupIds: (groupsIds: IQuestionGroup[]) => setState((store) => {
-      store.currentActiveGroups = groupsIds;
+      store.currentActiveGroups = groupsIds?.[0] ? [groupsIds[0]] : [];
     }),
   }))
 )

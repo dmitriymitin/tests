@@ -33,6 +33,15 @@ class QuestionService {
         return questionModel;
     }
 
+    async update(params){
+        const id = params.id;
+        const data = params.data;
+        console.log('id', id);
+        console.log('data', data);
+        const question = await QuestionModel.updateOne({_id: id}, data);
+        return question;
+    }
+
     async deleteOne(id) {
         const questionId = new ObjectId(id);
         const question = await QuestionModel.findOne({_id: questionId});
@@ -40,8 +49,21 @@ class QuestionService {
         await QuestionModel.deleteOne({_id: questionId});
     }
 
-    async getAll(){
-        const questionsModel = await QuestionModel.find();
+    async getOne(id) {
+        const questionId = new ObjectId(id);
+        const question = await QuestionModel.findOne({_id: questionId});
+        // const questionDto = new QuestionDto(question)
+        const questionDto = question
+        return questionDto
+    }
+
+    async getAll({activeGroupIds}){
+        let questionsModel = [];
+        if (activeGroupIds && activeGroupIds?.length) {
+            questionsModel = await QuestionModel.find({groupsId: {$in: activeGroupIds}});
+        } else {
+            questionsModel = await QuestionModel.find();
+        }
         return getQuestionsModelDTO(questionsModel);
     }
 }

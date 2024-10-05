@@ -13,6 +13,7 @@ import AdminSetting from '../pages/AdminSetting/AdminSetting';
 import AdminListTestsPage from '../pages/AdminListTestsPage';
 import Questions from '../pages/Questions';
 import CreateQuestionPage from '../pages/CreateQuestionPage/CreateQuestionPage';
+import UpdateQuestionPage from "../pages/UpdateQuestionPage/UpdateQuestionPage";
 
 export interface IRoute {
     path: string;
@@ -112,6 +113,6 @@ export const privateRoutes : IRoute[] = [
   },
   {
     path: RouteNames.ADMIN_QUESTION_UPDATE + '/:questionId',
-    component: CreateQuestionPage
+    component: UpdateQuestionPage
   }
 ];

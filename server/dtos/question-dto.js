@@ -4,7 +4,7 @@ module.exports = class QuestionDto {
     answerType;
     descriptionEditor;
     setting;
-    groupId;
+    groupsId;
 
     constructor(model) {
         const newAnswers = Object.entries(model?.answers).reduce((acc, el) => {
@@ -16,6 +16,6 @@ module.exports = class QuestionDto {
         this.answerType = model.answerType
         this.descriptionEditor = model.descriptionEditor
         this.setting = model.setting
-        this.groupId = model.groupId;
+        this.groupsId = model.groupsId;
     }
 }

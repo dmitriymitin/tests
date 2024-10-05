@@ -17,7 +17,7 @@ interface IAllGroupQuestionDeleteBtnThemeProps {
 const AllGroupQuestionDeleteBtnTheme: FC<IAllGroupQuestionDeleteBtnThemeProps> = ({
   group
 }) => {
-  const {invalidate: invalidateGroupQuestion} = useAllGroupQuestion();
+  const {invalidate: invalidateGroupQuestion} = useAllGroupQuestion(false);
   const {
     mutateAsync: deleteQuestionTrigger,
     isLoading: isLoadingDeleteQuestion
@@ -46,9 +46,6 @@ const AllGroupQuestionDeleteBtnTheme: FC<IAllGroupQuestionDeleteBtnThemeProps> =
           Удалить тему
         </div>
       </button>
-      <IsVisible isVisible={isLoadingDeleteQuestion}>
-        <Spin/>
-      </IsVisible>
     </Popconfirm>
   );
 };

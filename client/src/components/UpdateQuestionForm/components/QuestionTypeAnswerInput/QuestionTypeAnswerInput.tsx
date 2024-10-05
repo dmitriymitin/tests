@@ -5,8 +5,9 @@ import {AnswerType} from '../../../../models/question';
 import {useIsMounted} from '../../../../http/hooks/useIsMounted';
 
 const QuestionTypeAnswerInput = () => {
-  const [keys, setKeys] = useState('');
   const formInstance = useFormInstance();
+  const defaultFieldForm = formInstance.getFieldValue('answerFieldsData');
+  const [keys, setKeys] = useState(defaultFieldForm?.text?.keys?.[0] || '');
 
   useEffect(() => {
     formInstance.submit();

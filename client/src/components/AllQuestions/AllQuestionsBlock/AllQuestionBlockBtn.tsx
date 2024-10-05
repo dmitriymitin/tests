@@ -4,12 +4,12 @@ import {useNavigate} from 'react-router-dom';
 import {RouteNames} from '../../../router';
 import clsx from 'clsx';
 import s from '../../AllAdminTestsList/AllAdminTestsList.module.scss';
-import {useTypedSelector} from "../../../hooks/useTypedSelector";
-import IsVisible from "../../ui/isVisibleWrapper";
-import {useMutation} from "react-query";
-import {deleteOneQuestion} from "../../../api/question";
-import {useAllGroupQuestion} from "../../../http/hooks/useAllGroupQuestion";
-import {useAllQuestion} from "../../../http/hooks/useAllQuestion";
+import {useTypedSelector} from '../../../hooks/useTypedSelector';
+import IsVisible from '../../ui/isVisibleWrapper';
+import {useMutation} from 'react-query';
+import {deleteOneQuestion} from '../../../api/question';
+import {useAllGroupQuestion} from '../../../http/hooks/useAllGroupQuestion';
+import {useAllQuestion} from '../../../http/hooks/useAllQuestion';
 
 interface IAllQuestionBlockBtnProps {
   questionId?: string;
@@ -18,7 +18,7 @@ interface IAllQuestionBlockBtnProps {
 const AllQuestionBlockBtn = ({questionId}: IAllQuestionBlockBtnProps) => {
   const {isAuth} = useTypedSelector(state => state.auth);
   const {invalidate: invalidateAllGroupQuestion} = useAllGroupQuestion(false);
-  const {invalidate: invalidateAllQuestion} = useAllQuestion(false);
+  const {invalidate: invalidateAllQuestion} = useAllQuestion({isFetching: false});
   const navigate = useNavigate();
 
   const {

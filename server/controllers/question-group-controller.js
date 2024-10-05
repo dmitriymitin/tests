@@ -11,6 +11,16 @@ class QuestionGroupController{
         }
     }
 
+    async update(req, res, next){
+        try {
+            const data = req.body;
+            const groupData = await QuestionGroupService.update({...data});
+            return res.json(groupData)
+        } catch (e){
+            next(e);
+        }
+    }
+
     async deleteOne(req, res, next){
         try{
             const {id} = req.params;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAllGroupQuestion} from '../../../http/hooks/useAllGroupQuestion';
 import clsx from 'clsx';
 import {IQuestionGroup} from '../../../api/questionGroup/type';
@@ -8,11 +8,10 @@ import sC from './AllGroupQuestion.module.scss';
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons';
 import {Popconfirm} from 'antd';
 import ContextMenuWrapper from '../../ui/ContextMenuWrapper/ContextMenuWrapper';
-import AllGroupQuestionDeleteBtnTheme from "../AllGroupQuestionDeleteBtnTheme/AllGroupQuestionDeleteBtnTheme";
-import IsVisible from "../../ui/isVisibleWrapper";
-import {RouteNames} from "../../../router";
-import AddNewThemeModalDrawer from "../AddNewThemeModalDrawer/AddNewThemeModalDrawer";
-import {useAllGroupsStore} from "../../../store/groups/useAllGroups";
+import AllGroupQuestionDeleteBtnTheme from '../AllGroupQuestionDeleteBtnTheme/AllGroupQuestionDeleteBtnTheme';
+import {useAllGroupsStore} from '../../../store/groups/useAllGroups';
+import AddNewThemeModalDrawer from '../AddNewThemeModalDrawer/AddNewThemeModalDrawer';
+import ChangeNewThemeModalDrawer from "../AddNewThemeModalDrawer/ChangeNewThemeModalDrawer";
 
 interface IAllGroupQuestionBtnProps {
   group: IQuestionGroup;
@@ -21,45 +20,49 @@ interface IAllGroupQuestionBtnProps {
 }
 
 const AllGroupQuestionBtn = ({group, isActive, handleClick}: IAllGroupQuestionBtnProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
-    <ContextMenuWrapper
-      isFullWidth={false}
-      text={<>
+    <>
+      <ChangeNewThemeModalDrawer
+        open={isModalOpen}
+        setOpen={setIsModalOpen}
+        group={group}
+      />
+      <ContextMenuWrapper
+        isFullWidth={false}
+        text={<>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className={clsx('clearButton', gs.btn)}
+          >
+            <div className={s.btnChange}>
+              <EditOutlined style={{fontSize: 16}}/>
+              Изменить тему
+            </div>
+          </button>
+          <AllGroupQuestionDeleteBtnTheme group={group}/>
+        </>
+        }
+      >
         <button
-          className={clsx('clearButton', gs.btn)}
+          className={clsx('group-block-wrapper clearButton flex-row flex-middle fs-14', {['active']: isActive})}
+          onClick={() => handleClick()}
         >
-          <div className={s.btnChange}>
-            <EditOutlined style={{fontSize: 16}}/>
-            Изменить тему
+          <div className="group-block right-border">
+            {group.name}
+          </div>
+          <div className="group-block left-border">
+            {group.count}
           </div>
         </button>
-        <AllGroupQuestionDeleteBtnTheme group={group}/>
-      </>
-      }
-    >
-      <button
-        className={clsx('group-block-wrapper clearButton flex-row flex-middle fs-14', {['active']: isActive})}
-        onClick={() => handleClick()}
-      >
-        <div className="group-block right-border">
-          {group.name}
-        </div>
-        <div className="group-block left-border">
-          {group.count}
-        </div>
-      </button>
-    </ContextMenuWrapper>
+      </ContextMenuWrapper>
+    </>
   );
 };
 
 const AllGroupQuestion = () => {
-  const {
-    data: allGroupQuestion,
-    isLoading: isAllQuestionGroupLoading,
-    isFetching: isAllQuestionGroupFetching
-  } = useAllGroupQuestion();
+  const {data: allGroupQuestion} = useAllGroupQuestion();
   const {currentActiveGroups, setCurrentActiveGroupIds} = useAllGroupsStore(store => store);
-  const isLoadingGroup = isAllQuestionGroupLoading || isAllQuestionGroupFetching;
 
   const handleDeleteActiveIdClick = (id: string) => () => {
     setCurrentActiveGroupIds([...currentActiveGroups.filter(el => el._id !== id)]);
@@ -68,6 +71,18 @@ const AllGroupQuestion = () => {
   const handleAddActiveIdClick = (group: IQuestionGroup) => () => {
     setCurrentActiveGroupIds([group, ...currentActiveGroups]);
   };
+
+  useEffect(() => {
+    const activeGroups = currentActiveGroups;
+    activeGroups.forEach((el, index) => {
+      const newGroup = allGroupQuestion.find(newEl => newEl._id === el._id);
+      if (index) {
+        handleAddActiveIdClick(newGroup);
+      } else {
+        setCurrentActiveGroupIds([newGroup]);
+      }
+    });
+  }, [allGroupQuestion]);
 
   const currentActiveGroupIds = currentActiveGroups?.map(el => el._id);
   const noActiveGroups = allGroupQuestion?.filter(el => !currentActiveGroupIds.includes(el._id));

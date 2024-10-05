@@ -1,9 +1,15 @@
-
 import $api from '../../http';
 import {IQuestionGroup} from './type';
 
 export const createGroupQuestion = async (params: Omit<IQuestionGroup, '_id'>): Promise<IQuestionGroup> => {
   const {data} = await $api.post('/questionGroup/create', {
+    ...params
+  });
+  return data;
+};
+
+export const updateGroupQuestion = async (params: IQuestionGroup): Promise<IQuestionGroup> => {
+  const {data} = await $api.post('/questionGroup/update', {
     ...params
   });
   return data;

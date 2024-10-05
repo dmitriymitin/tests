@@ -9,10 +9,22 @@ import {areAllUniqueInArrString, getUniqId} from '../../../../utils/helpers';
 import {AnswerType} from '../../../../models/question';
 
 const QuestionTypeAnswerCheckbox = () => {
-  const [arrayIds, setArrayIds] = useState([getUniqId()]);
-  const [checkedList, setCheckedList] = useState<string[] | undefined>([]);
-  const [formCheckbox] = useForm();
   const formInstance = useFormInstance();
+  const defaultFieldForm = formInstance.getFieldValue('answerFieldsData');
+  // @ts-ignore
+  const defaultArrayIds = defaultFieldForm && defaultFieldForm?.checkbox ? Object.keys(defaultFieldForm?.checkbox?.values).sort((a, b) => {
+    return defaultFieldForm?.checkbox?.values[a].rang - defaultFieldForm?.checkbox?.values[b].rang;
+  }) : undefined;
+  const [arrayIds, setArrayIds] = useState(defaultArrayIds || [getUniqId()]);
+  const [checkedList, setCheckedList] = useState<string[] | undefined>(defaultFieldForm?.checkbox?.keys || []);
+  const [formCheckbox] = useForm();
+
+  useEffect(() => {
+    arrayIds.forEach(el => {
+      formCheckbox.setFieldValue('key-' + el, defaultFieldForm?.checkbox?.values?.[el]?.key);
+      formCheckbox.setFieldValue('title-' + el, defaultFieldForm?.checkbox?.values?.[el]?.title);
+    });
+  }, []);
 
   const setFieldsValueInFormInstance = useCallback((allFields: {}) => {
     const correctKeysNew: string[] = [];
@@ -27,6 +39,7 @@ const QuestionTypeAnswerCheckbox = () => {
       if (titOrKey === 'key') {
         const key = el[1] as string || '';
         newObject['key'] = key;
+        newObject['keyId'] = uniqId;
         allKeys.push(key);
       }
 
@@ -37,8 +50,8 @@ const QuestionTypeAnswerCheckbox = () => {
       newObject['rang'] = arrayIds.indexOf(uniqId) + 1;
       const indexRightAnswer = checkedList?.indexOf(uniqId);
       const isRightAnswer = indexRightAnswer !== undefined && indexRightAnswer + 1 ? true : undefined;
-      if (isRightAnswer && el[1]) {
-        correctKeysNew.push(el[1] as string);
+      if (isRightAnswer && el[1] && !correctKeysNew.includes(uniqId)) {
+        correctKeysNew.push(uniqId as string);
       }
 
       return {...acc, [uniqId]: newObject};

@@ -11,6 +11,16 @@ class QuestionController{
         }
     }
 
+    async update(req, res, next){
+        try {
+            const params = req.body;
+            const questionData = await QuestionService.update({...params});
+            return res.json(questionData)
+        } catch (e){
+            next(e);
+        }
+    }
+
     async deleteOne(req, res, next) {
         try {
             const {id} = req.params;
@@ -21,9 +31,20 @@ class QuestionController{
         }
     }
 
+    async getOneQuestion(req, res, next){
+        try {
+            const {id} = req.params;
+            const response = await QuestionService.getOne(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     async getAllQuestion(req, res, next){
         try {
-            const questions = await QuestionService.getAll();
+            const {activeGroupIds} = req.query
+            const questions = await QuestionService.getAll({activeGroupIds});
             return res.json(questions)
         } catch (e){
             next(e);

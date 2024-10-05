@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import sC from './UpdateQuestionForm.module.scss';
 import exampleQuestionData from '../EditorWrapper/Editor/exampleQuestionData';
 import s from '../../pages/CreateCustomTestDescriptionPage/CreateCustomTestDescriptionPage.module.scss';
@@ -10,11 +10,13 @@ import QuestionTypeAnswerInfo from './components/QuestionTypeAnswerInfo/Question
 import {TAnswerType} from '../../models/question';
 import IsVisible from '../ui/isVisibleWrapper';
 import QuestionSettingSegmented, {TQuestionType} from './components/QuestionSettingSegmented/QuestionSettingSegmented';
-import {useMutation} from 'react-query';
-import {createQuestion} from '../../api/question';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
+import {createQuestion, getQuestion, updateQuestion} from '../../api/question';
 import {EditorDescriptionTest} from '../../api/test/type';
 import {IQuestionAnswer} from '../../api/question/type';
 import QuestionThemes from './components/QuestionThemes/QuestionThemes';
+import {RouteNames} from '../../router';
+import {useNavigate} from 'react-router-dom';
 
 interface IQuestionSetting {
   formName: string;
@@ -58,7 +60,9 @@ interface IFormData {
   groupsId: string[];
 }
 
-interface IUpdateQuestionForm {}
+interface IUpdateQuestionForm {
+  questionId?: string;
+}
 
 interface IFormFields {
   questionKey?: string;
@@ -66,19 +70,40 @@ interface IFormFields {
   answerType?: TAnswerType;
 }
 
-const UpdateQuestionForm = ({}: IUpdateQuestionForm) => {
+const UpdateQuestionForm = ({questionId}: IUpdateQuestionForm) => {
   const [form] = useForm<IFormData>();
   const [errors, setErrors] = useState([]);
   const [fieldsData, setFieldsDate] = useState<IFormFields>({});
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const queryKey = `question${questionId}`;
+
+  const {data: questionData, isLoading: isLoadingQuestiondata} = useQuery({
+    queryKey,
+    queryFn: () => getQuestion(questionId),
+    enabled: Boolean(questionId),
+    retry: false
+  });
 
   const {
     mutateAsync: createNewQuestionTrigger,
     isLoading: isCreateNewQuestionLoading
   } = useMutation(createQuestion);
 
-  const initialValuesForm = {
-    questionKey: null,
-    descriptionParse: exampleQuestionData
+  const {
+    mutateAsync: updateQuestionTrigger
+  } = useMutation(updateQuestion);
+
+  const initialValuesForm: IFormData = {
+    answerFieldsData: questionData?.answers,
+    answerType: questionData?.answerType,
+    timeForAnswer: questionData?.setting.timeForAnswer,
+    groupsId: questionData?.groupsId,
+    isPublicQuestion: questionData?.setting?.isPublicQuestion ? 1 : 0,
+    isRandomAnswers: questionData?.setting?.isRandomAnswers ? 1 : 0,
+    isPublicAnswer: questionData?.setting?.isPublicAnswer ? 1 : 0,
+    descriptionParse: questionData?.descriptionEditor || exampleQuestionData
   };
 
   const getKeys = (isError = true) => {
@@ -131,67 +156,76 @@ const UpdateQuestionForm = ({}: IUpdateQuestionForm) => {
           isRandomAnswers: Boolean(formData?.isRandomAnswers)
         }
       };
-      await createNewQuestionTrigger(dataToResponse);
+      if (!questionId) {
+        await createNewQuestionTrigger(dataToResponse);
+      } else {
+        await updateQuestionTrigger({id: questionId, data: dataToResponse});
+        await queryClient.invalidateQueries(queryKey);
+      }
+
+      message.success('Вопрос успешно создан');
+      navigate(RouteNames.ADMIN_QUESTIONS_LIST);
     } catch (e) {
       message.error('Ошибка при создании вопроса');
     }
   };
 
   return (
-    <Form
-      form={form}
-      className={s.custom__test__form}
-      onFieldsChange={(_, allFields) => {
-        getErrors();
-        const fieldsData = allFields.reduce((acc, el) => {
-          if (!el || !el?.name[0]) {
-            return acc;
-          }
+    <IsVisible isVisible={!isLoadingQuestiondata}>
+      <Form
+        form={form}
+        className={s.custom__test__form}
+        onFieldsChange={(_, allFields) => {
+          getErrors();
+          const fieldsData = allFields.reduce((acc, el) => {
+            if (!el || !el?.name[0]) {
+              return acc;
+            }
 
-          return {...acc, [el.name[0]]: el.value};
-        }, {} as IFormFields);
-        setFieldsDate(fieldsData);
-      }}
-      initialValues={initialValuesForm}
-    >
-      <div className={sC.wrapper}>
-        {/* <ChangeQuestionKey/> */}
-        <div className="testBackground mb-20">
-          <QuestionThemes />
-        </div>
-        <div className="testBackground">
-          {questionSetting.map((el, index) => (
-            <QuestionSettingSegmented
+            return {...acc, [el.name[0]]: el.value};
+          }, {} as IFormFields);
+          setFieldsDate(fieldsData);
+        }}
+        initialValues={initialValuesForm}
+      >
+        <div className={sC.wrapper}>
+          {/* <ChangeQuestionKey/> */}
+          <div className="testBackground mb-20">
+            <QuestionThemes />
+          </div>
+          <div className="testBackground">
+            {questionSetting.map((el, index) => (
+              <QuestionSettingSegmented
                 key={index}
                 formName={el.formName}
                 text={el.text}
                 type={el.type}
                 description={el.description}
-            />
-          ))}
-        </div>
-        <div className={sC.title_block}> Описание</div>
-        <EditorWrapperForm/>
-        <div className={sC.title_block}>Способ ответа</div>
-        <div className="testBackground flex-center">
-          <QuestionTypeAnswerList isInfoBlock/>
-          <IsVisible isVisible={!!fieldsData?.answerType}>
-            <div className="mt-30">
-              <QuestionTypeAnswerInfo answerType={fieldsData.answerType!}/>
-            </div>
-          </IsVisible>
-        </div>
-        <div className="btnSaveWrapper mt-20 flex-middle gap-10">
-          <Button
+              />
+            ))}
+          </div>
+          <div className={sC.title_block}> Описание</div>
+          <EditorWrapperForm/>
+          <div className={sC.title_block}>Способ ответа</div>
+          <div className="testBackground flex-center">
+            <QuestionTypeAnswerList isInfoBlock/>
+            <IsVisible isVisible={!!fieldsData?.answerType}>
+              <div className="mt-30">
+                <QuestionTypeAnswerInfo answerType={fieldsData.answerType!}/>
+              </div>
+            </IsVisible>
+          </div>
+          <div className="btnSaveWrapper mt-20 flex-middle gap-10">
+            <Button
               loading={isCreateNewQuestionLoading}
               disabled={errors.length !== 0}
               onClick={onSubmit}
               size={'large'}
               type={'primary'}
-          >
-            Создать вопрос
-          </Button>
-          {!!errors.length &&
+            >
+              {questionId ? 'Редактировать вопрос' : 'Создать вопрос'}
+            </Button>
+            {!!errors.length &&
             <div className="flex-wrap gap-10 flex-middle">
               {errors
                 .filter(error => error)
@@ -201,10 +235,11 @@ const UpdateQuestionForm = ({}: IUpdateQuestionForm) => {
                   </div>
                 ))}
             </div>
-          }
+            }
+          </div>
         </div>
-      </div>
-    </Form>
+      </Form>
+    </IsVisible>
   );
 };
 

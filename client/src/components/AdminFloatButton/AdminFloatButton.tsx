@@ -10,7 +10,10 @@ const AdminFloatButton = () => {
   const location = useLocation();
   return (
     <>
-      {location.pathname === RouteNames.ADMIN_TESTS_LIST && <AdminEditFloatGroup/>} <AdminAddFloatGroup/> <AdminAddFolderGroup/> <AdminAddSettingGroup/>
+      {location.pathname === RouteNames.ADMIN_TESTS_LIST && <AdminEditFloatGroup/>}
+      {/* <AdminAddFloatGroup/> */}
+      {/*<AdminAddFolderGroup/>*/}
+      {/*<AdminAddSettingGroup/>*/}
     </>
   );
 };
