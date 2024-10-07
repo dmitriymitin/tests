@@ -109,7 +109,7 @@ const InfoQuestionForm = ({questionData, onSubmit, ...props}: IInfoQuestionFormP
                   setLastValue(lastValueIfi);
                   const isRight = (() => {
                     if (questionData?.answerType === AnswerType.Text) {
-                      return rightAnswer.includes(lastValueIfi);
+                      return rightAnswer === lastValueIfi;
                     }
 
                     if (questionData?.answerType === AnswerType.Radio) {
