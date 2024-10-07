@@ -33,6 +33,10 @@ body {
     transition: transform cubic-bezier(1, 0.04, 0.07, 1.02) .6s;
 }
 
+.width100 {
+    width: 100%;
+}
+
 .container {
     width: 100%;
     max-width: 1330px;
@@ -128,8 +132,24 @@ body {
     color: white;
 }
 
+.blue {
+    color: #1677ff;
+}
+
 .dangerColor {
     color: red;
+}
+
+.red {
+    color: #ff4d4f;
+}
+
+.green {
+    color: #55a800;
+}
+
+.yellow {
+    color: #faad14;
 }
 
 .title {
@@ -137,6 +157,12 @@ body {
     font-size: 32px;
     width: 100%;
     overflow-wrap: break-word;
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .title-admin {
@@ -193,10 +219,25 @@ body {
     box-shadow: 3px 3px 6px 0 rgba(0,0,0,0.04);
     border-radius: 12px;
     padding: 15px;
+    transition: background ease 0.5s;
+
+    &.hover {
+        &:hover {
+            background: #eee;
+        }
+    }
 }
 
 .boxShadow1 {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.boxShadow2 {
+    box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.16);
+}
+
+.boxShadow3 {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .btnSaveWrapper {

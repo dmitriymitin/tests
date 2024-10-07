@@ -1,10 +1,10 @@
 import React, {useRef, useState} from 'react';
-import {Button, Input, InputRef, message, Space} from 'antd';
+import {Button, Form, Input, InputRef, message, Space} from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
 import {useAllGroupQuestion} from '../../../../http/hooks/useAllGroupQuestion';
 import AddNewThemeModalDrawer from '../../../AllQuestions/AddNewThemeModalDrawer/AddNewThemeModalDrawer';
-import {useMutation} from "react-query";
-import {createGroupQuestion} from "../../../../api/questionGroup";
+import {useMutation} from 'react-query';
+import {createGroupQuestion} from '../../../../api/questionGroup';
 
 const QuestionThemesInputAdd = ({isLoading}: {isLoading: boolean}) => {
   const {invalidate} = useAllGroupQuestion();
@@ -37,13 +37,18 @@ const QuestionThemesInputAdd = ({isLoading}: {isLoading: boolean}) => {
 
   return (
     <Space style={{padding: '0 8px 4px'}}>
-      <Input
+      <Form.Item
+        noStyle
+        name={'groupsIdInput'}
+      >
+        <Input
         placeholder="Введите название"
         ref={inputRef}
         value={name}
         onChange={onNameChange}
         onKeyDown={(e) => e.stopPropagation()}
-      />
+        />
+      </Form.Item>
       <Button disabled={isLoading} loading={isLoading} type="text" className="fs-12" icon={<PlusOutlined />} onClick={addItem}>
         Добавить тему
       </Button>

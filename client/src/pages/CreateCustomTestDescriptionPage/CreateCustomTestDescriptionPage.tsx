@@ -1,6 +1,6 @@
 import s from './CreateCustomTestDescriptionPage.module.scss';
 import React, {FC, memo, useState} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import {Button, Form, Layout, message, Spin} from 'antd';
 import CreateCustomTestForm from '../../components/CreateCustomTestForm/CreateCustomTestForm';
 import EditorWrapper
@@ -14,12 +14,11 @@ import ChangeTestTitleWithDescription
 import ChangeCustomTestWithDescriptionCountQuestion
   from '../../components/CreateCustomTestForm/ChangeCustomTestWithDescriptionCountQuestion/ChangeCustomTestWithDescriptionCountQuestion';
 import exampleData from '../../components/EditorWrapper/Editor/exampleData';
+import {RouteNames} from "../../router";
 
-interface CreateCustomTestDescriptionProps {}
 
-const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({}) => {
-  const location = useLocation();
-  const testId = location.pathname.split('/')[5];
+const CreateCustomTestDescriptionPage = () => {
+  const {testId} = useParams();
   const navigate = useNavigate();
   const [form] = useForm();
 
@@ -79,8 +78,8 @@ const CreateCustomTestDescriptionPage: FC<CreateCustomTestDescriptionProps> = ({
           Страница создания теста только с описанием
         </h1>
         <div className={s.btns}>
-          <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/key/${testId}`)}>Ввести ключ</Button>
-          <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/${testId}`)}>Перейти к результатам</Button>
+          <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${testId}`)}>Ввести ключ</Button>
+          <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_INFO + `/${testId}`)}>Перейти к результатам</Button>
         </div>
 
         <div className={s.test__block}>

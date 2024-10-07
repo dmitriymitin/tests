@@ -16,7 +16,7 @@ import {EditorDescriptionTest} from '../../api/test/type';
 import {IQuestionAnswer} from '../../api/question/type';
 import QuestionThemes from './components/QuestionThemes/QuestionThemes';
 import {RouteNames} from '../../router';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {useAllGroupQuestion} from "../../http/hooks/useAllGroupQuestion";
 
 interface IQuestionSetting {
@@ -29,8 +29,8 @@ interface IQuestionSetting {
 const questionSetting: IQuestionSetting[] = [
   {
     formName: 'isRandomAnswers',
-    text: 'Перемшивать варианты ответов ',
-    description: 'У двух студентов порядок овтетов будет разный. Если способ ответа - текстовый, то настройка работать не будет.'
+    text: 'Перемешивать варианты ответов ',
+    description: 'У двух студентов порядок овтетов будет разный. Настройка работать не будет, если способ ответа текстовый'
   },
   {
     formName: 'timeForAnswer',
@@ -41,12 +41,12 @@ const questionSetting: IQuestionSetting[] = [
   {
     formName: 'isPublicQuestion',
     text: 'Сделать вопрос публчиным ',
-    description: 'Если выбрать да, то по уникальному id, пользователи смогут посмотреть вопрос, отдельно от теста'
+    description: 'Студенты смогут посмотреть вопрос, отдельно от теста'
   },
   {
     formName: 'isPublicAnswer',
     text: 'Сделать ответ публчиным ',
-    description: 'Если выбрать да, то пользователи смогут посмотреть ответ на вопрос сами.'
+    description: 'Студенты смогут посмотреть ответ на вопрос.'
   }
 ];
 
@@ -61,17 +61,14 @@ interface IFormData {
   groupsId: string[];
 }
 
-interface IUpdateQuestionForm {
-  questionId?: string;
-}
-
 interface IFormFields {
   questionKey?: string;
   descriptionParse?: string;
   answerType?: TAnswerType;
 }
 
-const UpdateQuestionForm = ({questionId}: IUpdateQuestionForm) => {
+const UpdateQuestionForm = () => {
+  const {questionId} = useParams();
   const [form] = useForm<IFormData>();
   const [errors, setErrors] = useState([]);
   const [fieldsData, setFieldsDate] = useState<IFormFields>({});
@@ -194,8 +191,9 @@ const UpdateQuestionForm = ({questionId}: IUpdateQuestionForm) => {
         <div className={sC.wrapper}>
           {/* <ChangeQuestionKey/> */}
           <div className="testBackground mb-20">
-            <QuestionThemes />
+            <QuestionThemes/>
           </div>
+          <div className={sC.title_block}> Настройки</div>
           <div className="testBackground">
             {questionSetting.map((el, index) => (
               <QuestionSettingSegmented
@@ -229,15 +227,15 @@ const UpdateQuestionForm = ({questionId}: IUpdateQuestionForm) => {
               {questionId ? 'Редактировать вопрос' : 'Создать вопрос'}
             </Button>
             {!!errors.length &&
-            <div className="flex-wrap gap-10 flex-middle">
-              {errors
-                .filter(error => error)
-                .map((error, index) => (
-                  <div key={index} className="customErrorBox fs-14">
-                    {error}
-                  </div>
-                ))}
-            </div>
+                <div className="flex-wrap gap-10 flex-middle">
+                  {errors
+                    .filter(error => error)
+                    .map((error, index) => (
+                      <div key={index} className="customErrorBox fs-14">
+                        {error}
+                      </div>
+                    ))}
+                </div>
             }
           </div>
         </div>

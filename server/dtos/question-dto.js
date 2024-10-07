@@ -1,5 +1,6 @@
 module.exports = class QuestionDto {
     _id;
+    convertId;
     answers;
     answerType;
     descriptionEditor;
@@ -14,6 +15,7 @@ module.exports = class QuestionDto {
         this._id = model._id
         this.answers = newAnswers
         this.answerType = model.answerType
+        this.convertId = model.convertId
         this.descriptionEditor = model.descriptionEditor
         this.setting = model.setting
         this.groupsId = model.groupsId;

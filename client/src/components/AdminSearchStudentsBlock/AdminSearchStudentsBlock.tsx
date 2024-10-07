@@ -14,6 +14,7 @@ import {
   EFilterTranslate,
   TFilterById, TStudentFilterId
 } from '../../api/test/type';
+import {RouteNames} from "../../router";
 
 const AdminSearchStudentsBlock = () => {
   const [sortId, setSortId] = useState(0);
@@ -93,7 +94,7 @@ const AdminSearchStudentsBlock = () => {
                                         type={'primary'}
                                         onClick={() => {
                                           localStorage.setItem('FIO', el.userInfo.FIOGroup);
-                                          navigate(`/admin/testInfo/${el.userInfo.testId}`);
+                                          navigate(RouteNames.ADMIN_TEST_INFO + `/${el.userInfo.testId}`);
                                         }}
                   >
                     Перейти к тесту

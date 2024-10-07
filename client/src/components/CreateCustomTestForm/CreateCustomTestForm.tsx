@@ -1,23 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import s from './CreateCustomTestForm.module.scss';
-import TextArea from 'antd/es/input/TextArea';
 import {Button, Form, message, Popconfirm, Radio, Space, Spin} from 'antd';
 import {useMutation, useQuery} from 'react-query';
-import {getOneCustomTest, getOneTestInfo, onDeleteQuestionCustomTest} from '../../api/test';
-import {useNavigate} from 'react-router-dom';
-import {ICustomTestQuestion, TypeCustomTestQuestionAnswer} from '../../api/test/type';
+import {getOneCustomTest, onDeleteQuestionCustomTest} from '../../api/test';
+import {useNavigate, useParams} from 'react-router-dom';
+import {ICustomTestQuestion} from '../../api/test/type';
 import AddNewQuestionModalDrawer from './AddNewQuestionModalDrawer/AddNewQuestionModalDrawer';
-import ChangePasswordModalDrawer from '../ChangePasswordModalDrawer';
 import ChangeCustomQuestion from './ChangeCustomQuestion/ChangeCustomQuestion';
-import {EditOutlined} from '@ant-design/icons';
 import ChangeCustomTestTitle from './ChangeCustomTestTitle/ChangeCustomTestTitle';
 import {useForm} from 'antd/es/form/Form';
+import {RouteNames} from '../../router';
 
-interface CreateCustomTestFormProps {
-    testId: string;
-}
-
-const CreateCustomTestForm = ({testId}:CreateCustomTestFormProps) => {
+const CreateCustomTestForm = () => {
+  const {testId} = useParams();
   const navigate = useNavigate();
   const [form] = useForm();
 
@@ -102,8 +97,8 @@ const CreateCustomTestForm = ({testId}:CreateCustomTestFormProps) => {
         </h1>
 
         <div className={s.btns}>
-          <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/key/${testId}`)}>Ввести ключ</Button>
-          <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/${testId}`)}>Перейти к результатам</Button>
+          <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${testId}`)}>Ввести ключ</Button>
+          <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_INFO + `/${testId}`)}>Перейти к результатам</Button>
         </div>
 
         <div className={s.test__block}>

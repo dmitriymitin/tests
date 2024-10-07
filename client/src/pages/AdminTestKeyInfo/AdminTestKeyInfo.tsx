@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import {useMutation, useQuery} from 'react-query';
 import {getOneTestInfo, updateAdminKeyTest} from '../../api/test';
 import {Button, Input, message, Spin} from 'antd';
 import s from './AdminTestKeyInfo.module.scss';
 import clsx from 'clsx';
+import {RouteNames} from '../../router';
 
 const AdminTestKeyInfo = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [testKey, setTestKey] = useState('');
-  const testId = location.pathname.split('/')[4];
+  const {testId} = useParams();
 
   const {
     data: testInfoData,
@@ -71,7 +71,7 @@ const AdminTestKeyInfo = () => {
                     onChange={(e) => setTestKey(e.target.value)}
         />
         <Button loading={updateAdminKeyTestTriggerLoading} type={'primary'} onClick={handleSaveKey}>Сохранить</Button>
-        <Button loading={updateAdminKeyTestTriggerLoading} type={'primary'} onClick={() => navigate(`/admin/testInfo/${currentTest._id}`)}>Перейти к результатам теста</Button>
+        <Button loading={updateAdminKeyTestTriggerLoading} type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_INFO + `/${currentTest._id}`)}>Перейти к результатам теста</Button>
       </div>
 
       {

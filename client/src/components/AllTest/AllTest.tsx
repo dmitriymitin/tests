@@ -50,12 +50,8 @@ const AllTest = () => {
             <p className={s.title}>
               {el.title}
             </p>
-
             <div className={s.btns}>
-              <Button
-                                    type={'primary'}
-                                    onClick={() => navigate(`/tests/${el._id}`)}
-              >
+              <Button type={'primary'} onClick={() => navigate(`/tests/${el._id}`)}>
                 Пройти
               </Button>
             </div>

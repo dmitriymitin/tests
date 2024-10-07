@@ -5,6 +5,7 @@ const TestCustomModel = require("../models/test-custom-model");
 const {ObjectId} = require("mongodb");
 const TestModel = require("../models/test-model");
 const TestUserModel = require("../models/test-user-model");
+const convertIdToCustomFormat = require("../helpers/util");
 
 const getQuestionsModelDTO = (questions) => {
     return questions.map(el => {
@@ -18,7 +19,8 @@ const getQuestionsModelDTO = (questions) => {
 const changeCountInGroupsId = async (groupsId, action) => {
     if (groupsId?.length) {
         for (const id of groupsId) {
-            const questionGroup = await QuestionGroupModel.findById(id);
+            const groupId = new ObjectId(id);
+            const questionGroup = await QuestionGroupModel.findOne({_id: groupId});
             if (action === 'add') questionGroup.count += 1;
             if (action === 'remove') questionGroup.count -= 1;
             await questionGroup.save();
@@ -29,17 +31,21 @@ const changeCountInGroupsId = async (groupsId, action) => {
 class QuestionService {
     async create(data){
         const questionModel = await QuestionModel.create(data);
+        const questionModelFind = await QuestionModel.findOne({_id: questionModel._id});
+        questionModelFind.convertId = convertIdToCustomFormat(questionModel.id);
+        await questionModelFind.save();
         await changeCountInGroupsId(data?.groupsId, 'add');
-        return questionModel;
+        return questionModelFind;
     }
 
     async update(params){
         const id = params.id;
         const data = params.data;
-        const questionOld = await QuestionModel.findById(id);
-        const question = await QuestionModel.updateOne({_id: id}, data);
-        await changeCountInGroupsId(questionOld.groupsId, 'remove');
-        await changeCountInGroupsId(question.groupsId, 'add');
+        const {_id, _doc: {_id: _id1, ...questionOldData}} = await QuestionModel.findById(id);
+        const newData = {...questionOldData, ...data};
+        const question = await QuestionModel.updateOne({_id: id}, newData);
+        await changeCountInGroupsId(questionOldData.groupsId, 'remove');
+        await changeCountInGroupsId(data.groupsId, 'add');
         return question;
     }
 

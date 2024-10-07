@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import {useMutation, useQuery} from 'react-query';
 import {getOneTest, getOneUserTest, saveNewTest} from '../../api/test';
 import {Button, Form, Input, message, Popconfirm, Radio, Space, Spin} from 'antd';
@@ -14,8 +14,7 @@ const edjsParser = edjsHTML();
 
 const Test = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const testId = location.pathname.split('/')[2];
+  const {testId} = useParams();
 
   const [form] = useForm();
 
@@ -141,9 +140,7 @@ const Test = () => {
                 <div className={s.description}>
                   {el.description}
                 </div>
-                <Form.Item
-                                    name={`${index + 1}`}
-                >
+                <Form.Item name={`${index + 1}`}>
                   {el.answers && Object.keys(el.answers).length > 0
                     ? <Radio.Group>
                       <Space direction="vertical">
@@ -159,9 +156,7 @@ const Test = () => {
             : new Array(testData.quantityQuestion).fill('1').map((_, index) =>
               <div key={index} className={s.item}>
                 <div className={s.title}>Вопрос {index + 1}</div>
-                <Form.Item
-                                    name={`${index + 1}`}
-                >
+                <Form.Item name={`${index + 1}`}>
                   <Input/>
                 </Form.Item>
               </div>
@@ -170,12 +165,8 @@ const Test = () => {
             <div className={clsx('text-container', s.descriptionBg)}>{parse(edjsParser.parse(testData.descriptionEditor).join(''))}</div>
             <div className={s.item}>
               <div className={s.title}>Введите свои ответы слитно, без разделителей: один вопрос - один символ</div>
-              <Form.Item
-                                name={'testKey'}
-              >
-                <Input
-                                    maxLength={testData.quantityQuestion}
-                />
+              <Form.Item name={'testKey'}>
+                <Input maxLength={testData.quantityQuestion}/>
               </Form.Item>
             </div>
           </div>

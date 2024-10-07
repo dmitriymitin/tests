@@ -1,5 +1,5 @@
 import React, {Fragment, useState} from 'react';
-import {Badge, Button, message, Popconfirm, Segmented, Select, Spin} from 'antd';
+import {Badge, Button, Empty, message, Popconfirm, Segmented, Select, Spin} from 'antd';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {
   deleteTest,
@@ -25,6 +25,7 @@ import {useAllTest} from '../../http/hooks/useAllTest';
 import {useAllFolder} from '../../http/hooks/useAllFolder';
 import PutInFolderBtn from './PutInFolderBtn/PutInFolderBtn';
 import {useSelectTestsStore} from '../../store/folders/useSelectTestsStore';
+import {RouteNames} from '../../router';
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
   switch (status) {
@@ -123,7 +124,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
   if (!allTest || allTest.length === 0) {
     return (
       <div className={s.all__tests__list__empty}>
-        Тестов пока нет
+        <Empty description={'Тестов пока нет'}/>
       </div>
     );
   }
@@ -260,12 +261,12 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
 
                                           // Тест со своими вопросами
                                           if (el.questions) {
-                                            navigate(`/admin/testInfo/customTest/${el._id}`);
+                                            navigate(RouteNames.CREATE_CUSTOM_TEST + `/${el._id}`);
                                             return;
                                           }
 
                                           if (el.descriptionEditor) {
-                                            navigate(`/admin/testInfo/customTest/description/${el._id}`);
+                                            navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${el._id}`);
                                             return;
                                           }
                                         }}
@@ -276,7 +277,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                                         className={s.btn}
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          navigate(`/admin/testInfo/key/${el._id}`);
+                                          navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${el._id}`);
                                         }}
                     >
                       Ввести ключ
@@ -286,7 +287,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           localStorage.removeItem('FIO');
-                                          navigate(`/admin/testInfo/${el._id}`);
+                                          navigate(RouteNames.ADMIN_TEST_INFO + `/${el._id}`);
                                         }}
                     >
                       Результаты

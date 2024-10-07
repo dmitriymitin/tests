@@ -4,16 +4,16 @@ import IsVisible from '../../ui/isVisibleWrapper';
 import AllQuestionsSpins from '../AllQuestionsSpins';
 import clsx from 'clsx';
 import s from '../../../pages/Test/Test.module.scss';
+import sC from './AllQuestionsBlock.module.scss';
 import parse from 'html-react-parser';
 import edjsHTML from 'editorjs-html';
-import {useAllGroupsStore} from '../../../store/groups/useAllGroups';
 import {Link} from 'react-router-dom';
 import {CLIENT_URL} from '../../../http';
 import {RouteNames} from '../../../router';
-import {convertIdToCustomFormat} from '../../../utils/helpers';
 import AllQuestionBlockBtn from './AllQuestionBlockBtn';
 import {useAllGroupQuestion} from '../../../http/hooks/useAllGroupQuestion';
-import {Badge} from 'antd';
+import {Badge, Empty} from 'antd';
+import QuestionLink from "./QuestionLink";
 
 const edjsParser = edjsHTML();
 
@@ -30,6 +30,11 @@ const AllQuestionsBlock = () => {
   return (
     <Fragment>
       <AllQuestionsSpins isLoading={isLoadingQuestions || isLoadingGroup}/>
+      <IsVisible isVisible={!isLoadingQuestions && !isLoadingGroup && !allQuestion?.length}>
+        <div className="status-block h220p">
+          <Empty description={'Вопросов пока нет '}/>
+        </div>
+      </IsVisible>
       <IsVisible isVisible={!isLoadingQuestions && !isLoadingGroup && !!allQuestion?.length}>
         <div className="flex-wrap flex-col gap-20">
           {allQuestion
@@ -48,11 +53,9 @@ const AllQuestionsBlock = () => {
                   <div key={question._id} className={clsx('text-container px-20 py-15', s.descriptionBg)}>
                     <div className="flex-row gap-10 mb-10">
                       <span className="bold fs-16">{index + 1}. Вопрос</span>
-                      <Link className="fs-16" to={`${CLIENT_URL}` + RouteNames.ADMIN_QUESTION_INFO + `/${question._id}`}>
-                        {convertIdToCustomFormat(question._id)}
-                      </Link>
+                      <QuestionLink id={question._id} convertId={question.convertId} isPublic={question.setting.isPublicQuestion}/>
                     </div>
-                    {parse(edjsParser.parse(question?.descriptionEditor).join(''))}
+                    <div className={sC.descriptionEditorBg}>{parse(edjsParser.parse(question?.descriptionEditor).join(''))}</div>
                     <AllQuestionBlockBtn questionId={question._id}/>
                   </div>
                 </Badge.Ribbon>

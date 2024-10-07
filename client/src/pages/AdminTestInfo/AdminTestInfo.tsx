@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {Link, useLocation, useNavigate, useParams} from 'react-router-dom';
 import {useMutation, useQuery} from 'react-query';
 import {clearTestResults, getOneTestInfo} from '../../api/test';
 import {Button, Input, message, Popconfirm, Radio, Spin} from 'antd';
@@ -15,8 +15,7 @@ import {RouteNames} from '../../router';
 
 const AdminTestInfo = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const testId = location.pathname.split('/')[3];
+  const {testId} = useParams();
   const fio = localStorage.getItem('FIO');
   const [isFullInfo, setIsFullInfo] = useState(false);
   const [search, setSearch] = useState(fio || '');
@@ -118,9 +117,9 @@ const AdminTestInfo = () => {
       </Popconfirm>
       <div className={s.admin__test__info__changeKey}>
         Ключ {testInfoData.testKey || 'не установлен'}
-        <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/key/${currentTest._id}`)}>Изменить ключ</Button>
+        <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${currentTest._id}`)}>Изменить ключ</Button>
         {testInfoData.test.questions &&
-        <Button type={'primary'} onClick={() => navigate(`/admin/testInfo/customTest/${currentTest._id}`)}>Редактировать тест</Button>
+        <Button type={'primary'} onClick={() => navigate(RouteNames.CREATE_CUSTOM_TEST + `/${currentTest._id}`)}>Редактировать тест</Button>
         }
       </div>
       <Input placeholder={'Введите ФИО студента для поиска'} value={search} onChange={e => setSearch(e.target.value)}/>

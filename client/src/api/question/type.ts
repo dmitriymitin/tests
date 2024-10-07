@@ -1,17 +1,22 @@
 import {EditorDescriptionTest} from '../test/type';
 import {TAnswerType} from '../../models/question';
 
-export type IQuestionAnswer = {
-  [key in TAnswerType]: {
-    keys?: string[];
-    values?: {
-      [key: string]: {
-        title: string;
-        rang: number;
-        key: string;
-      };
-    };
+export type TQuestionAnswerValues = {
+  [key: string]: {
+    title: string;
+    rang: number;
+    key: string;
+    keyId?: string;
   };
+}
+
+export type TQuestionAnswerKeyValues = {
+  keys?: string[];
+  values?: TQuestionAnswerValues;
+}
+
+export type IQuestionAnswer = {
+  [key in TAnswerType]: TQuestionAnswerKeyValues;
 };
 
 export interface IQuestion {
@@ -20,6 +25,7 @@ export interface IQuestion {
   answerType: TAnswerType;
   descriptionEditor?: EditorDescriptionTest;
   groupsId?: string[];
+  convertId?: string;
   setting: {
     isRandomAnswers?: boolean;
     timeForAnswer?: string;

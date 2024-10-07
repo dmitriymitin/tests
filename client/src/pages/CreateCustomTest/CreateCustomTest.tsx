@@ -4,12 +4,10 @@ import CreateCustomTestForm from '../../components/CreateCustomTestForm/CreateCu
 import {useLocation} from 'react-router-dom';
 
 const CreateCustomTest = () => {
-  const location = useLocation();
-  const testId = location.pathname.split('/')[4];
   return (
     <Layout className={'layout'}>
       <div className="container">
-        <CreateCustomTestForm testId={testId}/>
+        <CreateCustomTestForm />
       </div>
     </Layout>
   );

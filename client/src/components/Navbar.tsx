@@ -31,9 +31,7 @@ const Navbar = () => {
           }}>
             <IsVisible isVisible={isAuth}>
               <button
-                    className={clsx('clearButton', 'text header',
-                      {active: [RouteNames.ADMIN_QUESTIONS_LIST, RouteNames.ADMIN_QUESTION_CREATE,
-                        RouteNames.ADMIN_QUESTION_UPDATE].includes(pathname as any)})}
+                    className={clsx('clearButton', 'text header', {active: pathname.includes('question')})}
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -45,7 +43,7 @@ const Navbar = () => {
             </IsVisible>
             {isAuth && <>
               <button
-                    className={clsx('clearButton', 'text header', {active: pathname === RouteNames.ADMIN_TESTS_LIST})}
+                    className={clsx('clearButton', 'text header', {active: pathname.includes('test')})}
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -55,7 +53,7 @@ const Navbar = () => {
                 Тесты
               </button>
               <button
-                    className={clsx('clearButton', 'text header', {active: pathname === RouteNames.ADMIN_SEARCH_STUDENTS})}
+                    className={clsx('clearButton', 'text header', {active: pathname.includes('student/search')})}
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -64,7 +62,7 @@ const Navbar = () => {
                 Результаты студентов
               </button>
               <button
-                    className={clsx('clearButton', 'text header', {active: pathname === RouteNames.ADMIN_SETTING})}
+                    className={clsx('clearButton', 'text header', {active: pathname.includes('setting')})}
                     onClick={() => navigate(RouteNames.ADMIN_SETTING)}
               >
                 Настройки

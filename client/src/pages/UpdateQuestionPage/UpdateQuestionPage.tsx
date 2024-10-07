@@ -1,16 +1,16 @@
 import React from 'react';
 import {Layout} from 'antd';
 import UpdateQuestionForm from '../../components/UpdateQuestionForm/UpdateQuestionForm';
+import {useParams} from "react-router-dom";
 
 const UpdateQuestionPage = () => {
-  const questionId = location.pathname.split('/')[4];
   return (
     <Layout className={'layout'}>
-      <div className="container">
+      <div className="container main-wrapper">
         <h1 className={'title'}>
-          Редактирвоание вопроса
+          Редактирование вопроса
         </h1>
-        <UpdateQuestionForm questionId={questionId}/>
+        <UpdateQuestionForm />
       </div>
     </Layout>
   );

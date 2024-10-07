@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Input} from 'antd';
+import {Input, Popover} from 'antd';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import {AnswerType} from '../../../../models/question';
 import {useIsMounted} from '../../../../http/hooks/useIsMounted';
+import {InfoCircleOutlined} from '@ant-design/icons';
 
 const QuestionTypeAnswerInput = () => {
   const formInstance = useFormInstance();
@@ -20,7 +21,18 @@ const QuestionTypeAnswerInput = () => {
 
   return (
     <>
-      <Input className="boxShadow1" style={{maxWidth: 400}} value={keys} onChange={(e) => setKeys(e.target.value)}/>
+      <Input className="boxShadow1"
+             style={{maxWidth: 400}}
+             value={keys}
+             onChange={(e) => setKeys(e.target.value.replace(/\s+/g, ''))}
+             addonAfter={
+               <div className="flex-row flex-center flex-middle gap-10">
+                 <Popover className="cursor-pointer fs-18 mxw-100" content={'Ответ записывайте без пробелов — например, 97531 или яблокорябина.'}>
+                   <InfoCircleOutlined />
+                 </Popover>
+               </div>
+             }
+      />
     </>
   );
 };

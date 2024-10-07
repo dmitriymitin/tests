@@ -90,7 +90,7 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
       const date = new Date();
       const createDate = getFormateDate(date);
       const res = await createCustomTestTrigger(createDate);
-      navigate(`/admin/testInfo/customTest/${res._id}`);
+      navigate(RouteNames.CREATE_CUSTOM_TEST + `/${res._id}`);
     } catch (e) {
       message.error('Ошибка при создании теста');
     }
@@ -105,7 +105,7 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
         quantityQuestion: 1,
         createDate
       });
-      navigate(`/admin/testInfo/customTest/description/${res._id}`);
+      navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${res._id}`);
       await queryClient.invalidateQueries({queryKey: ['allTests']});
     } catch (e) {
       message.error('Ошибка при создании теста');
@@ -171,6 +171,7 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
         ? <div className={s.folderLoading}><Spin/></div>
         : allFolder && allFolder.length > 0 &&
           <Segmented
+              className={clsx(s.segmented, 'boxShadow3')}
               value={folderId || 0}
               defaultValue={folderId || 0}
               onChange={handleFolderChange}
@@ -230,6 +231,7 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
           <div className={s.questionWrapper}>
               Отображать тесты, которые уже находятся в папке?
               <Segmented
+                  className="boxShadow3"
                   onChange={e => setShowTestInFolder(e as any)}
                   defaultValue={showTestInFolder}
                   block

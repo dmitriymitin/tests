@@ -7,6 +7,7 @@ import {Button, Drawer, Form, Input, message, Modal} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import {getFormateDate} from '../utils/getFormateDate';
 import drawerStyles from '../DrawerStyles.module.scss';
+import {RouteNames} from "../router";
 
 interface NewTestModalDrawerWithDescriptionProps {
     open: boolean;
@@ -37,7 +38,7 @@ const NewTestModalDrawerWithDescription: FC<NewTestModalDrawerWithDescriptionPro
         quantityQuestion: testQuestionNumber,
         createDate
       });
-      navigate(`/admin/testInfo/customTest/description/${res._id}`);
+      navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${res._id}`);
       await queryClient.invalidateQueries({queryKey: ['allTests']});
       setOpen(false);
     } catch (e) {

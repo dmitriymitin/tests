@@ -14,6 +14,7 @@ import AdminListTestsPage from '../pages/AdminListTestsPage';
 import Questions from '../pages/Questions';
 import CreateQuestionPage from '../pages/CreateQuestionPage/CreateQuestionPage';
 import UpdateQuestionPage from "../pages/UpdateQuestionPage/UpdateQuestionPage";
+import InfoQuestionPage from "../pages/InfoQuestionPage/InfoQuestionPage";
 
 export interface IRoute {
     path: string;
@@ -25,18 +26,18 @@ export enum RouteNames {
     DEV_LOGIN = '/dev/login',
     TESTS = '/',
     TEST = '/tests/:testId',
-    CREATE_CUSTOM_TEST = '/admin/testInfo/customTest/:testId',
-    CREATE_CUSTOM_TEST_DESCRIPTION = '/admin/testInfo/customTest/description/:testId',
+    CREATE_CUSTOM_TEST = '/admin/test/create/customTest',
+    CREATE_CUSTOM_TEST_DESCRIPTION = '/admin/test/create/customTest/description',
     ADMIN = '/admin',
-    ADMIN_TEST_INFO = '/admin/testInfo/:testId',
-    ADMIN_TEST_KEY_INFO = '/admin/testInfo/key/:testId',
-    ADMIN_SEARCH_STUDENTS = '/admin/searchStudents',
-    ADMIN_QUESTIONS_LIST = '/admin/listQuestions',
-    ADMIN_QUESTION_CREATE = '/admin/create/question',
-    ADMIN_QUESTION_UPDATE = '/admin/update/question',
-    ADMIN_QUESTION_INFO = '/admin/info/question',
-    ADMIN_TESTS_LIST = '/admin/listTests',
-    ADMIN_SETTING = '/admin/setting'
+    ADMIN_TEST_INFO = '/admin/test/info',
+    ADMIN_TEST_KEY_INFO = '/admin/test/infoKey',
+    ADMIN_SEARCH_STUDENTS = '/admin/student/search',
+    ADMIN_TESTS_LIST = '/admin/test/list',
+    ADMIN_SETTING = '/admin/setting',
+    ADMIN_QUESTIONS_LIST = '/admin/question/list',
+    ADMIN_QUESTION_CREATE = '/admin/question/create',
+    ADMIN_QUESTION_UPDATE = '/admin/question/update',
+    ADMIN_QUESTION_INFO = '/question/info',
 }
 
 export const publicRoutes : IRoute[] = [
@@ -76,19 +77,19 @@ export const privateRoutes : IRoute[] = [
     component: AdminListTestsPage
   },
   {
-    path: RouteNames.ADMIN_TEST_INFO,
+    path: RouteNames.ADMIN_TEST_INFO + '/:testId',
     component: AdminTestInfo
   },
   {
-    path: RouteNames.ADMIN_TEST_KEY_INFO,
+    path: RouteNames.ADMIN_TEST_KEY_INFO + '/:testId',
     component: AdminTestKeyInfo
   },
   {
-    path: RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION,
+    path: RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + '/:testId',
     component: CreateCustomTestDescriptionPage
   },
   {
-    path: RouteNames.CREATE_CUSTOM_TEST,
+    path: RouteNames.CREATE_CUSTOM_TEST + '/:testId',
     component: CreateCustomTest
   },
   {
@@ -109,7 +110,7 @@ export const privateRoutes : IRoute[] = [
   },
   {
     path: RouteNames.ADMIN_QUESTION_INFO + '/:questionId',
-    component: CreateQuestionPage
+    component: InfoQuestionPage
   },
   {
     path: RouteNames.ADMIN_QUESTION_UPDATE + '/:questionId',

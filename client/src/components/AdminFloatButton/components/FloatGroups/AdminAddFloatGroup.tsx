@@ -12,6 +12,7 @@ import CreateNewForder from '../../../AdminTestsListForm/CreateNewForder/CreateN
 import gs from '../../../../GlobalStyles.module.scss';
 import {useMedia} from 'react-use';
 import {useSelectTestsStore} from '../../../../store/folders/useSelectTestsStore';
+import {RouteNames} from "../../../../router";
 
 const AdminAddFloatGroup = () => {
   const isPC = useMedia('(min-width: 768px)');
@@ -34,7 +35,7 @@ const AdminAddFloatGroup = () => {
         quantityQuestion: 1,
         createDate
       });
-      navigate(`/admin/testInfo/customTest/description/${res._id}`);
+      navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${res._id}`);
       await queryClient.invalidateQueries({queryKey: ['allTests']});
     } catch (e) {
       message.error('Ошибка при создании теста');
@@ -51,7 +52,7 @@ const AdminAddFloatGroup = () => {
       const date = new Date();
       const createDate = getFormateDate(date);
       const res = await createCustomTestTrigger(createDate);
-      navigate(`/admin/testInfo/customTest/${res._id}`);
+      navigate(RouteNames.CREATE_CUSTOM_TEST + `/${res._id}`);
     } catch (e) {
       message.error('Ошибка при создании теста');
     }
