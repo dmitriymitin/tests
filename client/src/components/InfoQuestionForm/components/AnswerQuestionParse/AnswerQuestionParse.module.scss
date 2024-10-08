@@ -1,0 +1,7 @@
+.form {
+  :global(.ant-input) {
+    :global(.ant-input-status-warning) {
+      background-color: #55a800 !important;
+    }
+  }
+}

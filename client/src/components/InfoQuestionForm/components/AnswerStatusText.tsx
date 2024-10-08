@@ -10,7 +10,7 @@ const AnswerStatusText = ({status}: IAnswerStatusTextProps) => {
     <div className={
       clsx({
         ['red']: status === 'error',
-        ['yellow']: status === 'warning'
+        ['green']: status === 'warning'
       })
     }>
       {status === 'error' && 'Неверно'}

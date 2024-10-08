@@ -7,6 +7,8 @@ import clsx from 'clsx';
 import s from '../../../UpdateQuestionForm/components/QuestionTypeAnswerChecbox/QuestionTypeAnswerChecbox.module.scss';
 import sC from '../AnswerQuestionRadio/AnswerQuestionRadio.module.scss';
 import {IQuestionAnswer} from '../../../../api/question/type';
+import IsVisible from '../../../ui/isVisibleWrapper';
+import {CheckOutlined, CloseOutlined} from '@ant-design/icons';
 
 interface IAnswerQuestionCheckboxProps {
   lastValue?: string;
@@ -55,10 +57,6 @@ const AnswerQuestionCheckbox = ({lastValue, questionId, statusAnswer, shuffleArr
 
                   return [...newArr, id];
                 })}
-                style={{
-                  borderRadius: 12,
-                  border: isLast && '1px solid ' + (!isRightAnswer ? 'red' : isRightAnswer ? 'yellow' : '')
-                }}
               >
                 <div className="flex-row flex-middle flex-center gap-20 testBackground boxShadow1 hover">
                   <Row wrap={false} className={clsx('flex-row flex-middle', sC.row)}>
@@ -68,6 +66,12 @@ const AnswerQuestionCheckbox = ({lastValue, questionId, statusAnswer, shuffleArr
                     </div>
                     <div>{answers?.checkbox?.values?.[id]?.title}</div>
                   </Row>
+                </div>
+                <div className="w30p">
+                  <IsVisible isVisible={isLast}>
+                    {!isRightAnswer && <CloseOutlined className="red"/>}
+                    {isRightAnswer && <CheckOutlined className="green"/>}
+                  </IsVisible>
                 </div>
               </div>
             );

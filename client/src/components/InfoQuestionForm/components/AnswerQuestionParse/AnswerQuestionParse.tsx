@@ -12,10 +12,12 @@ import AnswerQuestionText from "../AnswerQuestionText/AnswerQuestionText";
 import AnswerQuestionRadio from "../AnswerQuestionRadio/AnswerQuestionRadio";
 import AnswerQuestionCheckbox from "../AnswerQuestionCheckbox/AnswerQuestionCheckbox";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
+import s from './AnswerQuestionParse.module.scss';
 
 const FormWrapper = ({questionId, children}: {questionId: string, children: any}) => {
   return (
     <Form.Item
+      className={s.form}
       noStyle
       style={{width: '100%'}}
       name={'answerFieldsData/' + questionId}

@@ -1,0 +1,19 @@
+.input {
+  span {
+    border-color: #55a800 !important;
+    color: #55a800 !important;
+  }
+}
+
+.inputWrapper {
+  border-color: #55a800 !important;
+  :global(&.ant-input-status-warning) {
+    background-color: #55a800 !important;
+  }
+
+  :global(&-group-addon) {
+    border-color: #55a800 !important;
+    color: #55a800 !important;
+  }
+
+}

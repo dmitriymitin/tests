@@ -3,6 +3,7 @@ import {Input, Popover} from 'antd';
 import {InfoCircleOutlined, InfoOutlined, SettingOutlined} from '@ant-design/icons';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import {AnswerType} from '../../../../models/question';
+import s from './AnswerQuestionText.module.scss';
 
 const AnswerQuestionText = ({questionId, statusAnswer}: {questionId: string; statusAnswer?: 'error' | 'warning'}) => {
   const formInstance = useFormInstance();
@@ -19,7 +20,9 @@ const AnswerQuestionText = ({questionId, statusAnswer}: {questionId: string; sta
 
   return (
     <Input
+      className={statusAnswer === 'warning' && s.input}
       value={value}
+      prefixCls={statusAnswer === 'warning' && s.inputWrapper}
       status={statusAnswer}
       placeholder={'Ответ'}
       onChange={(e) => setValue(e.target.value.replace(/\s+/g, ''))}
