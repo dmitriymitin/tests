@@ -16,9 +16,10 @@ interface IAnswerQuestionRadioProps {
   answers: IQuestionAnswer;
   shuffleArraysIds: string[];
   statusAnswer?: 'error' | 'warning';
+  isAnswer?: boolean;
 }
 
-const AnswerQuestionRadio = ({lastValue, questionId, statusAnswer, shuffleArraysIds, answers}: IAnswerQuestionRadioProps) => {
+const AnswerQuestionRadio = ({lastValue, questionId, statusAnswer, shuffleArraysIds, answers, isAnswer}: IAnswerQuestionRadioProps) => {
   const formInstance = useFormInstance();
   const [checked, setChecked] = useState<string | undefined>(undefined);
   const [formRadio] = useForm();
@@ -39,7 +40,7 @@ const AnswerQuestionRadio = ({lastValue, questionId, statusAnswer, shuffleArrays
   const arrayValues = Object.values(answers?.radio?.values).sort((a, b) => a.rang - b.rang);
 
   return (
-    <Radio.Group value={checked} onChange={oRadioChange} className="pv-10 px-30">
+    <Radio.Group value={checked} onChange={oRadioChange} className="pv-10">
       <Form form={formRadio}>
         <Space direction="vertical" className="gap-10">
           {shuffleArraysIds.map((id, index) => {

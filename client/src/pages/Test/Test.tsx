@@ -1,14 +1,16 @@
-import React, {useEffect} from 'react';
-import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import React from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import {useMutation, useQuery} from 'react-query';
-import {getOneTest, getOneUserTest, saveNewTest} from '../../api/test';
-import {Button, Form, Input, message, Popconfirm, Radio, Space, Spin} from 'antd';
+import {getOneUserTest, saveNewTest} from '../../api/test';
+import {Button, Form, Input, message, Popconfirm, Spin} from 'antd';
 import {useForm} from 'antd/es/form/Form';
 import s from './Test.module.scss';
 import clsx from 'clsx';
-import {ICustomTestQuestion} from '../../api/test/type';
+import {ETypeTest} from '../../api/test/type';
 import edjsHTML from 'editorjs-html';
 import parse from 'html-react-parser';
+import {getTestType} from '../../utils/helpers';
+import RenderCustomTestWithQuestions from './components/RenderCustomTestWithQuestions';
 
 const edjsParser = edjsHTML();
 
@@ -26,6 +28,7 @@ const Test = () => {
     refetchOnWindowFocus: false
   });
 
+  const testType = getTestType(testData);
   const {
     mutateAsync: saveAnswerTrigger,
     isLoading: isSaveAnswerLoading
@@ -56,8 +59,6 @@ const Test = () => {
     );
   }
 
-  const isTestWithDescription = !!testData.descriptionEditor;
-
   const onSendForm = async () => {
     try {
       await form.validateFields();
@@ -69,7 +70,36 @@ const Test = () => {
     try {
       const formData = await form.getFieldsValue();
       const FIOGroup = formData['FIOGroup'];
-      if (!isTestWithDescription) {
+
+      const saveValues = {
+        FIOGroup,
+        testId,
+        testType
+      };
+
+      if (testType === ETypeTest.WITH_QUESTIONS) {
+        // const testKey = formData['testKey'];
+        const valuesCustom = Object.entries(formData).reduce((acc, [key, value]) => {
+          const keySplit = key.split('/');
+          if (keySplit?.[0] === 'answerFieldsData') {
+            acc[keySplit[1]] = {
+              ...Object.values(value)[0]
+            };
+          }
+
+          return acc;
+        }, {} as any);
+
+        await saveAnswerTrigger({
+          ...saveValues,
+          answersCustom: {
+            questionsIdRanges: testData?.questions?.map(el => el._id),
+            values: valuesCustom
+          }
+        });
+      }
+
+      if (testType === ETypeTest.SIMPLE) {
         const answer = Object.keys(formData)
           .reduce((obj, key) => {
             if (key !== 'FIOGroup') {
@@ -77,27 +107,23 @@ const Test = () => {
             }
 
             return obj;
-          }, {} as {
-                        [key: string]: string;
-                    });
+          }, {} as { [key: string]: string });
         await saveAnswerTrigger({
-          FIOGroup,
+          ...saveValues,
           answer,
-          testId
         });
-      } else {
+      }
+
+      if (testType === ETypeTest.WITH_DESCRIPTION) {
         const testKey = formData['testKey'];
         const newArray = new Array(testData.quantityQuestion).fill('1');
         const answer = newArray.reduce((obj, key, index) => {
           obj[index + 1] = testKey[index];
           return obj;
-        }, {} as {
-                        [key: string]: string;
-                    });
+        }, {} as { [key: string]: string });
         await saveAnswerTrigger({
-          FIOGroup,
-          answer,
-          testId
+          ...saveValues,
+          answer
         });
       }
 
@@ -114,9 +140,9 @@ const Test = () => {
         {testData.title}
       </h1>
       <Form
-                className={s.form}
-                form={form}
-                layout={'vertical'}
+        className={s.form}
+        form={form}
+        layout={'vertical'}
       >
         <div className={s.item}>
           <div className={s.title}>{testData.firstQuestionTitle || 'Фамилия, номер группы'}</div>
@@ -132,27 +158,9 @@ const Test = () => {
             <Input/>
           </Form.Item>
         </div>
-        {!testData.descriptionEditor
-          ? testData.questions
-            ? testData?.questions?.map((el, index) =>
-              <div key={el._id} className={s.item}>
-                <div className={s.title}>Вопрос {index + 1}</div>
-                <div className={s.description}>
-                  {el.description}
-                </div>
-                <Form.Item name={`${index + 1}`}>
-                  {el.answers && Object.keys(el.answers).length > 0
-                    ? <Radio.Group>
-                      <Space direction="vertical">
-                        {Object.values(el.answers).map((el, index) =>
-                          <Radio key={index} value={el.value}>{el.name}</Radio>
-                        )}
-                      </Space>
-                    </Radio.Group>
-                    : <Input className={s.customQuestionInput}/>
-                  }
-                </Form.Item>
-              </div>)
+        {testType !== ETypeTest.WITH_DESCRIPTION
+          ? testType === ETypeTest.WITH_QUESTIONS
+            ? <RenderCustomTestWithQuestions testData={testData}/>
             : new Array(testData.quantityQuestion).fill('1').map((_, index) =>
               <div key={index} className={s.item}>
                 <div className={s.title}>Вопрос {index + 1}</div>
@@ -181,10 +189,10 @@ const Test = () => {
                     cancelText="Нет"
         >
           <Button
-                        className={s.confirmBtn}
-                        loading={isSaveAnswerLoading}
-                        size={'large'}
-                        type={'primary'}
+            className={s.confirmBtn}
+            loading={isSaveAnswerLoading}
+            size={'large'}
+            type={'primary'}
           >
             Завершить тест
           </Button>

@@ -11,16 +11,17 @@ import ContextMenuWrapper from '../../ui/ContextMenuWrapper/ContextMenuWrapper';
 import AllGroupQuestionDeleteBtnTheme from '../AllGroupQuestionDeleteBtnTheme/AllGroupQuestionDeleteBtnTheme';
 import {useAllGroupsStore} from '../../../store/groups/useAllGroups';
 import AddNewThemeModalDrawer from '../AddNewThemeModalDrawer/AddNewThemeModalDrawer';
-import ChangeNewThemeModalDrawer from "../AddNewThemeModalDrawer/ChangeNewThemeModalDrawer";
-import IsVisible from "../../ui/isVisibleWrapper";
+import ChangeNewThemeModalDrawer from '../AddNewThemeModalDrawer/ChangeNewThemeModalDrawer';
+import IsVisible from '../../ui/isVisibleWrapper';
 
 interface IAllGroupQuestionBtnProps {
   group: IQuestionGroup;
   handleClick?: () => void;
   isActive?: boolean;
+  isCount?: boolean;
 }
 
-const AllGroupQuestionBtn = ({group, isActive, handleClick}: IAllGroupQuestionBtnProps) => {
+const AllGroupQuestionBtn = ({group, isActive, handleClick, isCount}: IAllGroupQuestionBtnProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
@@ -49,19 +50,25 @@ const AllGroupQuestionBtn = ({group, isActive, handleClick}: IAllGroupQuestionBt
           className={clsx('group-block-wrapper boxShadow3 clearButton flex-row flex-middle fs-14', {['active']: isActive})}
           onClick={() => handleClick()}
         >
-          <div className="group-block right-border">
+          <div className={clsx('group-block', {['all-border']: !isCount, ['right-border']: isCount})}>
             {group.name}
           </div>
-          <div className="group-block left-border">
-            {group.count}
-          </div>
+          <IsVisible isVisible={isCount}>
+            <div className="group-block left-border">
+              {group.count}
+            </div>
+          </IsVisible>
         </button>
       </ContextMenuWrapper>
     </>
   );
 };
 
-const AllGroupQuestion = () => {
+interface IAllGroupQuestionProps {
+  isCount?: boolean;
+}
+
+const AllGroupQuestion = ({isCount = true}: IAllGroupQuestionProps) => {
   const {data: allGroupQuestion, isLoading} = useAllGroupQuestion();
   const {currentActiveGroups, setCurrentActiveGroupIds} = useAllGroupsStore(store => store);
 
@@ -94,6 +101,7 @@ const AllGroupQuestion = () => {
         {currentActiveGroups
           ?.map(el => (
             <AllGroupQuestionBtn
+              isCount={isCount}
               key={el._id}
               isActive
               group={el}
@@ -103,6 +111,7 @@ const AllGroupQuestion = () => {
         {noActiveGroups
           ?.map(el => (
             <AllGroupQuestionBtn
+              isCount={isCount}
               key={el._id}
               group={el}
               handleClick={handleAddActiveIdClick(el)}

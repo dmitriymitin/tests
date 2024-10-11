@@ -19,7 +19,6 @@ const QuestionThemes = () => {
   const isLoading = !allGroupQuestion || isAllGroupQuestionFetching || isAllGroupQuestionLoading;
 
   const handleChange = (value: string) => {
-    console.log('value', value);
     formInstase.setFieldValue('groupsId', value ? [value] : []);
   };
 

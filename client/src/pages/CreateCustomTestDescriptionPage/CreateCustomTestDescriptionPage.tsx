@@ -75,7 +75,7 @@ const CreateCustomTestDescriptionPage = () => {
                 }}
       >
         <h1 className="title">
-          Страница создания теста только с описанием
+          Страница создания теста с описанием
         </h1>
         <div className={s.btns}>
           <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${testId}`)}>Ввести ключ</Button>

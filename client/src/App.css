@@ -136,6 +136,10 @@ body {
     color: #1677ff;
 }
 
+.bgEEE {
+    background-color: #eee !important;
+}
+
 .dangerColor {
     color: red;
 }
@@ -238,6 +242,17 @@ body {
 
 .boxShadow3 {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.clearBtnForIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    box-shadow: none;
+    background-color: transparent;
+    width: 16px;
+    height: 20px;
 }
 
 .btnSaveWrapper {

@@ -1,99 +1,137 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import s from './CreateCustomTestForm.module.scss';
 import {Button, Form, message, Popconfirm, Radio, Space, Spin} from 'antd';
 import {useMutation, useQuery} from 'react-query';
-import {getOneCustomTest, onDeleteQuestionCustomTest} from '../../api/test';
+import {addQuestionToCustomTest, getOneCustomTest, onDeleteQuestionCustomTest, updateCustomTest} from '../../api/test';
 import {useNavigate, useParams} from 'react-router-dom';
-import {ICustomTestQuestion} from '../../api/test/type';
+import {EditorDescriptionTest, ICustomTestQuestion, IGetTestInfoCustomModelResponse} from '../../api/test/type';
 import AddNewQuestionModalDrawer from './AddNewQuestionModalDrawer/AddNewQuestionModalDrawer';
 import ChangeCustomQuestion from './ChangeCustomQuestion/ChangeCustomQuestion';
 import ChangeCustomTestTitle from './ChangeCustomTestTitle/ChangeCustomTestTitle';
 import {useForm} from 'antd/es/form/Form';
 import {RouteNames} from '../../router';
+import QuestionColumn from './QuestionColumn/QuestionColumn';
+import {DragDropContext, DropResult} from 'react-beautiful-dnd';
+import {useDragEnd} from './hooks/useDragEnd';
+import AllQuestionColumn from './QuestionColumn/AllQuestionColumn';
+import {useAllQuestion} from '../../http/hooks/useAllQuestion';
+import {IQuestion, IQuestionAnswer} from '../../api/question/type';
+import {useQuestionsEvent} from './hooks/useQuestionsEvent';
+import {useAllGroupsStore} from '../../store/groups/useAllGroups';
+import CreateCustomTestFormAllQuestions from './CreateCustomTestFormAllQuestions';
+import IsVisible from '../ui/isVisibleWrapper';
+import {ISegmentedSetting} from '../UpdateQuestionForm/UpdateQuestionForm';
+import SettingSegmented from '../ui/SettingSegmented/SettingSegmented';
+import {TAnswerType} from '../../models/question';
+import exampleQuestionData from '../EditorWrapper/Editor/exampleQuestionData';
 
-const CreateCustomTestForm = () => {
+interface ICreateCustomTestFormProps {
+  questionData?: IQuestion[];
+  testData?: IGetTestInfoCustomModelResponse;
+  refetchTest?: () => void;
+  isTestLoading?: boolean;
+  isAllQuestionsLoading?: boolean;
+  isTestError?: boolean;
+}
+
+const testSetting: ISegmentedSetting[] = [
+  {
+    formName: 'isRandomQuestions',
+    text: 'Перемешивать вопросы',
+  },
+  {
+    formName: 'isPublicTestAnswers',
+    text: 'Сделать результаты публчиными',
+    description: 'Студенты смогут посмотреть результаты тестирования.',
+    isDev: true,
+  },
+  {
+    formName: 'timeForAnswer',
+    text: 'Время на прохождение',
+    type: 'time',
+    description: 'Без значения, время не учитывается',
+    isDev: true,
+  },
+  {
+    formName: 'isPublicTest',
+    text: 'Сделать тест публчиным',
+    description: 'Тест будет доступен для просмотра',
+    isDev: true,
+  }
+];
+
+interface IFormData {
+  isPublicTest: 0 | 1;
+  isPublicTestAnswers: 0 | 1;
+  isRandomQuestions: 0 | 1;
+  testTitle: string;
+  timeForAnswer: string;
+}
+
+const CreateCustomTestForm = ({questionData, testData, isAllQuestionsLoading, isTestError, refetchTest, isTestLoading}: ICreateCustomTestFormProps) => {
   const {testId} = useParams();
   const navigate = useNavigate();
-  const [form] = useForm();
-
-  const [questionForAdd, setQuestionForAdd] = useState<{
-        openModal: boolean;
-        question: ICustomTestQuestion & { name: string } | Omit<ICustomTestQuestion & { name: string }, '_id'> | null;
-    }>({
-      openModal: false,
-      question: null
-    });
-
-  const [currentQuestion, setCurrentQuestion] = useState<{
-        openModal: boolean;
-        question: ICustomTestQuestion & { name: string };
-    }>({
-      openModal: false,
-      question: {} as ICustomTestQuestion & { name: string }
-    });
+  const [form] = useForm<IFormData>();
 
   const {
-    mutateAsync: deleteQuestionCustomTEstTrigger,
-    isLoading: deleteCustomTestLoading
-  } = useMutation(onDeleteQuestionCustomTest);
+    mutateAsync: updateCustomTestTrigger,
+    isLoading: isLoadingIpdateCustomTestTrigger
+  } = useMutation(updateCustomTest);
 
-  const {
-    data: customTestData,
-    isLoading: customTestLoading,
-    isFetching: customTestFetching,
-    refetch: refetchCustomTestData
-  } = useQuery(['customTestInfo', testId], () => getOneCustomTest(testId), {
-    refetchOnWindowFocus: false
-  });
-
-  if (customTestLoading || customTestFetching) {
-    return <div className={s.spin}>
-      <Spin size={'large'}/>
-    </div>;
-  }
-
-  if (!customTestData) {
+  if (isTestError) {
     message.error('произошла ошибка при получении информации о тесте');
     navigate('/admin');
     return null;
   }
 
-  const onDeleteQuestion = async (id: string | null) => {
-    try {
-      await deleteQuestionCustomTEstTrigger({id, testId});
-      refetchCustomTestData();
-    } catch (e) {
-      message.error('Ошибка при удалении вопроса');
+  const initialValuesForm = {
+    isRandomQuestions: testData?.test?.setting?.isRandomQuestions ? 1 : 0,
+    timeForAnswer: testData?.test?.setting?.timeForAnswer,
+    isPublicTest: testData?.test?.setting?.isPublicTest ? 1 : 0,
+    isPublicTestAnswers: testData?.test?.setting?.isPublicTestAnswers ? 1 : 0,
+  };
+
+  useEffect(() => {
+    if (testData?.test?.title) {
+      form.setFieldValue('testTitle', testData.test.title);
     }
-  };
-
-  const setAddOpenModal = (val: boolean) => {
-    setQuestionForAdd(prevState => ({
-      ...prevState,
-      openModal: val
-    }));
-  };
-
-  const setChangeOpenModal = (val: boolean) => {
-    setCurrentQuestion(prevState => ({
-      ...prevState,
-      openModal: val
-    }));
-  };
+  }, [testData, initialValuesForm]);
 
   const getFieldTestTitle = (): string => {
     return form.getFieldValue('testTitle');
   };
 
+  const handleSaveChange = async () => {
+    const formData = form.getFieldsValue();
+    try {
+      await updateCustomTestTrigger(
+        {
+          id: testId,
+          updateTest: {
+            setting: {
+              isRandomQuestions: Boolean(formData?.isRandomQuestions),
+              timeForAnswer: formData?.timeForAnswer?.toString(),
+              isPublicTest: Boolean(formData?.isPublicTest),
+              isPublicTestAnswers: Boolean(formData?.isPublicTestAnswers),
+            }
+          }
+        });
+      message.success('Настройки успешно сохранены');
+    } catch (e) {
+      message.error('Ошибка при сохранении настроек');
+    }
+  };
+
   return (
-    <>
+    <IsVisible isVisible={!isTestLoading}>
       <Form
-                form={form}
-                className={s.custom__test__form}
-                initialValues={{testTitle: customTestData.test.title}}
+        disabled={isTestLoading}
+        form={form}
+        className={s.custom__test__form}
+        initialValues={initialValuesForm}
       >
         <h1 className="title">
-          Страница создания теста со своими вопросами
+          Страница создания теста с вопросами
         </h1>
 
         <div className={s.btns}>
@@ -103,87 +141,67 @@ const CreateCustomTestForm = () => {
 
         <div className={s.test__block}>
           <ChangeCustomTestTitle
-                        testId={testId}
-                        refetch={refetchCustomTestData}
-                        getFieldTestTitle={getFieldTestTitle}
-                        title={customTestData.test.title}
+            style={{
+              marginBottom: 12
+            }}
+            testId={testId}
+            refetch={refetchTest}
+            getFieldTestTitle={getFieldTestTitle}
+            isLoading={isTestLoading}
+            title={testData?.test?.title || ''}
           />
-          {customTestData.test.questions?.length > 0 &&
-                        customTestData.test.questions.map((el, index) =>
-                          <div key={index} className={s.item}>
-                            <p className={s.title}>Вопрос {index + 1}</p>
-                            <div className={s.description}> {el.description} </div>
-                            {el.answers
-                              ? <Radio.Group>
-                                <Space direction="vertical">
-                                  {Object.values(el.answers).map((el, index) =>
-                                    <Radio key={index} value={el.value}>({el.value}) {el.name}</Radio>
-                                  )}
-                                </Space >
-                              </Radio.Group>
-                              : 'Нет ответов'
-                            }
-                            <div className={s.action__wrapper}>
-                              <Button
-                                        onClick={() =>
-                                          setCurrentQuestion({
-                                            openModal: true,
-                                            question: {
-                                              _id: el._id,
-                                              name: `Вопрос ${index + 1}`,
-                                              description: el.description,
-                                              answers: el.answers
-                                            }
-                                          })
-                                        }
-                                        type={'primary'}
-                              >
-                                Редактировать
-                              </Button>
-                              <Popconfirm
-                                        title="Удаление вопроса"
-                                        description="Вы уверены, что хотите удалить вопрос?"
-                                        onConfirm={() => onDeleteQuestion(el._id)}
-                                        okText="Да"
-                                        cancelText="Нет"
-                              >
-                                <Button type={'primary'} danger>Удалить</Button>
-                              </Popconfirm>
-                            </div>
-                          </div>
-                        )
-          }
-          <div className={s.btns}>
-            <Button className={s.addBtn} type={'primary'} onClick={() => {
-              setQuestionForAdd({
-                openModal: true,
-                question: {
-                  name: `Вопрос ${(customTestData.test.questions?.length || 0) + 1}`,
-                  description: '',
-                  answers: null
-                }
-              });
-            }}>
-              Добавитиь вопрос
-            </Button>
+
+          <div className={s.title_block}> Настройки </div>
+          <div className="testBackground">
+            {testSetting.map((el, index) => (
+              <SettingSegmented
+                key={index}
+                formName={el.formName}
+                text={el.text}
+                type={el.type}
+                description={el.description}
+                isDev={el.isDev}
+              />
+            ))}
+            <div className="flex-row flex-end">
+              <Button type="primary" onClick={handleSaveChange} loading={isLoadingIpdateCustomTestTrigger}>Сохранить измненения</Button>
+            </div>
           </div>
+
+          <IsVisible isVisible={isTestLoading}>
+            <div className="status-block h220p">
+              <Spin size={'large'}/>
+            </div>
+          </IsVisible>
+          <IsVisible isVisible={!isTestLoading}>
+            <CreateCustomTestFormAllQuestions
+              questionData={questionData}
+              testData={testData}
+              isTestLoading={isTestLoading}
+              isAllQuestionsLoading={isAllQuestionsLoading}
+            />
+          </IsVisible>
         </div>
       </Form>
-      <AddNewQuestionModalDrawer
-                refetchTest={refetchCustomTestData}
-                testId={testId}
-                question={questionForAdd?.question}
-                open={questionForAdd.openModal}
-                setOpen={setAddOpenModal}
-      />
-      <ChangeCustomQuestion
-                refetchTest={refetchCustomTestData}
-                testId={testId}
-                question={currentQuestion?.question}
-                open={currentQuestion.openModal}
-                setOpen={setChangeOpenModal}
-      />
-    </>
+    </IsVisible>
+
+  // {/* ДОБАВЛЕНИЕ ВОПРОСА */}
+  // {/* <AddNewQuestionModalDrawer */}
+  // {/*          refetchTest={refetchCustomTestData} */}
+  // {/*          testId={testId} */}
+  // {/*          question={questionForAdd?.question} */}
+  // {/*          open={questionForAdd.openModal} */}
+  // {/*          setOpen={setAddOpenModal} */}
+  // {/* /> */}
+  //
+  // {/* ОБНОВЛЕНИЕ ВОПРОСА */}
+  // {/* <ChangeCustomQuestion */}
+  // {/*          refetchTest={refetchCustomTestData} */}
+  // {/*          testId={testId} */}
+  // {/*          question={currentQuestion?.question} */}
+  // {/*          open={currentQuestion.openModal} */}
+  // {/*          setOpen={setChangeOpenModal} */}
+  // {/* /> */}
   );
 };
 

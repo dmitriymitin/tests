@@ -7,8 +7,10 @@ import {getQuestion} from '../../api/question';
 import InfoQuestionForm from '../../components/InfoQuestionForm/InfoQuestionForm';
 import IsVisible from '../../components/ui/isVisibleWrapper';
 import {useForm} from "antd/es/form/Form";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 const InfoQuestionPage = () => {
+  const {isAuth} = useTypedSelector(state => state.auth);
   const [form] = useForm();
   const {questionId} = useParams();
   const queryKey = `question${questionId}`;
@@ -21,10 +23,7 @@ const InfoQuestionPage = () => {
     retry: false
   });
 
-  const handleSubmit = () => {
-    const fields = form.getFieldsValue();
-    console.log('fields', fields);
-  };
+  const isVisibleQuestion = isAuth ? true : questionData?.setting?.isPublicQuestion;
 
   return (
     <>
@@ -44,14 +43,14 @@ const InfoQuestionPage = () => {
             <h1 className={'title'}>
               Вопрос {questionData?.convertId}
             </h1>
-            <IsVisible isVisible={!questionData?.setting?.isPublicQuestion}>
+            <IsVisible isVisible={!isVisibleQuestion}>
               <div className="status-block h220p">
                 <Empty description={'Вопрос не доступен к просмотру'}/>
               </div>
             </IsVisible>
-            <IsVisible isVisible={questionData?.setting?.isPublicQuestion}>
+            <IsVisible isVisible={isVisibleQuestion}>
               <Form form={form} style={{width: '100%'}}>
-                <InfoQuestionForm onSubmit={handleSubmit} questionData={questionData} isPublicAnswer/>
+                <InfoQuestionForm questionData={questionData} isAnswer isPublicAnswer/>
               </Form>
             </IsVisible>
           </div>

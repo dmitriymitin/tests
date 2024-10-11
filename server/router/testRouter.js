@@ -26,6 +26,8 @@ router.post('/clearAllResults',authMiddleware, TestController.clearAllResults);
 router.get('/downloadTest/:id', TestController.downloadTest);
 router.post('/createCustom',authMiddleware, TestController.createCustom);
 router.post('/custom/addQuestion/:id',authMiddleware, TestController.addQuestionCustomTest);
+router.post('/custom/addManyQuestion/:id',authMiddleware, TestController.addManyQuestionCustomTest);
+router.post('/custom/updateTest/:id',authMiddleware, TestController.updateCustomTest);
 router.post('/custom/updateOneQuestion',authMiddleware, TestController.updateQuestionCustomTest);
 router.post('/description/updateDescription/:id',authMiddleware, TestController.updateDescription)
 router.get('/all',authMiddleware, TestController.getAll);

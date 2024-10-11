@@ -11,9 +11,11 @@ interface ChangeCustomTestTitleProps {
     refetch: () => void;
     getFieldTestTitle: () => string;
     title: string;
+    isLoading?: boolean;
+    style?: React.CSSProperties;
 }
 
-const ChangeCustomTestTitle = ({testId, title, getFieldTestTitle, refetch}: ChangeCustomTestTitleProps) => {
+const ChangeCustomTestTitle = ({style, testId, isLoading, title, getFieldTestTitle, refetch}: ChangeCustomTestTitleProps) => {
   const [isChangeTitle, setIsChangeTitle] = useState(true);
 
   const {
@@ -39,13 +41,15 @@ const ChangeCustomTestTitle = ({testId, title, getFieldTestTitle, refetch}: Chan
     return (
       <div className={s.title__wrapper}>
         <Form.Item
-                    className={s.formTestTitle}
-                    name={'testTitle'}
+          style={style}
+          className={s.formTestTitle}
+          name={'testTitle'}
         >
           <TextArea
-                        className={s.text__area__title}
-                        rows={2}
-                        placeholder={title}
+            disabled={isLoading}
+            className={s.text__area__title}
+            rows={2}
+            placeholder={title}
           />
         </Form.Item>
         <Button

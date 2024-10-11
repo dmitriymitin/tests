@@ -5,7 +5,7 @@ const TestCustomModel = require("../models/test-custom-model");
 const {ObjectId} = require("mongodb");
 const TestModel = require("../models/test-model");
 const TestUserModel = require("../models/test-user-model");
-const convertIdToCustomFormat = require("../helpers/util");
+const {convertIdToCustomFormat} = require("../helpers/util");
 
 const getQuestionsModelDTO = (questions) => {
     return questions.map(el => {
@@ -53,6 +53,18 @@ class QuestionService {
         const questionId = new ObjectId(id);
         const question = await QuestionModel.findOne({_id: questionId});
         await changeCountInGroupsId(question.groupsId, 'remove')
+        const allTestsCustom = await TestCustomModel.find();
+        try {
+            if (allTestsCustom && allTestsCustom.length) {
+                await Promise.all(
+                    allTestsCustom.map(async (test) => {
+                        const newQuestionsId = test?.questionsId.filter(el => el !== id);
+                        test.questionsId = newQuestionsId;
+                        await test.save();
+                    })
+                );
+            }
+        } catch (e) {}
         await QuestionModel.deleteOne({_id: questionId});
     }
 

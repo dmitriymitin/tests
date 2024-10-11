@@ -45,14 +45,10 @@ const AddNewQuestionModalDrawer = ({refetchTest, testId, question, open, setOpen
     try {
       await addQuestionToCustomTestTrigger({
         id: testId,
-        question: {
-          description: form.getFieldValue('description'),
-          answers: answersInfo.answers
-        }
+        questionId: '1'
       });
       refetchTest();
       setOpen(false);
-      setAnswersInfo({answers: {}});
       message.success(question.name + ' был успешно добавлен!');
     } catch (e) {
       message.error('Ошибка при добавлении ' + question.name);

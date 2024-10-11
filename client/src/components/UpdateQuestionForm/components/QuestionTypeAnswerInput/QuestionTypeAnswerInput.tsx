@@ -27,7 +27,7 @@ const QuestionTypeAnswerInput = () => {
              onChange={(e) => setKeys(e.target.value.replace(/\s+/g, ''))}
              addonAfter={
                <div className="flex-row flex-center flex-middle gap-10">
-                 <Popover className="cursor-pointer fs-18 mxw-100" content={'Ответ записывайте без пробелов — например, 97531 или яблокорябина.'}>
+                 <Popover className="cursor-pointer fs-18 mxw-100" content={'Ответ записывайте без пробелов — например, 97531.'}>
                    <InfoCircleOutlined />
                  </Popover>
                </div>

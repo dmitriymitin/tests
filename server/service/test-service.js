@@ -4,6 +4,7 @@ const TestCustomModel = require('../models/test-custom-model')
 const TestCustomQuestionModel = require('../models/test-custom-question-model')
 const ExelFileModel = require('../models/exel-file-model')
 const FolderModel = require('../models/folder-model')
+const QuestionModel = require('../models/question-model')
 
 const path = require('path');
 const excel = require('excel4node');
@@ -11,6 +12,38 @@ const natural = require('natural');
 const {ObjectId} = require("mongodb");
 const ApiError = require("../exceptions/api-error");
 const {Workbook} = require("excel4node");
+const {shuffleArray} = require("../helpers/util");
+
+
+const getQuestions = async (questionsId, isUserQuestion = false) => {
+    try {
+        if (!questionsId || (questionsId && !questionsId.length)) {
+            return [];
+        }
+        const array = [];
+        for (const id of questionsId) {
+            const question = await QuestionModel.findById(id);
+            const questionJSON = question._doc;
+            if (isUserQuestion) {
+                const newAnswers = Object.entries(questionJSON?.answers).reduce((acc, [key, value]) => {
+                    acc[key] = {
+                        values: value.values
+                    }
+                    return acc;
+                }, {});
+                array.push({
+                    ...questionJSON,
+                    answers: newAnswers
+                });
+            } else {
+                array.push(question);
+            }
+        }
+        return array;
+    } catch (e) {
+     return [];
+    }
+}
 
 class TestService {
     async getOne(id){
@@ -23,6 +56,7 @@ class TestService {
         if (test) {
             return {
                 _id: test._id,
+                testType: test?.testType || undefined,
                 descriptionEditor: test.descriptionEditor,
                 firstQuestionTitle: test.firstQuestionTitle,
                 quantityQuestion: test.quantityQuestion,
@@ -31,12 +65,16 @@ class TestService {
             }
         }
         const customTestModel = await TestCustomModel.findOne({_id: new ObjectId(id)})
+        const questionsId = customTestModel.questionsId;
+        const customQuestions = await getQuestions(questionsId, true)
+        const shuffleQuestions = shuffleArray(customQuestions);
         return {
             _id: customTestModel._id,
-            quantityQuestion: customTestModel.questions.length,
+            testType: customTestModel?.testType || undefined,
+            quantityQuestion: questionsId.length,
             firstQuestionTitle: customTestModel.firstQuestionTitle,
             status: customTestModel.status,
-            questions: customTestModel.questions,
+            questions: customTestModel.setting?.isRandomQuestions ? shuffleQuestions : customQuestions,
             title: customTestModel.title
         }
     }
@@ -150,8 +188,12 @@ class TestService {
             }
         }
         const customTestModel = await TestCustomModel.findOne({_id: new ObjectId(id)})
+        const questions = await getQuestions(customTestModel?.questionsId)
         return {
-            test: customTestModel,
+            test: {
+                ...customTestModel._doc,
+                questions
+            },
             usersInfo: testUserModel,
             testKey: customTestModel.testKey
         }
@@ -164,22 +206,56 @@ class TestService {
         }
     }
 
-    async addQuestionCustomTest(id, description, answers){
-        const question = await TestCustomQuestionModel.create({answers, description,})
+    async addQuestionCustomTest(id, questionId){
         const test  = await TestCustomModel.findOne({_id: new ObjectId(id)})
-        test.questions.push(question)
+        test.questionsId.push(questionId);
+        const questionsId = test.questionsId;
         await test.save();
+        const questions = await getQuestions(questionsId)
+
         return {
-            ...test
+            ...test?._doc,
+            questions
+        }
+    }
+
+    async addManyQuestionCustomTest(id, questionsId){
+        const test  = await TestCustomModel.findOne({_id: new ObjectId(id)})
+        test.questionsId = questionsId;
+        await test.save();
+        const questions = await getQuestions(questionsId)
+
+        return {
+            ...test?._doc,
+            questions
+        }
+    }
+
+    async updateCustomTest(id, updateValues){
+        let testFind  = await TestCustomModel.findOne({_id: new ObjectId(id)})
+        for (const key in updateValues) {
+            if (updateValues.hasOwnProperty(key)) {
+                testFind[key] = updateValues[key];
+            }
+        }
+        await testFind.save();
+        const questions = await getQuestions(testFind.questionsId)
+        return {
+            ...testFind?._doc,
+            ...updateValues,
+            questions
         }
     }
 
     async getOneCustomInfo(id){
         const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(id)})
-        const testUserModel  = await TestUserModel.find({testId: new ObjectId(id)})
-
+        const testUserModel  = await TestUserModel.find({testId: new ObjectId(id)});
+        const questions = await getQuestions(testCustomModel.questionsId);
         return {
-            test: testCustomModel,
+            test: {
+                ...testCustomModel?._doc,
+                questions
+            },
             usersInfo: testUserModel,
             testKey: testCustomModel.testKey
         }
@@ -229,11 +305,11 @@ class TestService {
         return testsCustom
     }
 
-    async create(title, quantityQuestion, description, createDate){
+    async create(title, quantityQuestion, description, createDate, testType){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()
         const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
-        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description, createDate})
+        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description, createDate, testType})
     }
 
     async createFolder(name){
@@ -325,11 +401,11 @@ class TestService {
         await TestUserModel.deleteMany()
     }
 
-    async createCustom(createDate){
+    async createCustom(createDate, testType){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()
         const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
-        return await TestCustomModel.create({firstQuestionTitle, title: 'Тест с отдельным описанием вопросов', questions: [], createDate})
+        return await TestCustomModel.create({firstQuestionTitle, title: 'Тест с вопросами', questions: [], createDate, testType})
     }
 
     async getAll({filterByCreateId, filterByFolderId, status}){
@@ -525,7 +601,7 @@ class TestService {
                 acc.push({
                     _id: el[1]._id,
                     title: el[1].title,
-                    quantityQuestion: el[1].questions.length,
+                    quantityQuestion: el[1].questionsId.length,
                     createDate: el[1].createDate,
                 })
             }
@@ -587,11 +663,10 @@ class TestService {
         }
     }
 
-    async deleteOneCustomQuestion(id, testId){
-        await TestCustomQuestionModel.deleteOne({_id: new ObjectId(id)})
-        const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(testId)})
-        const filterQuestions = testCustomModel.questions.filter(el => !el._id.equals(new ObjectId(id)))
-        testCustomModel.questions = filterQuestions;
+    async deleteOneCustomQuestion(id, questionId){
+        const testCustomModel  = await TestCustomModel.findOne({_id: new ObjectId(id)})
+        const filterQuestionsId = testCustomModel.questionsId?.filter(el => el !== questionId)
+        testCustomModel.questionsId = filterQuestionsId;
         await testCustomModel.save()
         return {
             ...testCustomModel

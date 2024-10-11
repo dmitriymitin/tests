@@ -8,7 +8,7 @@ interface IAnswerShowBlock {
 const AnswerShowBlock = ({answer}: IAnswerShowBlock) => {
   const [isShowAnswer, setIsShowAnswer] = useState(false);
   return (
-    <div className="flex-col gap-10 h40p flex-start">
+    <div className="flex-col gap-10 h40p mt-10 mb-10 flex-start">
       <button
         style={{width: 'max-content'}}
         className="clearButton blue fs-16"

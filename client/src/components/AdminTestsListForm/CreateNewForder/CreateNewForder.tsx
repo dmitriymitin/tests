@@ -7,7 +7,7 @@ import drawerStyles from '../../../DrawerStyles.module.scss';
 import s from './CreateNewForder.module.scss';
 import {useAllTest} from '../../../http/hooks/useAllTest';
 import {useMutation} from 'react-query';
-import {createNewFolderApi, updateFolderApi} from '../../../api/test';
+import {createNewFolderApi, IFullTest, updateFolderApi} from '../../../api/test';
 import {useAllFolder} from '../../../http/hooks/useAllFolder';
 import {deleteElementFromArrayByIndex} from '../../../utils/deleteElementFromArrayByIndex';
 import clsx from 'clsx';
@@ -90,7 +90,7 @@ const CreateNewForder = ({open, setOpen, titleFolder = '', activeTestIdsDefault 
     }
 
     return acc;
-  }, [] as (ITestModelResponse & ITestCustomModelResponse)[]);
+  }, [] as (IFullTest)[]);
 
   const content =
     isAllTestLoading

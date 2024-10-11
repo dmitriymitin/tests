@@ -1,5 +1,9 @@
+import {IFullTest} from '../api/test';
+import {ETypeTest, ITestModelResponse} from '../api/test/type';
+
 export const getUniqId = () => (+String(performance.now()).replace('.', '') + Date.now()).toString();
 
+export const compose = (...rest) => x => rest.reduceRight((y, f) => f(y), x);
 export function areAllUniqueInArrString(arr: string[]) {
   // Создаем множество из элементов массива
   const uniqueSet = new Set(arr);
@@ -37,4 +41,20 @@ export function shuffleArray<T>(array: T[]) {
 
   return shuffled;
 }
+
+export const getTestType = (el: IFullTest | ITestModelResponse): ETypeTest => {
+  if (el?.testType) {
+    return el.testType;
+  }
+
+  if (!!el?.quantityQuestion && !el?.descriptionEditor && !el?.questionsId) {
+    return ETypeTest.SIMPLE;
+  }
+
+  if (el?.descriptionEditor && !el?.questionsId) {
+    return ETypeTest.WITH_DESCRIPTION;
+  }
+
+  return ETypeTest.WITH_QUESTIONS;
+};
 

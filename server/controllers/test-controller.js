@@ -1,11 +1,11 @@
-const TestService = require('../service/test-service')
 const ApiError = require("../exceptions/api-error");
+const TestService = require('../service/test-service')
 
 class TestController{
     async create(req, res, next){
         try {
-            const {title, quantityQuestion, description, createDate} = req.body;
-            const testData = await TestService.create(title, quantityQuestion, description, createDate);
+            const {title, quantityQuestion, description, createDate, testType} = req.body;
+            const testData = await TestService.create(title, quantityQuestion, description, createDate, testType);
             return res.json(testData)
         } catch (e){
             next(e);
@@ -99,8 +99,8 @@ class TestController{
 
     async createCustom(req, res, next){
         try {
-            const {createDate} = req.body;
-            const testData = await TestService.createCustom(createDate);
+            const {createDate, testType} = req.body;
+            const testData = await TestService.createCustom(createDate, testType);
             return res.json(testData)
         } catch (e){
             next(e);
@@ -200,8 +200,30 @@ class TestController{
     async addQuestionCustomTest(req, res, next){
         try{
             const {id} = req.params;
-            const {description, answers} = req.body
-            const response = await TestService.addQuestionCustomTest(id, description, answers);
+            const {questionId} = req.body
+            const response = await TestService.addQuestionCustomTest(id, questionId);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async addManyQuestionCustomTest(req, res, next){
+        try{
+            const {id} = req.params;
+            const {questionsId} = req.body
+            const response = await TestService.addManyQuestionCustomTest(id, questionsId);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async updateCustomTest(req, res, next){
+        try{
+            const {id} = req.params;
+            const updateValues = req.body
+            const response = await TestService.updateCustomTest(id, updateValues);
             return res.json(response);
         } catch (e) {
             next(e)
@@ -280,8 +302,8 @@ class TestController{
 
     async deleteOneCustomQuestion(req, res, next){
         try{
-            const {id, testId} = req.query;
-            const response = await TestService.deleteOneCustomQuestion(id, testId);
+            const {id, questionId} = req.query;
+            const response = await TestService.deleteOneCustomQuestion(id, questionId);
             return res.json(response);
         } catch (e) {
             next(e)

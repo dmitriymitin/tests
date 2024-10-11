@@ -9,7 +9,7 @@ import {QuestionTypeAnswerList} from './components/QuestionTypeAnswerList/Questi
 import QuestionTypeAnswerInfo from './components/QuestionTypeAnswerInfo/QuestionTypeAnswerInfo';
 import {TAnswerType} from '../../models/question';
 import IsVisible from '../ui/isVisibleWrapper';
-import QuestionSettingSegmented, {TQuestionType} from './components/QuestionSettingSegmented/QuestionSettingSegmented';
+import SettingSegmented, {TQuestionType} from '../ui/SettingSegmented/SettingSegmented';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {createQuestion, getQuestion, updateQuestion} from '../../api/question';
 import {EditorDescriptionTest} from '../../api/test/type';
@@ -19,25 +19,26 @@ import {RouteNames} from '../../router';
 import {useNavigate, useParams} from 'react-router-dom';
 import {useAllGroupQuestion} from "../../http/hooks/useAllGroupQuestion";
 
-interface IQuestionSetting {
+export interface ISegmentedSetting {
   formName: string;
   text: string;
   type?: TQuestionType;
   description?: string;
+  isDev?: boolean;
 }
 
-const questionSetting: IQuestionSetting[] = [
+const questionSetting: ISegmentedSetting[] = [
   {
     formName: 'isRandomAnswers',
     text: 'Перемешивать варианты ответов ',
     description: 'У двух студентов порядок овтетов будет разный. Настройка работать не будет, если способ ответа текстовый'
   },
-  {
-    formName: 'timeForAnswer',
-    text: 'Время на прохождение ',
-    type: 'time',
-    description: 'Без значения, время не учитывается'
-  },
+  // {
+  //   formName: 'timeForAnswer',
+  //   text: 'Время на прохождение ',
+  //   type: 'time',
+  //   description: 'Без значения, время не учитывается'
+  // },
   {
     formName: 'isPublicQuestion',
     text: 'Сделать вопрос публчиным ',
@@ -196,7 +197,7 @@ const UpdateQuestionForm = () => {
           <div className={sC.title_block}> Настройки</div>
           <div className="testBackground">
             {questionSetting.map((el, index) => (
-              <QuestionSettingSegmented
+              <SettingSegmented
                 key={index}
                 formName={el.formName}
                 text={el.text}

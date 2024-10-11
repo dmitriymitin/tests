@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Form, Input, InputNumber, Popover, Segmented, Select} from 'antd';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
-import IsVisible from '../../../ui/isVisibleWrapper';
+import IsVisible from '../isVisibleWrapper';
 import {QuestionCircleOutlined} from '@ant-design/icons';
-import {pluralization} from '../../../../utils/helpers';
+import {pluralization} from '../../../utils/helpers';
 
 export type TQuestionType = 'yesNo' | 'time'
 
@@ -12,9 +12,10 @@ interface IQuestionSettingSegmentedProps {
   text: string;
   type?: TQuestionType;
   description?: string;
+  isDev?: boolean;
 }
 
-const QuestionSettingSegmented = ({formName, text, type = 'yesNo', description}: IQuestionSettingSegmentedProps) => {
+const SettingSegmented = ({formName, isDev, text, type = 'yesNo', description}: IQuestionSettingSegmentedProps) => {
   const formInstance = useFormInstance();
   const formFieldValue: string | undefined = formInstance.getFieldValue(formName);
   const defaultValue = type === 'time'
@@ -40,6 +41,7 @@ const QuestionSettingSegmented = ({formName, text, type = 'yesNo', description}:
         {text}
         <IsVisible isVisible={type === 'yesNo'}>
           <Segmented
+            disabled={isDev}
             onChange={e => setValue(e)}
             defaultValue={value}
             block
@@ -53,6 +55,7 @@ const QuestionSettingSegmented = ({formName, text, type = 'yesNo', description}:
         <IsVisible isVisible={type === 'time'}>
           <div className={'flex-row flex-middle gap-10'}>
             <InputNumber
+              disabled={isDev}
               placeholder={'Не учитывается'}
               type={'number'}
               value={value}
@@ -66,6 +69,7 @@ const QuestionSettingSegmented = ({formName, text, type = 'yesNo', description}:
             />
             {pluralization(value, ['минута', 'минуты', 'минут'])}
             <InputNumber
+              disabled={isDev}
               placeholder={'Не учитывается'}
               type={'number'}
               value={valueSec}
@@ -85,9 +89,12 @@ const QuestionSettingSegmented = ({formName, text, type = 'yesNo', description}:
             <QuestionCircleOutlined/>
           </Popover>
         </IsVisible>
+        <IsVisible isVisible={isDev}>
+          <div className="red">В разработке</div>
+        </IsVisible>
       </div>
     </Form.Item>
   );
 };
 
-export default QuestionSettingSegmented;
+export default SettingSegmented;

@@ -1,24 +1,16 @@
 import React, {Fragment, useState} from 'react';
-import {Badge, Button, Empty, message, Popconfirm, Segmented, Select, Spin} from 'antd';
-import {useMutation, useQuery, useQueryClient} from 'react-query';
-import {
-  deleteTest,
-  getAdminAllTests,
-  updateAdminStatusTest
-} from '../../api/test';
+import {Badge, Button, Empty, message, Popconfirm, Spin} from 'antd';
+import {useMutation, useQueryClient} from 'react-query';
+import {deleteTest, IFullTest, updateAdminStatusTest} from '../../api/test';
 import {testStatusType} from '../../type/test/type';
 import {useNavigate} from 'react-router-dom';
 import {CLIENT_URL} from '../../http';
 import s from './AllAdminTestsList.module.scss';
-import gs from '../../GlobalStyles.module.scss';
 import clsx from 'clsx';
 import {CopyOutlined} from '@ant-design/icons';
 import CustomTooltip from '../CustomTooltip';
 import ChangeTitleOrQuestionCountModalDrawer from '../ChangeTitleOrQuestionCountModalDrawer';
-import {
-  ITestCustomModelResponse,
-  ITestModelResponse
-} from '../../api/test/type';
+import {ETypeTest} from '../../api/test/type';
 import {getFormatCreateDate} from '../../utils/getFormatCreateDate';
 import {getFormatUpdateDate} from '../../utils/getFormatUpdateDate';
 import {useAllTest} from '../../http/hooks/useAllTest';
@@ -26,6 +18,7 @@ import {useAllFolder} from '../../http/hooks/useAllFolder';
 import PutInFolderBtn from './PutInFolderBtn/PutInFolderBtn';
 import {useSelectTestsStore} from '../../store/folders/useSelectTestsStore';
 import {RouteNames} from '../../router';
+import {getTestType} from '../../utils/helpers';
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
   switch (status) {
@@ -144,7 +137,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
     }
 
     return acc;
-  }, [] as (ITestModelResponse & ITestCustomModelResponse)[]);
+  }, [] as (IFullTest)[]);
 
   return (
     <Fragment>
@@ -195,9 +188,14 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                 <div className={s.infoWrapper}>
                   <p>Тип теста:</p>
                   <div className={s.body}>
-                    {!!el.quantityQuestion && !el.descriptionEditor && 'Тест без описания'}
-                    {!!el.questions && 'Тест с отдельным описанием вопросов'}
-                    {!!el.descriptionEditor && 'Тест с описанием'}
+                    {(() => {
+                      const testType = getTestType(el);
+                      return (<>
+                        {testType === ETypeTest.SIMPLE && 'Тест на доске'}
+                        {testType === ETypeTest.WITH_DESCRIPTION && 'Тест с описанием'}
+                        {testType === ETypeTest.WITH_QUESTIONS && 'Тест с вопросами'}
+                      </>);
+                    })()}
                   </div>
                 </div>
 
@@ -245,31 +243,32 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                 <div className={s.btnsColum}>
                   <div className={s.btns}>
                     <Button
-                                        className={s.btn}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          // Обычный тест
-                                          if (!!el.quantityQuestion && !el.descriptionEditor) {
-                                            setCurrentDefaultTestData({
-                                              testId: el._id,
-                                              title: el.title,
-                                              quantityQuestion: el.quantityQuestion,
-                                              openModal: true
-                                            });
-                                            return;
-                                          }
+                          className={s.btn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const testType = getTestType(el);
+                            // Обычный тест
+                            if (testType === ETypeTest.SIMPLE) {
+                              setCurrentDefaultTestData({
+                                testId: el._id,
+                                title: el.title,
+                                quantityQuestion: el.quantityQuestion,
+                                openModal: true
+                              });
+                              return;
+                            }
 
-                                          // Тест со своими вопросами
-                                          if (el.questions) {
-                                            navigate(RouteNames.CREATE_CUSTOM_TEST + `/${el._id}`);
-                                            return;
-                                          }
+                            if (testType === ETypeTest.WITH_DESCRIPTION) {
+                              navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${el._id}`);
+                              return;
+                            }
 
-                                          if (el.descriptionEditor) {
-                                            navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${el._id}`);
-                                            return;
-                                          }
-                                        }}
+                            // Тест со своими вопросами
+                            if (testType === ETypeTest.WITH_QUESTIONS) {
+                              navigate(RouteNames.CREATE_CUSTOM_TEST + `/${el._id}`);
+                              return;
+                            }
+                          }}
                     >
                       Редактировать
                     </Button>

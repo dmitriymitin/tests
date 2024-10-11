@@ -1,4 +1,6 @@
 import {testStatusType} from '../../type/test/type';
+import {IQuestion} from '../question/type';
+import {IFullTest} from './index';
 
 export type EditorDescriptionTest = {time: number; blocks: ({id: string; type: string; data: {text: string; level: number}} | {id: string; type: string; data: {text: string; level?: undefined}})[]}
 
@@ -33,13 +35,21 @@ export interface IFolderModel {
     name: string;
 }
 
+export enum ETypeTest {
+    SIMPLE = 'common',
+    WITH_DESCRIPTION = 'description',
+    WITH_QUESTIONS = 'questions',
+}
+
 export interface ITestModelResponse {
     firstQuestionTitle: string | null;
     _id: string;
     title: string;
+    questionsId?: string[];
+    testType?: ETypeTest;
     descriptionEditor?: EditorDescriptionTest;
     quantityQuestion: number;
-    questions: ICustomTestQuestion[] | null;
+    questions: IQuestion[] | null;
     status: testStatusType;
     createDate: string;
     testKey: string | null;
@@ -56,7 +66,9 @@ export interface ITestCustomModelResponse {
     firstQuestionTitle: string | null;
     _id: string;
     title: string;
-    questions: ICustomTestQuestion[];
+    questionsId?: string[];
+    testType?: ETypeTest;
+    questions: IQuestion[];
     status: testStatusType;
     createDate: string;
     testKey: string | null;
@@ -64,11 +76,30 @@ export interface ITestCustomModelResponse {
     folderId?: string;
 }
 
+export interface ICustomTestSetting {
+    isRandomQuestions: boolean;
+    timeForAnswer: string;
+    isPublicTest: boolean;
+    isPublicTestAnswers: boolean;
+}
+
+export interface ITestCustomModelUpdateResponse {
+    questionsId?: string[];
+    status?: testStatusType;
+    testKey?: string | null;
+    createDate?: string;
+    updateDate?: string;
+    folderId?: string;
+    setting?: ICustomTestSetting;
+}
+
 export interface IGetTestInfoCustomModelResponse {
     test: {
         _id: string;
         title: string;
-        questions: ICustomTestQuestion[];
+        questions: IQuestion[];
+        setting?: ICustomTestSetting;
+        questionsId: string[];
         status: testStatusType;
         testKey: string | null;
     };
@@ -76,33 +107,38 @@ export interface IGetTestInfoCustomModelResponse {
     testKey: string | null;
 }
 
-export interface ITestCustomModelRequest {
-    description: string;
-    answers: {
-        [key: string]: TypeCustomTestQuestionAnswer;
-    };
-}
-
 export interface IGetOneTestInfoResponse {
-    test: ITestModelResponse & ITestCustomModelResponse;
+    test: IFullTest;
     usersInfo: ISaveNewTestResponse[];
     testKey: string | null;
 }
 
 export interface ISaveNewTestRequest {
     FIOGroup: string;
-    answer: {
+    testType?: ETypeTest;
+    answer?: {
         [key: string]: string;
     };
+    answersCustom?: { questionsIdRanges: string[]; values: {
+            [key: string]: {
+                keys: string[];
+            };
+        }; };
     testId: string;
 }
 
 export interface ISaveNewTestResponse {
     _id: string;
     FIOGroup: string;
-    answer: {
+    testType?: ETypeTest;
+    answer?: {
         [key: string]: string;
     };
+    answersCustom?: { questionsIdRanges: string[]; values: {
+            [key: string]: {
+                keys: string[];
+            };
+        }; };
     testId: string;
 }
 

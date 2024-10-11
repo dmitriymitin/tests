@@ -72,7 +72,7 @@ const AdminAddFloatGroup = () => {
             className={clsx('clearButton', gs.btn)}
             onClick={() => setNewTestOpen(true)}
           >
-            Тест без описания
+            Тест на доске
           </button>
           <div className={gs.underline}/>
           <button
@@ -88,7 +88,7 @@ const AdminAddFloatGroup = () => {
             // loading={createCustomTestLoading}
             onClick={handleCreateCustomTest}
           >
-            Тест с отдельным описанием вопросов
+            Тест с вопросами
           </button>
 
         </div>

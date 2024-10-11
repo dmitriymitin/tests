@@ -4,8 +4,8 @@ const ApiError = require("../exceptions/api-error");
 class TestUserController{
     async saveAnswer(req, res, next){
         try {
-            const {FIOGroup, answer, testId} = req.body;
-            const testData = await TestUserService.create(FIOGroup, answer, testId);
+            const values = req.body;
+            const testData = await TestUserService.create(values);
             return res.json(testData)
         } catch (e){
             next(e);

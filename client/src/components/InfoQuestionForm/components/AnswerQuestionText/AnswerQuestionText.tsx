@@ -29,7 +29,7 @@ const AnswerQuestionText = ({questionId, statusAnswer}: {questionId: string; sta
       addonAfter={
         <div className="flex-row flex-center flex-middle gap-10">
           {statusAnswer === 'error' ? 'Неверно' : statusAnswer === 'warning' && 'Верно'}
-          <Popover className="cursor-pointer fs-18 mxw-100" content={'Ответ записывайте без пробелов — например, 97531 или яблокорябина.'}>
+          <Popover className="cursor-pointer fs-18 mxw-100" content={'Ответ записывайте без пробелов — например, 97531.'}>
             <InfoCircleOutlined />
           </Popover>
         </div>

@@ -1,12 +1,12 @@
 import {
-  EditorDescriptionTest,
+  EditorDescriptionTest, ETypeTest,
   ICustomTestQuestion, IFolderModel,
   IGetOneTestInfoResponse, IGetTestInfoCustomModelResponse,
   ISaveNewTestRequest,
-  ISaveNewTestResponse, IStudent, ITestCustomModelRequest, ITestCustomModelResponse,
+  ISaveNewTestResponse, IStudent, ITestCustomModelResponse, ITestCustomModelUpdateResponse,
   ITestModelRequest,
   ITestModelResponse,
-  ITestUpdateStatusModelRequest, TypeCustomTestQuestionAnswer
+  ITestUpdateStatusModelRequest
 } from './type';
 import $api from '../../http';
 import exampleData from '../../components/EditorWrapper/Editor/exampleData';
@@ -26,10 +26,30 @@ export const getOneCustomTest = async (id: string): Promise<IGetTestInfoCustomMo
 
 export const addQuestionToCustomTest = async (values: {
     id: string;
-    question: ITestCustomModelRequest;
+    questionId: string;
 }): Promise<ITestCustomModelResponse> => {
   const {data} = await $api.post(`/test/custom/addQuestion/${values.id}`, {
-    ...values.question
+    questionId: values.questionId
+  });
+  return data;
+};
+
+export const addManyQuestionToCustomTest = async (values: {
+  id: string;
+  questionsId: string[];
+}): Promise<ITestCustomModelResponse> => {
+  const {data} = await $api.post(`/test/custom/addManyQuestion/${values.id}`, {
+    questionsId: values.questionsId
+  });
+  return data;
+};
+
+export const updateCustomTest = async (values: {
+  id: string;
+  updateTest: ITestCustomModelUpdateResponse;
+}): Promise<ITestCustomModelResponse> => {
+  const {data} = await $api.post(`/test/custom/updateTest/${values.id}`, {
+    ...values.updateTest
   });
   return data;
 };
@@ -45,12 +65,12 @@ export const getOneTestInfo = async (id: string): Promise<IGetOneTestInfoRespons
 };
 
 export const createNewTest = async (values: ITestModelRequest): Promise<ITestModelResponse> => {
-  const {data} = await $api.post('/test/create', {...values, status: 'Start'});
+  const {data} = await $api.post('/test/create', {...values, testType: ETypeTest.SIMPLE, status: 'Start'});
   return data;
 };
 
 export const createNewTestWithDescription = async (values: ITestModelRequest): Promise<ITestModelResponse> => {
-  const {data} = await $api.post('/test/create', {...values, description: exampleData, status: 'Start'});
+  const {data} = await $api.post('/test/create', {...values, testType: ETypeTest.WITH_DESCRIPTION, description: exampleData, status: 'Start'});
   return data;
 };
 
@@ -80,9 +100,10 @@ export const clearAllTestResultsFetcher = async () => {
 };
 
 export const onDeleteQuestionCustomTest = async (values: {
-    id: string | null; testId: string | null;
+    id: string | null;
+    questionId: string | null;
 }): Promise<any> => {
-  const {data} = await $api.delete(`/test/custom/deleteOneQuestion?id=${values.id}&testId=${values.testId}`);
+  const {data} = await $api.delete(`/test/custom/deleteOneQuestion?id=${values.id}&questionId=${values.questionId}`);
   return data;
 };
 
@@ -124,6 +145,7 @@ export const onUpdateQuestionCustomTest = async (values: {
 
 export const createNewCustomTest = async (createDate: string): Promise<ITestCustomModelResponse> => {
   const {data} = await $api.post('/test/createCustom', {
+    testType: ETypeTest.WITH_QUESTIONS,
     createDate
   });
   return data;
@@ -134,7 +156,9 @@ export const saveNewTest = async (values: ISaveNewTestRequest): Promise<ISaveNew
   return data;
 };
 
-export const getAdminAllTests = async (filterByCreateId?: string, folderId?: string, status?: testStatusType | undefined): Promise<(ITestModelResponse & ITestCustomModelResponse)[]> => {
+export type IFullTest = ITestModelResponse & ITestCustomModelResponse
+
+export const getAdminAllTests = async (filterByCreateId?: string, folderId?: string, status?: testStatusType | undefined): Promise<(IFullTest)[]> => {
   const {data} = await $api.get('/test/all', {
     params: {
       filterByCreateId,

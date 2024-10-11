@@ -141,7 +141,7 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
           onClick={() => setNewTestOpen(true)}
         >
           <PlusOutlined/>
-          Тест без описания
+          Тест на доске
         </button>
         <button
           className={clsx('clearButton', gs.btnTitleMiddle)}
@@ -155,7 +155,7 @@ const AllAdminTestListWrapper: FC<AllAdminTestListWrapperProps> = ({}) => {
           onClick={handleCreateCustomTest}
         >
           <PlusOutlined/>
-          Тест с отдельным описанием вопросов
+          Тест с вопросами
         </button>
       </div>
       <div className="flex-row flex-wrap gap-10">

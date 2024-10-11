@@ -12,6 +12,10 @@ import {AnswerType} from '../../models/question';
 import {shuffleArray} from '../../utils/helpers';
 import AnswerStatusText from './components/AnswerStatusText';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
+import QuestionLink from '../AllQuestions/AllQuestionsBlock/QuestionLink';
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useLocation} from "react-router-dom";
+import {RouteNames} from "../../router";
 
 const edjsParser = edjsHTML();
 
@@ -57,76 +61,119 @@ export const getRandomAnswers = (questionData?: IQuestion, isRandomAnswers?: boo
 interface IInfoQuestionFormProps {
   questionData: IQuestion;
   isPublicAnswer?: boolean;
-  onSubmit: () => void;
+  isAnswer?: boolean;
+  onSubmit?: () => void;
+  onAdd?: () => void;
+  isQuestionTitle?: boolean;
+  isDisableAddQuestion?: boolean;
 }
 
-const InfoQuestionForm = ({questionData, onSubmit, ...props}: IInfoQuestionFormProps) => {
+const InfoQuestionForm = ({questionData,isDisableAddQuestion, onSubmit, isAnswer, onAdd, isQuestionTitle=false, ...props}: IInfoQuestionFormProps) => {
+  const {isAuth} = useTypedSelector(state => state.auth);
+  const location = useLocation();
+  const isAlwaisVisibleAnswer = isAuth && location.pathname.includes(RouteNames.ADMIN_QUESTION_INFO);
   const formInstance = useFormInstance();
   const [lastValue, setLastValue] = useState('');
   const [statusAnswer, setStatusAnswer] = useState<'error' | 'warning'>();
 
-  const isPublicAnswer = props.isPublicAnswer && questionData?.setting.isPublicAnswer;
+  const isPublicAnswer = isAlwaisVisibleAnswer ? true : props.isPublicAnswer && questionData?.setting.isPublicAnswer;
   const isText = questionData?.answerType === AnswerType.Text;
   const randomAnswers = useMemo(() =>
-    questionData?.answerType !== AnswerType.Text ? getRandomAnswers(questionData, questionData?.setting?.isRandomAnswers) : undefined
+    isAnswer && questionData?.answerType !== AnswerType.Text ? getRandomAnswers(questionData, questionData?.setting?.isRandomAnswers) : undefined
   , [questionData]);
-  const rightAnswer = isPublicAnswer ? getAnswer(questionData, randomAnswers) : '';
+  const rightAnswer = isAnswer && isPublicAnswer ? getAnswer(questionData, randomAnswers) : '';
 
   return (
     <div className={s.question}>
       <div
-        className={clsx('text-container', s.descriptionBg)}>{parse(edjsParser.parse(questionData.descriptionEditor).join(''))}</div>
-      <div className={clsx('gap-10', {
-        ['flex-row']: isText,
-        ['flex-col']: !isText
-      })}>
-        <div className={clsx(
-          {['testBackground flex-col gap-10']: !isText},
-          {['flex-row gap-10 width100']: isText}
-        )}>
-          <AnswerQuestionParse
-            lastValue={lastValue}
-            questionId={questionData._id}
-            statusAnswer={statusAnswer}
-            answers={questionData?.answers}
-            answerType={questionData.answerType}
-            shuffleArraysIds={randomAnswers}
-          />
-          <IsVisible isVisible={isPublicAnswer}>
-            <div className="flex-row flex-end flex-middle gap-10">
-              {!isText && questionData?.answerType !== AnswerType.Checkbox && <AnswerStatusText status={statusAnswer}/>}
-              <Button
-                style={{maxWidth: 200}}
-                onClick={() => {
-                  const lastValueIfi = (() => {
-                    const getValue = formInstance.getFieldValue('answerFieldsData/' + questionData?._id);
-                    if (questionData?.answerType !== AnswerType.Checkbox) {
-                      return getValue?.[questionData?.answerType].keys?.[0];
-                    }
+        className={clsx('text-container', s.descriptionBg)}>
+        <IsVisible isVisible={isQuestionTitle}>
+          <div className="flex-row gap-5 flex-middle mb-10">
+            Вопрос
+            <QuestionLink
+              className="fs-14"
+              id={questionData?._id}
+              convertId={questionData?.convertId}
+              isPublic={questionData?.setting?.isPublicQuestion}/>
+          </div>
+        </IsVisible>
+        {parse(edjsParser.parse(questionData.descriptionEditor).join(''))}
+        <IsVisible isVisible={isAnswer}>
+          <>
+            <div className={clsx('gap-10 mt-20', {
+              ['flex-row']: isText,
+              ['flex-col']: !isText
+            })}>
+              <div className={clsx(
+                {['flex-col gap-10']: !isText},
+                {['flex-row gap-10 width100']: isText}
+              )}>
+                <AnswerQuestionParse
+                  lastValue={lastValue}
+                  questionId={questionData._id}
+                  statusAnswer={statusAnswer}
+                  answers={questionData?.answers}
+                  answerType={questionData.answerType}
+                  shuffleArraysIds={randomAnswers}
+                />
+                <IsVisible isVisible={isPublicAnswer}>
+                  <div className="flex-row flex-end flex-middle gap-10">
+                    {!isText && questionData?.answerType !== AnswerType.Checkbox &&
+                        <AnswerStatusText status={statusAnswer}/>}
+                    <Button
+                      style={{maxWidth: 200}}
+                      onClick={() => {
+                        const lastValueIfi = (() => {
+                          const getValue = formInstance.getFieldValue('answerFieldsData/' + questionData?._id);
+                          if (questionData?.answerType !== AnswerType.Checkbox) {
+                            return getValue?.[questionData?.answerType]?.keys?.[0];
+                          }
 
-                    return getValue?.checkbox.keys;
-                  })();
-                  setLastValue(lastValueIfi);
-                  const isRight = (() => {
-                    if (questionData?.answerType === AnswerType.Text) {
-                      return rightAnswer === lastValueIfi;
-                    }
+                          return getValue?.checkbox.keys;
+                        })();
+                        setLastValue(lastValueIfi);
+                        const isRight = (() => {
+                          if (questionData?.answerType === AnswerType.Text) {
+                            return rightAnswer === lastValueIfi;
+                          }
 
-                    if (questionData?.answerType === AnswerType.Radio) {
-                      return questionData?.answers?.radio?.keys.includes(lastValueIfi);
-                    }
+                          if (questionData?.answerType === AnswerType.Radio) {
+                            return questionData?.answers?.radio?.keys.includes(lastValueIfi);
+                          }
 
-                    return undefined;
-                  })();
-                  setStatusAnswer(isRight ? 'warning' : 'error');
-                  onSubmit();
-                }}
-              >
-                Проверить ответ
-              </Button>
+                          return undefined;
+                        })();
+                        setStatusAnswer(isRight ? 'warning' : 'error');
+
+                        if (onSubmit) {
+                          onSubmit();
+                        }
+                      }}
+                    >
+                      Проверить ответ
+                    </Button>
+                  </div>
+                </IsVisible>
+              </div>
             </div>
-          </IsVisible>
-        </div>
+          </>
+        </IsVisible>
+        <IsVisible isVisible={Boolean(onAdd)}>
+          <div className="flex-row flex-end mt-10">
+            <Button
+              disabled={isDisableAddQuestion}
+              type={'primary'}
+              style={{maxWidth: 200}}
+              onClick={() => {
+                if (onAdd) {
+                  onAdd();
+                }
+              }}
+            >
+              Добавить вопрос
+            </Button>
+          </div>
+        </IsVisible>
       </div>
       <IsVisible isVisible={isPublicAnswer}>
         <AnswerShowBlock answer={rightAnswer}/>

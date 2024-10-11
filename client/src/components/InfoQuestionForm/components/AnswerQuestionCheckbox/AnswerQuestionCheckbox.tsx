@@ -39,7 +39,7 @@ const AnswerQuestionCheckbox = ({lastValue, questionId, statusAnswer, shuffleArr
   const arrayValues = Object.values(answers?.checkbox?.values).sort((a, b) => a.rang - b.rang);
 
   return (
-    <Checkbox.Group value={checkedList} onChange={onCheckboxChange} className="pv-10 px-30">
+    <Checkbox.Group value={checkedList} onChange={onCheckboxChange} className="pv-10">
       <Form form={formRadio}>
         <Space direction="vertical" className="gap-10">
           {shuffleArraysIds.map((id, index) => {

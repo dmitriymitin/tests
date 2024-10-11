@@ -18,6 +18,10 @@
   flex-direction: column;
   gap: 15px;
 
+  .title_block {
+    font-size: 24px;
+  }
+
   .item {
     display: flex;
     flex-direction: column;
@@ -64,4 +68,12 @@
   max-width: 200px;
   width: 100%;
   font-size: 16px;
+}
+
+.questions_block {
+  min-height: 700px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 8px;
 }
