@@ -7,6 +7,7 @@ import {useAllFolder} from '../../../http/hooks/useAllFolder';
 import {useAllTest} from '../../../http/hooks/useAllTest';
 import clsx from 'clsx';
 import {useSelectTestsStore} from '../../../store/folders/useSelectTestsStore';
+import gs from '../../../GlobalStyles.module.scss';
 
 const PutInFolderBtn = ({id}:{id?: string}) => {
   const queryClient = useQueryClient();
@@ -43,11 +44,15 @@ const PutInFolderBtn = ({id}:{id?: string}) => {
       title={
         <div className={clsx('tooltipWrapper', s.tooltipWrapperMain)}>
           {data?.map((el, index) => (
-            <div key={index} className={s.tooltipItem} onClick={(e) => {
-              e.stopPropagation();
-              handlePut(el._id);
-            }}>
-              {el.name}
+            <div key={index} className="flex-col width100">
+              <div className={s.tooltipItem}
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     handlePut(el._id);
+                   }}>
+                {el.name}
+              </div>
+              {index !== data?.length - 1 && <div className="underline"/>}
             </div>
           ))}
         </div>

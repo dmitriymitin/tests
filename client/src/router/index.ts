@@ -15,6 +15,8 @@ import Questions from '../pages/Questions';
 import CreateQuestionPage from '../pages/CreateQuestionPage/CreateQuestionPage';
 import UpdateQuestionPage from "../pages/UpdateQuestionPage/UpdateQuestionPage";
 import InfoQuestionPage from "../pages/InfoQuestionPage/InfoQuestionPage";
+import UserTestInfo from "../pages/UserTestInfo/UserTestInfo";
+import AdminPage from "../pages/AdminPage/AdminPage";
 
 export interface IRoute {
     path: string;
@@ -26,6 +28,7 @@ export enum RouteNames {
     DEV_LOGIN = '/dev/login',
     TESTS = '/',
     TEST = '/tests/:testId',
+    TEST_USER_RESULT = '/tests/result',
     CREATE_CUSTOM_TEST = '/admin/test/create/customTest',
     CREATE_CUSTOM_TEST_DESCRIPTION = '/admin/test/create/customTest/description',
     ADMIN = '/admin',
@@ -40,15 +43,7 @@ export enum RouteNames {
     ADMIN_QUESTION_INFO = '/question/info',
 }
 
-export const publicRoutes : IRoute[] = [
-  {
-    path: RouteNames.TESTS,
-    component: Tests
-  },
-  {
-    path: RouteNames.TEST,
-    component: Test
-  },
+export const loginRoutes : IRoute[] = [
   {
     path: RouteNames.LOGIN,
     component: Auth
@@ -59,7 +54,7 @@ export const publicRoutes : IRoute[] = [
   }
 ];
 
-export const privateRoutes : IRoute[] = [
+export const allUsersRoutes = [
   {
     path: RouteNames.TESTS,
     component: Tests
@@ -69,12 +64,20 @@ export const privateRoutes : IRoute[] = [
     component: Test
   },
   {
+    path: RouteNames.TEST_USER_RESULT + '/:userAnswerId',
+    component: UserTestInfo
+  },
+];
+
+export const privateRoutes : IRoute[] = [
+  ...allUsersRoutes,
+  {
     path: RouteNames.ADMIN_TESTS_LIST,
     component: AdminListTestsPage
   },
   {
     path: RouteNames.ADMIN,
-    component: AdminListTestsPage
+    component: AdminPage
   },
   {
     path: RouteNames.ADMIN_TEST_INFO + '/:testId',
@@ -116,4 +119,9 @@ export const privateRoutes : IRoute[] = [
     path: RouteNames.ADMIN_QUESTION_UPDATE + '/:questionId',
     component: UpdateQuestionPage
   }
+];
+
+export const publicRoutes : IRoute[] = [
+  ...loginRoutes,
+  ...allUsersRoutes
 ];

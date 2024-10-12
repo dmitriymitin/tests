@@ -1,4 +1,4 @@
-function convertIdToCustomFormat(uniqueId) {
+function convertIdToCustomFormat(uniqueId, indexOffset = -1, symbolFirst = '#') {
     // По умолчанию буква будет 'T'
     let letter = 'T';
 
@@ -9,14 +9,14 @@ function convertIdToCustomFormat(uniqueId) {
         // Преобразуем цифру в соответствующую букву английского алфавита
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const index = parseInt(firstChar); // Преобразуем символ в число
-        letter = alphabet[index - 1] || 'T'; // Получаем букву или оставляем 'T', если индекс за пределами
+        letter = alphabet[index + indexOffset] || 'T'; // Получаем букву или оставляем 'T', если индекс за пределами
     }
 
     // Преобразуем последние 6 символов в число из 16-ричной системы
     const digits = parseInt(uniqueId.slice(-6), 16);
 
     // Формируем строку в нужном формате
-    return `#${letter}${digits}`;
+    return symbolFirst + `${letter}${digits}`;
 }
 
 function shuffleArray(array) {

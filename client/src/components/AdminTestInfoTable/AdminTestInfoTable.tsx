@@ -9,11 +9,14 @@ import QuestionLink from '../AllQuestions/AllQuestionsBlock/QuestionLink';
 import {getTestType} from '../../utils/helpers';
 import IsVisible from '../ui/isVisibleWrapper';
 import {AnswerType} from '../../models/question';
+import {Link} from "react-router-dom";
+import {RouteNames} from "../../router";
 
 interface DataType {
     // @ts-ignore
     key: React.Key;
     fiogroup: string;
+    variant: string | JSX.Element;
     // @ts-ignore
     correctAnswers: string;
     [key: string]: string | JSX.Element;
@@ -198,6 +201,7 @@ const AdminTestInfoTable = ({
     return {
       key: el._id,
       fiogroup: el.FIOGroup,
+      variant: (<Link to={RouteNames.TEST_USER_RESULT + '/' + el._id}>{el.convertId}</Link>),
       correctAnswers,
       ...customAnswers
     };
@@ -217,14 +221,14 @@ const AdminTestInfoTable = ({
 
   const smallInfoTable = (
     <Table
-            dataSource={data}
-            bordered
-            size={getSize()}
-            scroll={{y: 700}}
-            pagination={false}
-            style={{
-              marginBottom: 100
-            }}
+      dataSource={data}
+      bordered
+      size={getSize()}
+      scroll={{y: 700}}
+      pagination={false}
+      style={{
+        marginBottom: 100
+      }}
     >
       <Column width={300} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
       <Column title="Кол-во верных ответов" dataIndex="correctAnswers" key="correctAnswers" />
@@ -233,41 +237,43 @@ const AdminTestInfoTable = ({
 
   const fullInfoTable = (
     <Table
-            dataSource={data}
-            bordered
-            size={getSize()}
-            scroll={getScroll()}
-            pagination={false}
-            style={{
-              marginBottom: 100
-            }}
-            summary={() => (
-              <Table.Summary fixed>
-                <Table.Summary.Row>
-                  <Table.Summary.Cell index={0}>Кол-во неверных ответов на вопрос</Table.Summary.Cell>
-                  <IsVisible isVisible={testType === ETypeTest.WITH_QUESTIONS}>
-                    {questions.map((quest, index) =>
-                      <Table.Summary.Cell key={quest._id} index={index}>
-                        {getCorrectAnswersCustom(quest._id)}%
-                      </Table.Summary.Cell>
-                    )}
-                  </IsVisible>
-                  <IsVisible isVisible={testType !== ETypeTest.WITH_QUESTIONS}>
-                    {new Array(quantityQuestion).fill('1').map((_, index) =>
-                      <Table.Summary.Cell key={index + 1} index={index + 1}>
-                        {getCorrectAnswers(index)}%
-                      </Table.Summary.Cell>
-                    )}
-                  </IsVisible>
-                </Table.Summary.Row>
-              </Table.Summary>
-            )}
+      dataSource={data}
+      bordered
+      size={getSize()}
+      scroll={getScroll()}
+      pagination={false}
+      style={{
+        marginBottom: 100
+      }}
+      summary={() => (
+        <Table.Summary fixed>
+          <Table.Summary.Row>
+            <Table.Summary.Cell index={0}>Кол-во неверных ответов на вопрос</Table.Summary.Cell>
+            <IsVisible isVisible={testType === ETypeTest.WITH_QUESTIONS}>
+              {/*<Table.Summary.Cell key={'variant'} index={0}>{''}</Table.Summary.Cell>*/}
+              {questions.map((quest, index) =>
+                <Table.Summary.Cell key={quest._id} index={index + 1}>
+                  {getCorrectAnswersCustom(quest._id)}%
+                </Table.Summary.Cell>
+              )}
+            </IsVisible>
+            <IsVisible isVisible={testType !== ETypeTest.WITH_QUESTIONS}>
+              {new Array(quantityQuestion).fill('1').map((_, index) =>
+                <Table.Summary.Cell key={index + 1} index={index + 1}>
+                  {getCorrectAnswers(index)}%
+                </Table.Summary.Cell>
+              )}
+            </IsVisible>
+          </Table.Summary.Row>
+        </Table.Summary>
+      )}
     >
       <Column fixed={'left'} width={FIOWidth()} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
+      {/*{testType === ETypeTest.WITH_QUESTIONS && <Column width={150} title={'Вариант'} dataIndex="variant" key="variant" />}*/}
       {testType === ETypeTest.WITH_QUESTIONS && questions
         ? questions?.map((el, index) => (
           <Column
-            title={<QuestionLink id={el?._id} convertId={el?.convertId} isPublic={el?.setting?.isPublicQuestion}/>}
+            title={<div className="flex-row flex-middle gap-10">Вопрос <QuestionLink id={el?._id} convertId={el?.convertId} isPublic={el?.setting?.isPublicQuestion}/></div>}
             dataIndex={el?._id}
             key={el?._id}
           />))

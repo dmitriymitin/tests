@@ -129,6 +129,7 @@ export interface ISaveNewTestRequest {
 
 export interface ISaveNewTestResponse {
     _id: string;
+    convertId?: string;
     FIOGroup: string;
     testType?: ETypeTest;
     answer?: {

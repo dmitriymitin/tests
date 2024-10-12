@@ -142,13 +142,13 @@ const AllQuestionColumn = (
             )}/>
           </div>
         </IsVisible>
-        <IsVisible isVisible={!isShowResult}>
-          {getResultsList(resultDataQuestion)}
-        </IsVisible>
         <IsVisible isVisible={isAllQuestionsLoading}>
           <div className="status-block h220p">
             <Spin size="large"/>
           </div>
+        </IsVisible>
+        <IsVisible isVisible={!isShowResult}>
+          {getResultsList(resultDataQuestion)}
         </IsVisible>
         <Droppable droppableId={id}>
           {(provided, snapshot) => {

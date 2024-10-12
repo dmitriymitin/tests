@@ -61,12 +61,12 @@ const Navbar = () => {
                     }}>
                 Результаты студентов
               </button>
-              <button
-                    className={clsx('clearButton', 'text header', {active: pathname.includes('setting')})}
-                    onClick={() => navigate(RouteNames.ADMIN_SETTING)}
-              >
-                Настройки
-              </button>
+              {/*<button*/}
+              {/*      className={clsx('clearButton', 'text header', {active: pathname.includes('setting')})}*/}
+              {/*      onClick={() => navigate(RouteNames.ADMIN_SETTING)}*/}
+              {/*>*/}
+              {/*  Настройки*/}
+              {/*</button>*/}
               <button
                     className={clsx('clearButton', 'text header', {active: pathname === RouteNames.ADMIN})}
                     onClick={() => navigate(RouteNames.ADMIN)}

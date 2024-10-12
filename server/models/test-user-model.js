@@ -6,6 +6,7 @@ const UserTestSchema = new Schema({
     answersCustom: {type: Object, required: false, default: []},
     answer: {type: Object, required: false},
     testId: {type: String, required: true},
+    convertId: {type: String, required: false},
     createDate: {type: String, required: false},
 })
 

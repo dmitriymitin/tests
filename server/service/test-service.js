@@ -14,6 +14,39 @@ const ApiError = require("../exceptions/api-error");
 const {Workbook} = require("excel4node");
 const {shuffleArray} = require("../helpers/util");
 
+const getIdQuestionAnswers = (questions) => {
+    return questions.reduce((acc, question) => {
+        const currentQuestionAsnwers = Object.values(question?.answers)?.[0];
+        if (question?.answers?.['text']) {
+            acc[question._id] = {
+                [currentQuestionAsnwers.keys[0]]: {
+                    isAnswer: true,
+                    value: currentQuestionAsnwers.keys[0],
+                    type: 'text'
+                }
+            };
+        } else {
+            const setKeys = new Set(currentQuestionAsnwers.keys);
+            const answersObject = Object.values(currentQuestionAsnwers.values)
+                .reduce((acc, el) => {
+                    if (el && el?.keyId) {
+                        acc[el?.keyId] = {
+                            isAnswer: setKeys?.has(el?.keyId) || false,
+                            value: el.key,
+                            type: Object.keys(question?.answers)?.[0]
+                        };
+                        return acc;
+                    }
+
+                    return acc;
+                }, {});
+            acc[question._id] = answersObject;
+        }
+
+        return acc;
+    }, {});
+};
+
 
 const getQuestions = async (questionsId, isUserQuestion = false) => {
     try {
@@ -88,6 +121,8 @@ class TestService {
         let title = ''
         let firstQuestionTitle = ''
         let testKey = ''
+        let questions = [];
+        let customTestModel = null;
 
         if (testModel) {
             countQuestion = testModel.quantityQuestion
@@ -95,65 +130,137 @@ class TestService {
             firstQuestionTitle = testModel.firstQuestionTitle
             testKey = testModel.testKey
         } else {
-            const customTestModel = await TestCustomModel.findOne({_id: new ObjectId(id)})
-            countQuestion = customTestModel.questions.length
+            customTestModel = await TestCustomModel.findOne({_id: new ObjectId(id)})
+            countQuestion = customTestModel.questionsId.length
             title = customTestModel.title
             firstQuestionTitle = customTestModel.firstQuestionTitle
             testKey = customTestModel.testKey
+            questions = await getQuestions(customTestModel.questionsId)
         }
 
         const worksheet = workbook.addWorksheet(title);
         worksheet.cell(1, 1).string(firstQuestionTitle);
         let indexCell = 1;
-        const arrayQuestion = new Array(countQuestion).fill('1')
+        if (testModel) {
+            const arrayQuestion = new Array(countQuestion).fill('1')
 
-        // Строка с вопросами
-        arrayQuestion.forEach((_, index) => {
-            indexCell++;
-            worksheet.cell(1, indexCell).string(`Вопрос ${index + 1}`);
-        })
-        worksheet.cell(1, indexCell + 1).string(`Кол-во верных ответов`);
-
-        // Строка ответов студента
-        let indexUserCell = 1;
-        testUserModel.forEach((el, index) => {
-            indexUserCell++;
-            worksheet.cell(indexUserCell, 1).string(el.FIOGroup)
-            let indexUserAnswerCell = 1;
-            let countCorrectAnswer = 0;
+            // Строка с вопросами
             arrayQuestion.forEach((_, index) => {
-                indexUserAnswerCell++;
-                const answer = el.answer ? el.answer[index + 1] || '' : ''
-                if (testKey[index] && answer.toUpperCase() === testKey[index].toUpperCase()) {
-                    countCorrectAnswer++;
-                } else {
-                    noCorrectAnswer[index] = (noCorrectAnswer[index] || 0) + 1
-                }
-                worksheet.cell(indexUserCell, indexUserAnswerCell).string(answer)
+                indexCell++;
+                worksheet.cell(1, indexCell).string(`Вопрос ${index + 1}`);
             })
-            worksheet.cell(indexUserCell, indexUserAnswerCell + 1).number(countCorrectAnswer)
-        })
+            worksheet.cell(1, indexCell + 1).string(`Кол-во верных ответов`);
 
-        // Строка с правильными ответами
-        let correctAnswerRowIndex = indexUserCell + 1
-        worksheet.cell(correctAnswerRowIndex, 1).string('Правильные ответы')
-        let indexKey = 1
-        arrayQuestion.forEach((_, index) => {
-            indexKey++;
-            const key = testKey[index] || '';
-            worksheet.cell(correctAnswerRowIndex, indexKey).string(key);
-        })
+            // Строка ответов студента
+            let indexUserCell = 1;
+            testUserModel.forEach((el, index) => {
+                indexUserCell++;
+                worksheet.cell(indexUserCell, 1).string(el.FIOGroup)
+                let indexUserAnswerCell = 1;
+                let countCorrectAnswer = 0;
+                arrayQuestion.forEach((_, index) => {
+                    indexUserAnswerCell++;
+                    const answer = el.answer ? el.answer[index + 1] || '' : ''
+                    if (testKey[index] && answer.toUpperCase() === testKey[index].toUpperCase()) {
+                        countCorrectAnswer++;
+                    } else {
+                        noCorrectAnswer[index] = (noCorrectAnswer[index] || 0) + 1
+                    }
+                    worksheet.cell(indexUserCell, indexUserAnswerCell).string(answer)
+                })
+                worksheet.cell(indexUserCell, indexUserAnswerCell + 1).number(countCorrectAnswer)
+            })
 
-        // Строка с неверными ответами
-        let noCorrectAnswerRowIndex = indexUserCell + 2
-        worksheet.cell(noCorrectAnswerRowIndex, 1).string('Кол-во неверных ответов на вопрос')
-        let noCorrectAnswerCell = 1;
-        arrayQuestion.forEach((_, index) => {
-            noCorrectAnswerCell++;
-            const noCorrectAns = noCorrectAnswer[index] || 0
-            const result = 100 * noCorrectAns / testUserModel.length
-            worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result.toFixed(0)}%`)
-        })
+            // Строка с правильными ответами
+            let correctAnswerRowIndex = indexUserCell + 1
+            worksheet.cell(correctAnswerRowIndex, 1).string('Правильные ответы')
+            let indexKey = 1
+            arrayQuestion.forEach((_, index) => {
+                indexKey++;
+                const key = testKey[index] || '';
+                worksheet.cell(correctAnswerRowIndex, indexKey).string(key);
+            })
+
+            // Строка с неверными ответами
+            let noCorrectAnswerRowIndex = indexUserCell + 2
+            worksheet.cell(noCorrectAnswerRowIndex, 1).string('Кол-во неверных ответов на вопрос')
+            let noCorrectAnswerCell = 1;
+            arrayQuestion.forEach((_, index) => {
+                noCorrectAnswerCell++;
+                const noCorrectAns = noCorrectAnswer[index] || 0
+                const result = 100 * noCorrectAns / testUserModel.length
+                worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result.toFixed(0)}%`)
+            })
+        } else if (customTestModel) {
+            // Строка с вопросами
+            questions.forEach((el, index) => {
+                indexCell++;
+                worksheet.cell(1, indexCell).string(`Вопрос ${el.convertId}`);
+            })
+            worksheet.cell(1, indexCell + 1).string(`Кол-во верных ответов`);
+
+            const idQuestionAnswers = getIdQuestionAnswers(questions);
+
+            const allCountCorrectAnswers = questions.reduce((acc, quest) => {
+                acc[quest._id] = 0;
+                return acc;
+            }, {});
+
+            // Строка ответов студента
+            let indexUserCell = 1;
+            console.log('1');
+            testUserModel.forEach((el, index) => {
+                indexUserCell++;
+                worksheet.cell(indexUserCell, 1).string(el.FIOGroup)
+                let indexUserAnswerCell = 1;
+                const allAnswers = el.answersCustom.values;
+                let countCorrectAnswers = 0;
+
+                const customAnswers = Object.entries(allAnswers).reduce((acc, [idQuest, {keys}], index) => {
+                    indexUserAnswerCell++;
+                    let isCorrectAnswer = true;
+                    const currentQuest = idQuestionAnswers[idQuest];
+                    const answersFromTestKeys = Object.keys(currentQuest);
+                    const answersFromTest = Object.values(currentQuest);
+                    const isTextIndex = answersFromTest.findIndex(el => el.type === 'text');
+
+                    if (!keys || (keys && !keys.length)) {
+                        isCorrectAnswer = false;
+                        acc[idQuest] = 'нет ответа';
+                    } else {
+                        if (isTextIndex !== -1) {
+                            acc[idQuest] = keys[0];
+                            const indexCorrectAnswer = answersFromTestKeys.indexOf(keys[0]);
+                            if (!answersFromTest[indexCorrectAnswer]?.isAnswer) {
+                                isCorrectAnswer = false;
+                            }
+                        } else {
+                            acc[idQuest] = keys.reduce((accum, key) => {
+                                const indexCorrectAnswer = answersFromTestKeys.indexOf(key);
+                                if (!answersFromTest[indexCorrectAnswer]?.isAnswer) {
+                                    isCorrectAnswer = false;
+                                }
+
+                                accum += answersFromTest[indexCorrectAnswer]?.value;
+
+                                return accum;
+                            }, '');
+                        }
+
+                        if (isCorrectAnswer) {
+                            allCountCorrectAnswers[idQuest] = (allCountCorrectAnswers[idQuest] || 0) + 1;
+                            countCorrectAnswers += 1;
+                        }
+                    }
+                    worksheet.cell(indexUserCell, indexUserAnswerCell).string(acc[idQuest])
+                    return acc;
+                });
+
+                console.log('2');
+
+                worksheet.cell(indexUserCell, indexUserAnswerCell + 1).number(countCorrectAnswers)
+            })
+        }
 
         const buffer = await workbook.writeToBuffer();
         const exelFile = await ExelFileModel.findOne({testId: id})

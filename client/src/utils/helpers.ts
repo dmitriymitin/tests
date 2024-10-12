@@ -57,4 +57,3 @@ export const getTestType = (el: IFullTest | ITestModelResponse): ETypeTest => {
 
   return ETypeTest.WITH_QUESTIONS;
 };
-

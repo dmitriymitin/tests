@@ -22,28 +22,10 @@ import CreateNewForder from './CreateNewForder/CreateNewForder';
 const AdminTestsListForm = () => {
   const [newTestOpen, setNewTestOpen] = useState(false);
   const [newTestDescriptionOpen, setNewTestDescriptionOpen] = useState(false);
-  const [changePasswordOpen, setChangePasswordModal] = useState(false);
-  const dispatch = useDispatch();
 
   return (
     <>
       <div className={s.admin__form}>
-        {/*              <ChangePasswordModalDrawer open={changePasswordOpen} setOpen={setChangePasswordModal}/>
-              <div className={s.title__wrapper}>
-                  <h1 className="title-admin">
-                      Страница администратора
-                  </h1>
-                  <div className={'tooltipWrapper'} style={{background: "none"}}>
-                      <Button
-                        className={s.exitBtn}
-                        onClick={() => setChangePasswordModal(true)}
-                      >
-                          Изменить пароль
-                      </Button>
-                      <Button className={s.exitBtn} danger
-                              onClick={() => AuthActionCreators.logout()(dispatch)}>Выйти</Button>
-                  </div>
-              </div> */}
         <AllAdminTestListWrapper/>
         <NewTestModalDrawer open={newTestOpen} setOpen={setNewTestOpen}/>
         <NewTestModalDrawerWithDescription open={newTestDescriptionOpen} setOpen={setNewTestDescriptionOpen}/>
