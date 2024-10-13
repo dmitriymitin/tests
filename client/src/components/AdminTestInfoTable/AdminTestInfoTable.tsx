@@ -106,8 +106,8 @@ const AdminTestInfoTable = ({
   };
 
   const allCountCorrectAnswers = (() => {
-    if (testType === ETypeTest.WITH_DESCRIPTION) {
-      return questions.reduce((acc, quest) => {
+    if (testType === ETypeTest.WITH_QUESTIONS) {
+      return questions?.reduce((acc, quest) => {
         acc[quest._id] = 0;
         return acc;
       }, {} as {
