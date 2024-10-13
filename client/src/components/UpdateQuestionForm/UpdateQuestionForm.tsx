@@ -42,12 +42,14 @@ const questionSetting: ISegmentedSetting[] = [
   {
     formName: 'isPublicQuestion',
     text: 'Сделать вопрос публчиным ',
-    description: 'Студенты смогут посмотреть вопрос, отдельно от теста'
+    description: 'Студенты смогут посмотреть вопрос, отдельно от теста',
+    isDev: true
   },
   {
     formName: 'isPublicAnswer',
     text: 'Сделать ответ публчиным ',
-    description: 'Студенты смогут посмотреть ответ на вопрос.'
+    description: 'Студенты смогут посмотреть ответ на вопрос.',
+    isDev: true
   }
 ];
 
@@ -199,10 +201,7 @@ const UpdateQuestionForm = () => {
             {questionSetting.map((el, index) => (
               <SettingSegmented
                 key={index}
-                formName={el.formName}
-                text={el.text}
-                type={el.type}
-                description={el.description}
+                {...el}
               />
             ))}
           </div>
@@ -220,7 +219,7 @@ const UpdateQuestionForm = () => {
           <div className="btnSaveWrapper mt-20 flex-middle gap-10">
             <Button
               loading={isCreateNewQuestionLoading}
-              disabled={errors.length !== 0}
+              disabled={isCreateNewQuestionLoading || errors.length !== 0}
               onClick={onSubmit}
               size={'large'}
               type={'primary'}

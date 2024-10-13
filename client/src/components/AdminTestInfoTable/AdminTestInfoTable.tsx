@@ -9,8 +9,8 @@ import QuestionLink from '../AllQuestions/AllQuestionsBlock/QuestionLink';
 import {getTestType} from '../../utils/helpers';
 import IsVisible from '../ui/isVisibleWrapper';
 import {AnswerType} from '../../models/question';
-import {Link} from "react-router-dom";
-import {RouteNames} from "../../router";
+import {Link} from 'react-router-dom';
+import {RouteNames} from '../../router';
 
 interface DataType {
     // @ts-ignore
@@ -36,7 +36,7 @@ type IdQuestAnswer = {[key: string]: {
   };}
 
 const getIdQuestionAnswers = (currentTest: IFullTest): { [key: string]: IdQuestAnswer } => {
-  return currentTest.questions.reduce((acc, question) => {
+  return currentTest.questions?.reduce((acc, question) => {
     const currentQuestionAsnwers = Object.values(question?.answers)?.[0];
     if (question?.answers?.['text']) {
       acc[question._id] = {
@@ -157,13 +157,27 @@ const AdminTestInfoTable = ({
 
     const allAnswers = el.answersCustom.values;
     let countCorrectAnswers = 0;
-    const customAnswers = Object.entries(allAnswers).reduce((acc, [idQuest, {keys}], index) => {
+    const initCustomAnswers = questions?.reduce((acc, el) => {
+      acc[el._id] = 'нет ответа';
+      return acc;
+    }, {});
+    const newCustomAnswers = Object.entries(allAnswers).reduce((acc, [idQuest, {keys}], index) => {
       let isCorrectAnswer = true;
       const currentQuest = idQuestionAnswers[idQuest];
+      let countRightQuest = 0;
+      if (!currentQuest) {
+        acc[idQuest] = 'нет ответа';
+        return acc;
+      }
+
+      Object.values(currentQuest).forEach(el => {
+        if (el.isAnswer) {
+          countRightQuest++;
+        }
+      });
       const answersFromTestKeys = Object.keys(currentQuest);
       const answersFromTest = Object.values(currentQuest);
       const isTextIndex = answersFromTest.findIndex(el => el.type === AnswerType.Text);
-
       if (!keys || (keys && !keys.length)) {
         isCorrectAnswer = false;
         acc[idQuest] = 'нет ответа';
@@ -175,16 +189,26 @@ const AdminTestInfoTable = ({
             isCorrectAnswer = false;
           }
         } else {
+          let countRightAnswerToCheck = 0;
           acc[idQuest] = keys.reduce((accum, key) => {
             const indexCorrectAnswer = answersFromTestKeys.indexOf(key);
-            if (!answersFromTest[indexCorrectAnswer]?.isAnswer) {
+            const isAnswer = answersFromTest[indexCorrectAnswer]?.isAnswer;
+            if (!isAnswer) {
               isCorrectAnswer = false;
+            }
+
+            if (isCorrectAnswer) {
+              countRightAnswerToCheck++;
             }
 
             accum += answersFromTest[indexCorrectAnswer]?.value;
 
             return accum;
           }, '');
+
+          if (countRightAnswerToCheck !== countRightQuest) {
+            isCorrectAnswer = false;
+          }
         }
 
         if (isCorrectAnswer) {
@@ -203,7 +227,8 @@ const AdminTestInfoTable = ({
       fiogroup: el.FIOGroup,
       variant: (<Link to={RouteNames.TEST_USER_RESULT + '/' + el._id}>{el.convertId}</Link>),
       correctAnswers,
-      ...customAnswers
+      ...initCustomAnswers,
+      ...newCustomAnswers
     };
   });
 
@@ -250,8 +275,8 @@ const AdminTestInfoTable = ({
           <Table.Summary.Row>
             <Table.Summary.Cell index={0}>Кол-во неверных ответов на вопрос</Table.Summary.Cell>
             <IsVisible isVisible={testType === ETypeTest.WITH_QUESTIONS}>
-              {/*<Table.Summary.Cell key={'variant'} index={0}>{''}</Table.Summary.Cell>*/}
-              {questions.map((quest, index) =>
+              {/* <Table.Summary.Cell key={'variant'} index={0}>{''}</Table.Summary.Cell> */}
+              {questions?.map((quest, index) =>
                 <Table.Summary.Cell key={quest._id} index={index + 1}>
                   {getCorrectAnswersCustom(quest._id)}%
                 </Table.Summary.Cell>
@@ -269,7 +294,7 @@ const AdminTestInfoTable = ({
       )}
     >
       <Column fixed={'left'} width={FIOWidth()} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
-      {/*{testType === ETypeTest.WITH_QUESTIONS && <Column width={150} title={'Вариант'} dataIndex="variant" key="variant" />}*/}
+      {/* {testType === ETypeTest.WITH_QUESTIONS && <Column width={150} title={'Вариант'} dataIndex="variant" key="variant" />} */}
       {testType === ETypeTest.WITH_QUESTIONS && questions
         ? questions?.map((el, index) => (
           <Column

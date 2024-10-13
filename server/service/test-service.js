@@ -192,6 +192,11 @@ class TestService {
                 worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result.toFixed(0)}%`)
             })
         } else if (customTestModel) {
+            const allCountCorrectAnswers = questions.reduce((acc, quest) => {
+                acc[quest._id] = 0;
+                return acc;
+            }, {})
+
             // Строка с вопросами
             questions.forEach((el, index) => {
                 indexCell++;
@@ -201,25 +206,26 @@ class TestService {
 
             const idQuestionAnswers = getIdQuestionAnswers(questions);
 
-            const allCountCorrectAnswers = questions.reduce((acc, quest) => {
-                acc[quest._id] = 0;
-                return acc;
-            }, {});
-
             // Строка ответов студента
             let indexUserCell = 1;
-            console.log('1');
             testUserModel.forEach((el, index) => {
                 indexUserCell++;
                 worksheet.cell(indexUserCell, 1).string(el.FIOGroup)
-                let indexUserAnswerCell = 1;
                 const allAnswers = el.answersCustom.values;
                 let countCorrectAnswers = 0;
 
                 const customAnswers = Object.entries(allAnswers).reduce((acc, [idQuest, {keys}], index) => {
-                    indexUserAnswerCell++;
                     let isCorrectAnswer = true;
                     const currentQuest = idQuestionAnswers[idQuest];
+                    let countRightQuest = 0;
+                    if (!currentQuest) {
+                        return acc;
+                    }
+                    Object.values(currentQuest).forEach(el => {
+                        if (el.isAnswer) {
+                            countRightQuest++;
+                        }
+                    })
                     const answersFromTestKeys = Object.keys(currentQuest);
                     const answersFromTest = Object.values(currentQuest);
                     const isTextIndex = answersFromTest.findIndex(el => el.type === 'text');
@@ -235,16 +241,25 @@ class TestService {
                                 isCorrectAnswer = false;
                             }
                         } else {
+                            let countRightAnswerToCheck = 0;
                             acc[idQuest] = keys.reduce((accum, key) => {
                                 const indexCorrectAnswer = answersFromTestKeys.indexOf(key);
                                 if (!answersFromTest[indexCorrectAnswer]?.isAnswer) {
                                     isCorrectAnswer = false;
                                 }
 
+                                if (isCorrectAnswer) {
+                                    countRightAnswerToCheck++;
+                                }
+
                                 accum += answersFromTest[indexCorrectAnswer]?.value;
 
                                 return accum;
                             }, '');
+
+                            if (countRightAnswerToCheck !== countRightQuest) {
+                                isCorrectAnswer = false
+                            }
                         }
 
                         if (isCorrectAnswer) {
@@ -252,13 +267,45 @@ class TestService {
                             countCorrectAnswers += 1;
                         }
                     }
-                    worksheet.cell(indexUserCell, indexUserAnswerCell).string(acc[idQuest])
                     return acc;
-                });
+                }, {});
+                let indexUserAnswerCell = 1;
 
-                console.log('2');
+                questions?.forEach(el => {
+                    indexUserAnswerCell++;
+                    worksheet.cell(indexUserCell, indexUserAnswerCell).string(customAnswers[el._id] || 'нет ответа')
+                })
 
-                worksheet.cell(indexUserCell, indexUserAnswerCell + 1).number(countCorrectAnswers)
+                worksheet.cell(indexUserCell, questions.length + 2).number(countCorrectAnswers)
+            })
+
+            // Строка с правильными ответами
+            let correctAnswerRowIndex = indexUserCell + 1
+            worksheet.cell(correctAnswerRowIndex, 1).string('Правильные ответы')
+            let indexKey = 1
+            questions.forEach((el, index) => {
+                indexKey++;
+                const customAnswersToNew = Object.values(el?.answers)[0]
+                if (el?.answerType === 'text') {
+                    worksheet.cell(correctAnswerRowIndex, indexKey).string(customAnswersToNew['keys'][0]);
+                } else {
+                    const newAnswers = customAnswersToNew['keys'].reduce((acc, value) => (acc += customAnswersToNew['values'][value].key, acc), '');
+                    worksheet.cell(correctAnswerRowIndex, indexKey).string(newAnswers);
+                }
+            })
+
+            const getCorrectAnswersCustom = (id) => {
+                return (100 - 100 * (allCountCorrectAnswers[id] || 0) / testUserModel.length).toFixed(0);
+            };
+
+            // Строка с неверными ответами
+            let noCorrectAnswerRowIndex = indexUserCell + 2
+            worksheet.cell(noCorrectAnswerRowIndex, 1).string('Кол-во неверных ответов на вопрос')
+            let noCorrectAnswerCell = 1;
+            questions.forEach((el, index) => {
+                noCorrectAnswerCell++;
+                const result = getCorrectAnswersCustom(el?._id)
+                worksheet.cell(noCorrectAnswerRowIndex, noCorrectAnswerCell).string(`${result}%`)
             })
         }
 
