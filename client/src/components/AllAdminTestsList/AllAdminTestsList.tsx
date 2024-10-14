@@ -19,6 +19,7 @@ import PutInFolderBtn from './PutInFolderBtn/PutInFolderBtn';
 import {useSelectTestsStore} from '../../store/folders/useSelectTestsStore';
 import {RouteNames} from '../../router';
 import {getTestType} from '../../utils/helpers';
+import IsVisible from "../ui/isVisibleWrapper";
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
   switch (status) {
@@ -285,15 +286,17 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                     >
                       Редактировать
                     </Button>
-                    <Button
-                                        className={s.btn}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${el._id}`);
-                                        }}
-                    >
-                      Ввести ключ
-                    </Button>
+                    <IsVisible isVisible={getTestType(el) !== ETypeTest.WITH_QUESTIONS}>
+                      <Button
+                        className={s.btn}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${el._id}`);
+                        }}
+                      >
+                        Ввести ключ
+                      </Button>
+                    </IsVisible>
                     <Button
                                         className={s.btn}
                                         onClick={(e) => {
