@@ -161,7 +161,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
         return (
           <Badge.Ribbon
                     key={el._id + index}
-                    text={folderName} color="gold" style={{
+                    text={folderName} color="#363e45" style={{
                       display: isShowTestInFolder ? folderName ? 'block' : 'none' : 'none',
                     }}>
             <div
