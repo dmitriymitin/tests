@@ -73,7 +73,7 @@ const CreateNewForder = ({open, setOpen, titleFolder = '', activeTestIdsDefault 
       await invalidate();
       await invalidateFolder();
       setOpen(false);
-      message.success('Папки создана успешно');
+      message.success('Папка создана успешно');
       localStorage.removeItem('currentFolder');
     } catch (e) {
       message.error('Ошибка при создании папки');
