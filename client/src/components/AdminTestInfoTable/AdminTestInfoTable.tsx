@@ -275,7 +275,7 @@ const AdminTestInfoTable = ({
           <Table.Summary.Row>
             <Table.Summary.Cell index={0}>Кол-во неверных ответов на вопрос</Table.Summary.Cell>
             <IsVisible isVisible={testType === ETypeTest.WITH_QUESTIONS}>
-              {/* <<<Table.Summary.Cell key={'variant'} index={0}>{''}</Table.Summary.Cell> */}
+              <Table.Summary.Cell key={'variant'} index={0}>{''}</Table.Summary.Cell>
               {questions?.map((quest, index) =>
                 <Table.Summary.Cell key={quest._id} index={index + 1}>
                   {getCorrectAnswersCustom(quest._id)}%
@@ -294,7 +294,7 @@ const AdminTestInfoTable = ({
       )}
     >
       <Column fixed={'left'} width={FIOWidth()} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
-      {/* {testType === ETypeTest.WITH_QUESTIONS && <Column width={150} title={'Вариант'} dataIndex="variant" key="variant" />} */}
+      {testType === ETypeTest.WITH_QUESTIONS && <Column width={150} title={'Вариант'} dataIndex="variant" key="variant" />}
       {testType === ETypeTest.WITH_QUESTIONS && questions
         ? questions?.map((el, index) => (
           <Column

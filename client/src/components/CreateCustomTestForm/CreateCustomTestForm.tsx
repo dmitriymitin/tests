@@ -43,7 +43,7 @@ const testSetting: ISegmentedSetting[] = [
     formName: 'isPublicTestAnswers',
     text: 'Сделать результаты публчиными',
     description: 'Студенты смогут посмотреть результаты тестирования.',
-    isDev: true,
+    // isDev: true,
   },
   {
     formName: 'timeForAnswer',
