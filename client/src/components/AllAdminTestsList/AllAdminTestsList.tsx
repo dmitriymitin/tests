@@ -1,7 +1,7 @@
 import React, {Fragment, useState} from 'react';
 import {Badge, Button, Empty, message, Popconfirm, Spin} from 'antd';
 import {useMutation, useQueryClient} from 'react-query';
-import {deleteTest, IFullTest, updateAdminStatusTest} from '../../api/test';
+import {deleteTest, deleteTestFromFolder, IFullTest, updateAdminStatusTest} from '../../api/test';
 import {testStatusType} from '../../type/test/type';
 import {useNavigate} from 'react-router-dom';
 import {CLIENT_URL} from '../../http';
@@ -87,6 +87,10 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
   } = useMutation(deleteTest);
 
   const {
+    mutateAsync: deleteTestFromFolderTrigger
+  } = useMutation(deleteTestFromFolder);
+
+  const {
     mutateAsync: updateStatusTestTrigger
   } = useMutation(updateAdminStatusTest);
 
@@ -138,6 +142,15 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
 
     return acc;
   }, [] as (IFullTest)[]);
+
+  const handleDeleteTestFromFolder = async (id) => {
+    try {
+      await deleteTestFromFolderTrigger(id);
+      await allTestRefetch();
+    } catch (e) {
+      message.error('Ошибка при удалении теста из папки');
+    }
+  };
 
   return (
     <Fragment>
@@ -292,7 +305,22 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                       Результаты
                     </Button>
                   </div>
-                  {allFolder && allFolder.length > 0 && <PutInFolderBtn id={el._id}/>}
+                  <div className="flex-wrap gap-10">
+                    {allFolder && allFolder.length > 0 && <PutInFolderBtn id={el._id}/>}
+                    {
+                      el.folderId && (
+                        <Button
+                          className={s.btn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteTestFromFolder(el._id);
+                          }}
+                        >
+                          Удалить из папки
+                        </Button>
+                      )
+                    }
+                  </div>
                 </div>
                 <div className={s.btns}>
                   <Button

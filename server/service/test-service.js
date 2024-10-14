@@ -832,7 +832,7 @@ class TestService {
             })
         }
 
-        const testsCustomAll  = await TestCustomModel.find()
+        const testsCustomAll  = await TestCustomModel.find({folderId})
         if (testsCustomAll) {
             testsCustomAll.forEach((el, index) => {
                 testsCustomAll[index].folderId = undefined;
@@ -842,6 +842,23 @@ class TestService {
         }
 
         await FolderModel.deleteOne({_id: new ObjectId(id)})
+    }
+
+    async deleteOneTestFromFolder(id){
+        const test  = await TestModel.findById(id)
+        if (test) {
+            test.folderId = undefined;
+            test.updateDate = new Date();
+            await test.save()
+            return
+        }
+
+        const testCustomAll  = await TestCustomModel.findById(id)
+        if (testCustomAll) {
+            testCustomAll.folderId = undefined;
+            testCustomAll.updateDate = new Date();
+            await testCustomAll.save()
+        }
     }
 
     async clearResults(id){

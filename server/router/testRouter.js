@@ -18,6 +18,7 @@ router.post('/create/folder',authMiddleware, TestController.createFolder);
 router.post('/update/folder',authMiddleware, TestController.updateFolder);
 router.post('/putFolderOne',authMiddleware, TestController.putOneTestInFolder);
 router.get('/get/folder',authMiddleware, TestController.getFolder);
+router.delete('/folder/deleteOneTestFromFolder/:id',authMiddleware, TestController.deleteOneTestFromFolder);
 router.delete('/deleteOne/folder/:id',authMiddleware, TestController.deleteOneFolder);
 
 router.post('/openAll',authMiddleware, TestController.openAll);
