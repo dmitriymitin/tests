@@ -225,6 +225,11 @@ export const deleteTest = async (id: string): Promise<any> => {
   return data;
 };
 
+export const deleteTestFromFolder = async (id: string): Promise<any> => {
+  const {data} = await $api.delete(`/test/folder/deleteOneTestFromFolder/${id}`);
+  return data;
+};
+
 export const deleteFolder = async (id: string): Promise<any> => {
   const {data} = await $api.delete(`/test/deleteOne/folder/${id}`);
   return data;

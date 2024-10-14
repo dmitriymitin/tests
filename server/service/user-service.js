@@ -52,7 +52,7 @@ class UserService {
         if (!userData || !tokenFromDb){
             throw ApiError.UnauthorizedError();
         }
-        const user = await UserModel.findOne({name: "admin"})
+        const user = await UserModel.findOne({name: userData.name})
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({...userDto});
 

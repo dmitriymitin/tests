@@ -73,7 +73,7 @@ const CreateNewForder = ({open, setOpen, titleFolder = '', activeTestIdsDefault 
       await invalidate();
       await invalidateFolder();
       setOpen(false);
-      message.success('Папки создана успешно');
+      message.success('Папка создана успешно');
       localStorage.removeItem('currentFolder');
     } catch (e) {
       message.error('Ошибка при создании папки');
@@ -154,7 +154,7 @@ const CreateNewForder = ({open, setOpen, titleFolder = '', activeTestIdsDefault 
                                 });
                                 setIsRerender(state => !state);
                               }}>
-                    <Badge.Ribbon text={folderName} color="gold" style={{
+                    <Badge.Ribbon text={folderName} color="#363e45" style={{
                       display: showTestInFolder ? folderName ? 'block' : 'none' : 'none',
                     }}>
                       <div className={clsx(s.testWrapper, 'testBackground')}>

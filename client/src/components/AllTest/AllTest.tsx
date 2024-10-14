@@ -1,7 +1,7 @@
 import React from 'react';
 import {useQuery} from 'react-query';
 import {getAdminAllTests, getUsersAllTests} from '../../api/test';
-import {Button, Segmented, Spin} from 'antd';
+import {Button, Empty, Segmented, Spin} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import s from './AllTest.module.scss';
 import clsx from 'clsx';
@@ -34,7 +34,14 @@ const AllTest = () => {
   if (allTest.length === 0) {
     return (
       <div className={s.all__tests__list__empty}>
-        Тестов пока нет
+        <div style={{
+          height: '500px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Empty description={'Тестов пока нет'}/>
+        </div>
       </div>
     );
   }

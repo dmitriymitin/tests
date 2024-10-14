@@ -55,7 +55,7 @@ const AdminAddFloatGroup = () => {
         trigger="click"
         type="primary"
         // style={{right: isPC ? 214 : 164}}
-        style={{right: isPC ? 64 : 14}}
+        style={{right: isPC ? 154 : 104}}
         icon={<EditOutlined/>}
         onClick={() => {
           setOpen(prev => {

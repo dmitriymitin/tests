@@ -494,10 +494,44 @@ class TestService {
         const testsCustomOne  = await TestCustomModel.findById(testId)
         if (testsCustomOne) {
             testsCustomOne.folderId = id;
-            testOne.updateDate = new Date();
+            testsCustomOne.updateDate = new Date();
             testsCustomOne.save();
         }
     }
+
+    async putManyTestInFolder(id, testsId) {
+        const folderId = new ObjectId(id)
+        const testsAll  = await TestModel.find({folderId})
+        if (testsAll) {
+            testsAll.forEach((el, index) => {
+                testsAll[index].folderId = undefined;
+                el.save()
+            })
+        }
+        const testsCustomAll  = await TestCustomModel.find({folderId})
+        if (testsCustomAll) {
+            testsCustomAll.forEach((el, index) => {
+                testsCustomAll[index].folderId = undefined;
+                el.save()
+            })
+        }
+        for await (let testId of testsId) {
+            const testOne  = await TestModel.findById(testId)
+            if (testOne) {
+                testOne.folderId = id;
+                testOne.updateDate = new Date();
+                await testOne.save();
+            } else {
+                const testsCustomOne  = await TestCustomModel.findById(testId);
+                if (testsCustomOne) {
+                    testsCustomOne.folderId = id;
+                    testsCustomOne.updateDate = new Date();
+                    await testsCustomOne.save();
+                }
+            }
+        }
+    }
+
 
     async actionOnManyTest(testsId, action, folderId) {
         for await (let testId of testsId) {
@@ -798,7 +832,7 @@ class TestService {
             })
         }
 
-        const testsCustomAll  = await TestCustomModel.find()
+        const testsCustomAll  = await TestCustomModel.find({folderId})
         if (testsCustomAll) {
             testsCustomAll.forEach((el, index) => {
                 testsCustomAll[index].folderId = undefined;
@@ -808,6 +842,23 @@ class TestService {
         }
 
         await FolderModel.deleteOne({_id: new ObjectId(id)})
+    }
+
+    async deleteOneTestFromFolder(id){
+        const test  = await TestModel.findById(id)
+        if (test) {
+            test.folderId = undefined;
+            test.updateDate = new Date();
+            await test.save()
+            return
+        }
+
+        const testCustomAll  = await TestCustomModel.findById(id)
+        if (testCustomAll) {
+            testCustomAll.folderId = undefined;
+            testCustomAll.updateDate = new Date();
+            await testCustomAll.save()
+        }
     }
 
     async clearResults(id){
