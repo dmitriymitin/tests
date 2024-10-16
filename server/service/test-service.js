@@ -12,7 +12,8 @@ const natural = require('natural');
 const {ObjectId} = require("mongodb");
 const ApiError = require("../exceptions/api-error");
 const {Workbook} = require("excel4node");
-const {shuffleArray} = require("../helpers/util");
+const {shuffleArray, getTestType} = require("../helpers/util");
+
 
 const getIdQuestionAnswers = (questions) => {
     return questions.reduce((acc, question) => {
@@ -75,6 +76,90 @@ const getQuestions = async (questionsId, isUserQuestion = false) => {
         return array;
     } catch (e) {
      return [];
+    }
+}
+
+const getCountCorrectAnswersAndQuestions = async (test, userInfo) => {
+    let questions = []
+    let countCorrectAnswers = 'Ключ не установлен';
+    const testType = getTestType(test);
+    if (testType !== 'questions') {
+        if (!test?.testKey) {
+            countCorrectAnswers = 'Ключ не установлен';
+        } else {
+            countCorrectAnswers = Object.values(userInfo.answer).reduce((acc, answer, index) =>
+                    acc += answer.toUpperCase() === test.testKey[index].toUpperCase() ? 1 : 0
+                , 0);
+        }
+
+    } else {
+        questions = await getQuestions(test.questionsId);
+        const idQuestionAnswers = getIdQuestionAnswers(questions);
+
+        const allAnswers = userInfo.answersCustom.values;
+        let countCorrectAnswersNumber = 0;
+
+        const customAnswers = Object.entries(allAnswers).reduce((acc, [idQuest, {keys}], index) => {
+            let isCorrectAnswer = true;
+            const currentQuest = idQuestionAnswers[idQuest];
+            let countRightQuest = 0;
+            if (!currentQuest) {
+                return acc;
+            }
+            Object.values(currentQuest).forEach(el => {
+                if (el.isAnswer) {
+                    countRightQuest++;
+                }
+            })
+            const answersFromTestKeys = Object.keys(currentQuest);
+            const answersFromTest = Object.values(currentQuest);
+            const isTextIndex = answersFromTest.findIndex(el => el.type === 'text');
+
+            if (!keys || (keys && !keys.length)) {
+                isCorrectAnswer = false;
+                acc[idQuest] = 'нет ответа';
+            } else {
+                if (isTextIndex !== -1) {
+                    acc[idQuest] = keys[0];
+                    const indexCorrectAnswer = answersFromTestKeys.indexOf(keys[0]);
+                    if (!answersFromTest[indexCorrectAnswer]?.isAnswer) {
+                        isCorrectAnswer = false;
+                    }
+                } else {
+                    let countRightAnswerToCheck = 0;
+                    acc[idQuest] = keys.reduce((accum, key) => {
+                        const indexCorrectAnswer = answersFromTestKeys.indexOf(key);
+                        if (!answersFromTest[indexCorrectAnswer]?.isAnswer) {
+                            isCorrectAnswer = false;
+                        }
+
+                        if (isCorrectAnswer) {
+                            countRightAnswerToCheck++;
+                        }
+
+                        accum += answersFromTest[indexCorrectAnswer]?.value;
+
+                        return accum;
+                    }, '');
+
+                    if (countRightAnswerToCheck !== countRightQuest) {
+                        isCorrectAnswer = false
+                    }
+                }
+
+                if (isCorrectAnswer) {
+                    countCorrectAnswersNumber += 1;
+                }
+            }
+            return acc;
+        }, {});
+
+        countCorrectAnswers = countCorrectAnswersNumber.toString();
+    }
+
+    return {
+        countCorrectAnswers,
+        questions
     }
 }
 
@@ -350,6 +435,26 @@ class TestService {
             },
             usersInfo: testUserModel,
             testKey: customTestModel.testKey
+        }
+    }
+
+    async testResultGerOneInfo(id){
+        const testUserModel  = await TestUserModel.findById(id)
+        const customTestModel  = await TestCustomModel.findOne({_id: new ObjectId(testUserModel.testId)})
+        const {
+            countCorrectAnswers,
+            questions
+        } = await getCountCorrectAnswersAndQuestions(customTestModel, testUserModel)
+
+        return {
+            userInfo: {
+                ...testUserModel._doc,
+                countCorrectAnswers
+            },
+            testInfo: {
+                ...customTestModel._doc,
+                questions
+            },
         }
     }
 
@@ -725,10 +830,22 @@ class TestService {
 
         const testUserModel = await TestUserModel.find()
         const data = testUserModel.filter(it => natural.PorterStemmerRu.stem(JSON.stringify(it.FIOGroup)).includes(natural.PorterStemmerRu.stem(search)))
-        const newData = data.map(el => ({
-            test: allTestDataArray.find(test => test._id.toString() === el.testId),
-            userInfo: el
-        }))
+        let newData = [];
+        await Promise.all(
+            data.map(async el => {
+                const test = allTestDataArray.find(test => test._id.toString() === el.testId)
+                const {countCorrectAnswers} = await getCountCorrectAnswersAndQuestions(test, el)
+                console.log(countCorrectAnswers)
+                newData.push({
+                    test,
+                    userInfo: {
+                        ...el._doc,
+                        countCorrectAnswers
+                    }
+                })
+            })
+        )
+
 
         const resultsData = newData?.slice(startIndex, endIndex);
 

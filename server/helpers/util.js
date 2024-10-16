@@ -31,4 +31,20 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-module.exports = {convertIdToCustomFormat, shuffleArray};
+function getTestType (el)  {
+    if (el?.testType) {
+        return el.testType;
+    }
+
+    if (!!el?.quantityQuestion && !el?.descriptionEditor && !el?.questionsId) {
+        return 'common';
+    }
+
+    if (el?.descriptionEditor && !el?.questionsId) {
+        return 'description';
+    }
+
+    return 'questions'
+};
+
+module.exports = {convertIdToCustomFormat, shuffleArray, getTestType};

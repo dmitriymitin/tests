@@ -25,12 +25,12 @@ const AnswerQuestionRadio = ({lastValue, questionId, statusAnswer, shuffleArrays
   const [formRadio] = useForm();
 
   useEffect(() => {
-    formInstance.setFieldValue('answerFieldsData/' + questionId, {
+    formInstance?.setFieldValue('answerFieldsData/' + questionId, {
       [AnswerType.Radio]: {
         keys: checked ? [checked] : []
       }
     });
-    formInstance.submit();
+    formInstance?.submit();
   }, [formInstance, checked]);
 
   const oRadioChange: GetProp<typeof Radio.Group, 'onChange'> = (e) => {

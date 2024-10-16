@@ -7,15 +7,16 @@ import s from './AnswerQuestionText.module.scss';
 
 const AnswerQuestionText = ({questionId, statusAnswer}: {questionId: string; statusAnswer?: 'error' | 'warning'}) => {
   const formInstance = useFormInstance();
-  const [value, setValue] = useState('');
+  const defaultValue = formInstance?.getFieldValue('answerFieldsData/' + questionId)?.[0];
+  const [value, setValue] = useState(defaultValue || '');
 
   useEffect(() => {
-    formInstance.setFieldValue('answerFieldsData/' + questionId, {
+    formInstance?.setFieldValue('answerFieldsData/' + questionId, {
       [AnswerType.Text]: {
         keys: value ? [value] : []
       }
     });
-    formInstance.submit();
+    formInstance?.submit();
   }, [formInstance, value]);
 
   return (

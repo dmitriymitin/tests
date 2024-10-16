@@ -7,22 +7,20 @@ const {convertIdToCustomFormat} = require("../helpers/util");
 
 class TestService {
     async create({FIOGroup, testType, answersCustom, answer, testId}){
+        let currentTest = null;
         if (testType !== 'questions') {
-            const test  = await TestModel.findOne({_id: new ObjectId(testId)})
-            if (test) {
-                if (test.status === 'Close' || test.status === 'Start') {
+            currentTest  = await TestModel.findOne({_id: new ObjectId(testId)})
+            if (currentTest) {
+                if (currentTest.status === 'Close' || currentTest.status === 'Start') {
                     throw ApiError.BadRequest(`Тест закрыт`)
                     return
                 }
             }
         } else {
-            const customTest = await CustomTestModel.findOne({_id: new ObjectId(testId)})
-            if (customTest.status === 'Close' || customTest.status === 'Start') {
+            currentTest = await CustomTestModel.findOne({_id: new ObjectId(testId)})
+            if (currentTest.status === 'Close' || currentTest.status === 'Start') {
                 throw ApiError.BadRequest(`Тест закрыт`)
                 return
-            }
-            if (customTest.setting.isRandomQuestions) {
-
             }
         }
         const valuesToSave = {FIOGroup, testType, answersCustom, answer, testId};

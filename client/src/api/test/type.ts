@@ -27,6 +27,7 @@ export interface IStudent {
     _id: string;
     FIOGroup: string;
     answer: Record<string, string>;
+    countCorrectAnswers: number;
     testId: string;
 }
 
@@ -103,13 +104,13 @@ export interface IGetTestInfoCustomModelResponse {
         status: testStatusType;
         testKey: string | null;
     };
-    usersInfo: ISaveNewTestResponse[];
+    usersInfo: IUserInfoForTest[];
     testKey: string | null;
 }
 
 export interface IGetOneTestInfoResponse {
     test: IFullTest;
-    usersInfo: ISaveNewTestResponse[];
+    usersInfo: IUserInfoForTest[];
     testKey: string | null;
 }
 
@@ -127,9 +128,10 @@ export interface ISaveNewTestRequest {
     testId: string;
 }
 
-export interface ISaveNewTestResponse {
+export interface IUserInfoForTest {
     _id: string;
     convertId?: string;
+    countCorrectAnswers: number;
     FIOGroup: string;
     testType?: ETypeTest;
     answer?: {

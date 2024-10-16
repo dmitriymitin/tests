@@ -65,7 +65,7 @@ const QuestionTypeAnswerCheckbox = () => {
         values: fieldsData
       }
     } : null);
-    formInstance.submit();
+    formInstance?.submit();
   }, [arrayIds, checkedList, formInstance]);
 
   const setFormFields = useCallback((isCheckField?: boolean, isSetInstance = true) => {

@@ -187,6 +187,16 @@ class TestController{
         }
     }
 
+    async testResultGerOneInfo(req, res, next) {
+        try {
+            const {id} = req.params;
+            const response = await TestService.testResultGerOneInfo(id);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     async getOneQuestionCustomInfo(req, res, next){
         try{
             const {id} = req.params;

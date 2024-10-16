@@ -1,7 +1,7 @@
 import React from 'react';
 import Column from 'antd/es/table/Column';
 import {Table} from 'antd';
-import {ETypeTest, ISaveNewTestResponse} from '../../api/test/type';
+import {ETypeTest, IUserInfoForTest} from '../../api/test/type';
 import {ColumnsType} from 'antd/es/table';
 import {useMedia} from 'react-use';
 import {IFullTest} from '../../api/test';
@@ -23,7 +23,7 @@ interface DataType {
 }
 
 interface AdminTestInfoTableProps {
-    usersTestInfo: ISaveNewTestResponse[];
+    usersTestInfo: IUserInfoForTest[];
     currentTest?: IFullTest;
     testKey: string | null;
     isFullInfo?: boolean;

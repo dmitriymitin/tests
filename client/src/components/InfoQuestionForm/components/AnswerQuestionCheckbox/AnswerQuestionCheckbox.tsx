@@ -24,12 +24,12 @@ const AnswerQuestionCheckbox = ({lastValue, questionId, statusAnswer, shuffleArr
   const [formRadio] = useForm();
 
   useEffect(() => {
-    formInstance.setFieldValue('answerFieldsData/' + questionId, {
+    formInstance?.setFieldValue('answerFieldsData/' + questionId, {
       [AnswerType.Checkbox]: {
         keys: checkedList && checkedList.length ? checkedList : []
       }
     });
-    formInstance.submit();
+    formInstance?.submit();
   }, [formInstance, checkedList]);
 
   const onCheckboxChange: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
