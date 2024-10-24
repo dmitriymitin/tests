@@ -20,7 +20,7 @@ const AnswerQuestionText = ({questionId, statusAnswer, isAnswerForVariant}: {que
     });
     formInstance?.submit();
   }, [formInstance, value]);
-
+  //
   return (
     <Input
       className={clsx({
