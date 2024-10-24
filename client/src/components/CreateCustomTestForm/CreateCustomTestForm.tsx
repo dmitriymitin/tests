@@ -43,26 +43,35 @@ const testSetting: ISegmentedSetting[] = [
     formName: 'isPublicTestAnswers',
     text: 'Сделать результаты публчиными',
     description: 'Студенты смогут посмотреть результаты тестирования.',
-    // isDev: true,
   },
   {
-    formName: 'timeForAnswer',
-    text: 'Время на прохождение',
-    type: 'time',
-    description: 'Без значения, время не учитывается',
-    isDev: true,
+    formName: 'isPublicTestVariants',
+    text: 'Показывать в результатах варианты студентов',
   },
   {
-    formName: 'isPublicTest',
-    text: 'Сделать тест публчиным',
-    description: 'Тест будет доступен для просмотра',
-    isDev: true,
-  }
+    formName: 'isPublicTestVariantsAnswers',
+    text: 'Показывать правильные ответы на вопросы в вариантах',
+  },
+  // {
+  //   formName: 'timeForAnswer',
+  //   text: 'Время на прохождение',
+  //   type: 'time',
+  //   description: 'Без значения, время не учитывается',
+  //   isDev: true,
+  // },
+  // {
+  //   formName: 'isPublicTest',
+  //   text: 'Сделать тест публчиным',
+  //   description: 'Тест будет доступен для просмотра',
+  //   isDev: true,
+  // }
 ];
 
 interface IFormData {
   isPublicTest: 0 | 1;
   isPublicTestAnswers: 0 | 1;
+  isPublicTestVariants: 0 | 1;
+  isPublicTestVariantsAnswers: 0 | 1;
   isRandomQuestions: 0 | 1;
   testTitle: string;
   timeForAnswer: string;
@@ -89,6 +98,8 @@ const CreateCustomTestForm = ({questionData, testData, isAllQuestionsLoading, is
     timeForAnswer: testData?.test?.setting?.timeForAnswer,
     isPublicTest: testData?.test?.setting?.isPublicTest ? 1 : 0,
     isPublicTestAnswers: testData?.test?.setting?.isPublicTestAnswers ? 1 : 0,
+    isPublicTestVariants: testData?.test?.setting?.isPublicTestVariants ? 1 : 0,
+    isPublicTestVariantsAnswers: testData?.test?.setting?.isPublicTestVariantsAnswers ? 1 : 0,
   };
 
   useEffect(() => {
@@ -113,6 +124,8 @@ const CreateCustomTestForm = ({questionData, testData, isAllQuestionsLoading, is
               timeForAnswer: formData?.timeForAnswer?.toString(),
               isPublicTest: Boolean(formData?.isPublicTest),
               isPublicTestAnswers: Boolean(formData?.isPublicTestAnswers),
+              isPublicTestVariants: Boolean(formData?.isPublicTestVariants),
+              isPublicTestVariantsAnswers: Boolean(formData?.isPublicTestVariantsAnswers),
             }
           }
         });
@@ -136,7 +149,7 @@ const CreateCustomTestForm = ({questionData, testData, isAllQuestionsLoading, is
 
         <div className={s.btns}>
           <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${testId}`)}>Ввести ключ</Button>
-          <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_INFO + `/${testId}`)}>Перейти к результатам</Button>
+          <Button type={'primary'} onClick={() => navigate(RouteNames.TEST_INFO + `/${testId}`)}>Перейти к результатам</Button>
         </div>
 
         <div className={s.test__block}>

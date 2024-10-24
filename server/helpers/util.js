@@ -1,3 +1,6 @@
+const ApiError = require("../exceptions/api-error");
+const tokenService = require("../service/token-service");
+
 function convertIdToCustomFormat(uniqueId, indexOffset = -1, symbolFirst = '#') {
     // По умолчанию буква будет 'T'
     let letter = 'T';
@@ -47,4 +50,22 @@ function getTestType (el)  {
     return 'questions'
 };
 
-module.exports = {convertIdToCustomFormat, shuffleArray, getTestType};
+
+function checkAuth(req) {
+
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader){
+        return false
+    }
+
+    const accessToken = authorizationHeader.split(' ')[1];
+    if (!accessToken){
+        return false;
+    }
+
+    return tokenService.validateAccessToken(accessToken);
+
+
+}
+
+module.exports = {convertIdToCustomFormat, shuffleArray, getTestType, checkAuth};

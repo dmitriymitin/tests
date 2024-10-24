@@ -56,6 +56,9 @@ export interface ITestModelResponse {
     testKey: string | null;
     updateDate?: string;
     folderId?: string;
+    setting: {
+        isPublicTestAnswers?: boolean;
+    };
 }
 
 export type TypeCustomTestQuestionAnswer = {
@@ -74,6 +77,7 @@ export interface ITestCustomModelResponse {
     createDate: string;
     testKey: string | null;
     updateDate?: string;
+    setting?: ICustomTestSetting;
     folderId?: string;
 }
 
@@ -82,6 +86,8 @@ export interface ICustomTestSetting {
     timeForAnswer: string;
     isPublicTest: boolean;
     isPublicTestAnswers: boolean;
+    isPublicTestVariants: boolean;
+    isPublicTestVariantsAnswers: boolean;
 }
 
 export interface ITestCustomModelUpdateResponse {

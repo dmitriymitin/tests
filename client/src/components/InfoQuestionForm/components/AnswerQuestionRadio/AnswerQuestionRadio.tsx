@@ -17,11 +17,14 @@ interface IAnswerQuestionRadioProps {
   shuffleArraysIds: string[];
   statusAnswer?: 'error' | 'warning';
   isAnswer?: boolean;
+  disabled?: boolean;
+  isAnswerForVariant?: boolean;
 }
 
-const AnswerQuestionRadio = ({lastValue, questionId, statusAnswer, shuffleArraysIds, answers, isAnswer}: IAnswerQuestionRadioProps) => {
+const AnswerQuestionRadio = ({lastValue, isAnswerForVariant, questionId, statusAnswer, shuffleArraysIds, answers, isAnswer, disabled}: IAnswerQuestionRadioProps) => {
   const formInstance = useFormInstance();
-  const [checked, setChecked] = useState<string | undefined>(undefined);
+  const defaultValue = formInstance?.getFieldValue('answerFieldsData/' + questionId)?.[0];
+  const [checked, setChecked] = useState<string | undefined>(defaultValue || undefined);
   const [formRadio] = useForm();
 
   useEffect(() => {
@@ -34,6 +37,10 @@ const AnswerQuestionRadio = ({lastValue, questionId, statusAnswer, shuffleArrays
   }, [formInstance, checked]);
 
   const oRadioChange: GetProp<typeof Radio.Group, 'onChange'> = (e) => {
+    if (disabled) {
+      return;
+    }
+
     setChecked(e.target.value);
   };
 
@@ -45,17 +52,24 @@ const AnswerQuestionRadio = ({lastValue, questionId, statusAnswer, shuffleArrays
         <Space direction="vertical" className="gap-10">
           {shuffleArraysIds.map((id, index) => {
             const isLast = id === lastValue;
+            const isChecked = checked === id;
             return (
               <div
                 key={id}
-                className="flex-row flex-middle flex-center gap-20 cursor-pointer"
-                onClick={() => setChecked(id)}
+                className={clsx('flex-row flex-middle flex-center gap-20', {['cursor-pointer']: !disabled})}
+                onClick={() => {
+                  if (disabled) {
+                    return;
+                  }
+
+                  setChecked(id);
+                }}
                 // style={{
                 //   borderRadius: 12,
                 //   border: isLast && '1px solid ' + (statusAnswer === 'error' ? 'red' : statusAnswer === 'warning' ? 'green' : '')
                 // }}
               >
-                <div className="flex-row flex-middle flex-center gap-20 testBackground boxShadow1 hover">
+                <div className={clsx('flex-row flex-middle flex-center gap-20 testBackground boxShadow1', {['hover']: !disabled})}>
                   <Row wrap={false} className={clsx(s.row, sC.row)}>
                     <div className="flex-row flex-middle flex-center gap-5">
                       <Radio value={id}/>
@@ -65,7 +79,7 @@ const AnswerQuestionRadio = ({lastValue, questionId, statusAnswer, shuffleArrays
                   </Row>
                 </div>
                 <div className="w30p">
-                  <IsVisible isVisible={isLast}>
+                  <IsVisible isVisible={isAnswerForVariant ? isChecked : isLast}>
                     {statusAnswer === 'error' && <CloseOutlined className="red"/>}
                     {statusAnswer === 'warning' && <CheckOutlined className="green"/>}
                   </IsVisible>

@@ -122,11 +122,13 @@ export const onUpdateTestInfo = async (values: {
     title?: string;
     quantityQuestion?: number;
     description?: EditorDescriptionTest;
+    setting?: any;
 }): Promise<any> => {
   const {data} = await $api.post(`/test/changeInfoTest?id=${values.testId}`, {
     title: values.title,
     quantityQuestion: values.quantityQuestion,
-    description: values.description
+    description: values.description,
+    setting: values.setting
   });
   return data;
 };
@@ -215,7 +217,7 @@ export const clearTestResults = async (id: string): Promise<any> => {
 };
 
 export const getUserResultInTest = async (id: string): Promise<{
-  testInfo: ITestModelResponse;
+  testInfo: IFullTest;
   userInfo: IUserInfoForTest;
 }> => {
   const {data} = await $api.get(`/test/result/getOneInfo/${id}`);

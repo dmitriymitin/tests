@@ -1,5 +1,5 @@
 import React, {Fragment, useState} from 'react';
-import {Badge, Button, Empty, message, Popconfirm, Spin} from 'antd';
+import {Badge, Button, Empty, message, Popconfirm, Popover, Spin} from 'antd';
 import {useMutation, useQueryClient} from 'react-query';
 import {deleteTest, deleteTestFromFolder, IFullTest, updateAdminStatusTest} from '../../api/test';
 import {testStatusType} from '../../type/test/type';
@@ -214,58 +214,79 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                 </div>
 
                 <div className={s.infoWrapper}>
-                  <p>Адрес теста:</p>
-                  <div className={clsx(s.body, s.addressTest)}>{CLIENT_URL + `/tests/${el._id}`}</div>
+                  <Popover className="cursor-pointer fs-14 mxw-100" content={CLIENT_URL + `/tests/${el._id}`}>
+                    <p>Адрес теста</p>
+                  </Popover>
                   <CustomTooltip isPreventDefault text={'Адрес теста был успешно скопирован!'}>
                     <button
-                                        className={s.addressCopyButton}
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          copyAddress(CLIENT_URL + `/tests/${el._id}`);
-                                        }}
+                      className={s.addressCopyButton}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        copyAddress(CLIENT_URL + `/tests/${el._id}`);
+                      }}
                     >
                       <CopyOutlined/>
                     </button>
                   </CustomTooltip>
                 </div>
 
+                <IsVisible isVisible={Boolean(el?.setting?.isPublicTestAnswers)}>
+                  <div className={s.infoWrapper}>
+                    <Popover className="cursor-pointer fs-14 mxw-100"
+                             content={CLIENT_URL + RouteNames.TEST_INFO + `/${el._id}`}>
+                      <p>Адрес результатов тестирования</p>
+                    </Popover>
+                    <CustomTooltip isPreventDefault text={'Адрес результатов тетсирования был успешно скопирован!'}>
+                      <button
+                        className={s.addressCopyButton}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          copyAddress(CLIENT_URL + RouteNames.TEST_INFO + `/${el._id}`);
+                        }}
+                      >
+                        <CopyOutlined/>
+                      </button>
+                    </CustomTooltip>
+                  </div>
+                </IsVisible>
+
                 <div className={s.infoWrapper}>
                   <p>Кол-во вопросов:</p>
                   <div
-                                    className={s.body}>{el.quantityQuestion || el.questions && el.questions.length || 0}</div>
+                    className={s.body}>{el.quantityQuestion || el.questions && el.questions.length || 0}</div>
                 </div>
 
                 {el?.createDate && <div className={s.infoWrapper}>
-                  <p>Тест создан: </p>
-                  <div
-                                    className={s.body}>{getFormatCreateDate(el.createDate)}</div>
+                    <p>Тест создан: </p>
+                    <div
+                        className={s.body}>{getFormatCreateDate(el.createDate)}</div>
                 </div>}
 
                 {el?.updateDate && <div className={s.infoWrapper}>
-                  <p>Тест изменен: </p>
-                  <div
-                                    className={s.body}>{getFormatUpdateDate(el.updateDate)}</div>
+                    <p>Тест изменен: </p>
+                    <div
+                        className={s.body}>{getFormatUpdateDate(el.updateDate)}</div>
                 </div>}
 
               </div>
               <div
-                            className={s.btnsWrapper}
-                            style={{
-                              marginTop: isShowTestInFolder ? folderName ? 30 : 0 : 0,
-                            }}
+                className={s.btnsWrapper}
+                style={{
+                  marginTop: isShowTestInFolder ? folderName ? 30 : 0 : 0,
+                }}
               >
                 <div className={s.btnsColum}>
                   <div className={s.btns}>
                     <Button
-                          className={s.btn}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const testType = getTestType(el);
-                            // Обычный тест
-                            if (testType === ETypeTest.SIMPLE) {
-                              setCurrentDefaultTestData({
-                                testId: el._id,
-                                title: el.title,
+                      className={s.btn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const testType = getTestType(el);
+                        // Обычный тест
+                        if (testType === ETypeTest.SIMPLE) {
+                          setCurrentDefaultTestData({
+                            testId: el._id,
+                            title: el.title,
                                 quantityQuestion: el.quantityQuestion,
                                 openModal: true
                               });
@@ -302,7 +323,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           localStorage.removeItem('FIO');
-                                          navigate(RouteNames.ADMIN_TEST_INFO + `/${el._id}`);
+                                          navigate(RouteNames.TEST_INFO + `/${el._id}`);
                                         }}
                     >
                       Результаты

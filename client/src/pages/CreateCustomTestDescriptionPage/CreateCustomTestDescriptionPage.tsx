@@ -15,6 +15,16 @@ import ChangeCustomTestWithDescriptionCountQuestion
   from '../../components/CreateCustomTestForm/ChangeCustomTestWithDescriptionCountQuestion/ChangeCustomTestWithDescriptionCountQuestion';
 import exampleData from '../../components/EditorWrapper/Editor/exampleData';
 import {RouteNames} from "../../router";
+import SettingSegmented from "../../components/ui/SettingSegmented/SettingSegmented";
+import {ISegmentedSetting} from "../../components/UpdateQuestionForm/UpdateQuestionForm";
+
+const testSetting: ISegmentedSetting[] = [
+  {
+    formName: 'isPublicTestAnswers',
+    text: 'Сделать результаты публчиными',
+    description: 'Студенты смогут посмотреть результаты тестирования.',
+  },
+];
 
 
 const CreateCustomTestDescriptionPage = () => {
@@ -47,18 +57,26 @@ const CreateCustomTestDescriptionPage = () => {
     return form.getFieldValue('quantityQuestion');
   };
 
+  const getIsPublicTestAnswers = (): boolean => {
+    return form.getFieldValue('isPublicTestAnswers');
+  };
+
   const handleSaveTestInfo = async () => {
     try {
       const title = getFieldTestTitle();
       const quantityQuestion = getFieldTestQuantityQuestion();
+      const isPublicTestAnswers = getIsPublicTestAnswers();
       await onUpdateTestInfoTrgiier({
         testId,
         title,
         quantityQuestion,
-        description: descriptionPARSE
+        description: descriptionPARSE,
+        setting: {
+          isPublicTestAnswers: Boolean(isPublicTestAnswers),
+        }
       });
       message.success('Тест успешно сохранен');
-      navigate('/admin');
+      navigate('/admin/test/list');
     } catch (e) {
       message.error('Ошибка при сохранении теста');
     }
@@ -67,43 +85,59 @@ const CreateCustomTestDescriptionPage = () => {
   const getForm = () => {
     return (
       <Form
-                form={form}
-                className={s.custom__test__form}
-                initialValues={{
-                  testTitle: testData?.title || 'Название теста',
-                  quantityQuestion: testData?.quantityQuestion || 0
-                }}
+        form={form}
+        className={s.custom__test__form}
+        initialValues={{
+          testTitle: testData?.title || 'Название теста',
+          quantityQuestion: testData?.quantityQuestion || 0,
+          isPublicTestAnswers: testData?.setting?.isPublicTestAnswers ? 1 : 0,
+        }}
       >
         <h1 className="title">
           Страница создания теста с описанием
         </h1>
         <div className={s.btns}>
-          <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${testId}`)}>Ввести ключ</Button>
-          <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_INFO + `/${testId}`)}>Перейти к результатам</Button>
+          <Button type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${testId}`)}>Ввести
+            ключ</Button>
+          <Button type={'primary'} onClick={() => navigate(RouteNames.TEST_INFO + `/${testId}`)}>Перейти к
+            результатам</Button>
         </div>
 
         <div className={s.test__block}>
           <ChangeTestTitleWithDescription title={testData?.title || 'Название теста'}/>
           <ChangeCustomTestWithDescriptionCountQuestion
-                        testId={testId}
-                        refetch={tefetchTestData}
-                        getFieldTestQuantityQuestion={getFieldTestQuantityQuestion}
-                        count={testData?.quantityQuestion || 0}
+            testId={testId}
+            refetch={tefetchTestData}
+            getFieldTestQuantityQuestion={getFieldTestQuantityQuestion}
+            count={testData?.quantityQuestion || 0}
           />
+        </div>
+        <h2> Настройки</h2>
+        <div className="testBackground">
+          {testSetting.map((el, index) => (
+            <SettingSegmented
+              key={index}
+              formName={el.formName}
+              text={el.text}
+              type={el.type}
+              description={el.description}
+              isDev={el.isDev}
+            />
+          ))}
         </div>
         <h2>
           Описание теста
         </h2>
         <EditorWrapper
-                    descriptionPARSE={testData?.descriptionEditor || exampleData}
-                    setDescriptionPARSE={setDescriptionPARSE}
+          descriptionPARSE={testData?.descriptionEditor || exampleData}
+          setDescriptionPARSE={setDescriptionPARSE}
         />
         <div className={s.btnSaveWrapper}>
           <Button
-                        onClick={handleSaveTestInfo}
-                        size={'large'}
-                        type={'primary'}
-                        // loading={updateTestDescriptionEditorLoading}
+            onClick={handleSaveTestInfo}
+            size={'large'}
+            type={'primary'}
+            // loading={updateTestDescriptionEditorLoading}
           >
             Сохранить изменения
           </Button>

@@ -10,7 +10,8 @@ const TestSchema = new Schema({
     testType: {type: String, required: false},
     createDate: {type: String, required: false},
     updateDate: {type: String, required: false},
-    folderId: {type: String, required: false}
+    folderId: {type: String, required: false},
+    setting: {type: Object, required: false}
 })
 
 module.exports = model('Test', TestSchema);

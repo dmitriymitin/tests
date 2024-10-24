@@ -71,7 +71,7 @@ const AdminTestKeyInfo = () => {
                     onChange={(e) => setTestKey(e.target.value)}
         />
         <Button loading={updateAdminKeyTestTriggerLoading} type={'primary'} onClick={handleSaveKey}>Сохранить</Button>
-        <Button loading={updateAdminKeyTestTriggerLoading} type={'primary'} onClick={() => navigate(RouteNames.ADMIN_TEST_INFO + `/${currentTest._id}`)}>Перейти к результатам теста</Button>
+        <Button loading={updateAdminKeyTestTriggerLoading} type={'primary'} onClick={() => navigate(RouteNames.TEST_INFO + `/${currentTest._id}`)}>Перейти к результатам теста</Button>
       </div>
 
       {

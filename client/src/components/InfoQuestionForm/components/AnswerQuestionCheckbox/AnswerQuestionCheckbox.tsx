@@ -16,11 +16,14 @@ interface IAnswerQuestionCheckboxProps {
   answers: IQuestionAnswer;
   shuffleArraysIds: string[];
   statusAnswer?: 'error' | 'warning';
+  disabled?: boolean;
+  isAnswerForVariant?: boolean;
 }
 
-const AnswerQuestionCheckbox = ({lastValue, questionId, statusAnswer, shuffleArraysIds, answers}: IAnswerQuestionCheckboxProps) => {
+const AnswerQuestionCheckbox = ({lastValue, disabled, questionId, isAnswerForVariant, statusAnswer, shuffleArraysIds, answers}: IAnswerQuestionCheckboxProps) => {
   const formInstance = useFormInstance();
-  const [checkedList, setCheckedList] = useState<string[] | undefined>(undefined);
+  const defaultValue = formInstance?.getFieldValue('answerFieldsData/' + questionId);
+  const [checkedList, setCheckedList] = useState<string[] | undefined>(defaultValue || undefined);
   const [formRadio] = useForm();
 
   useEffect(() => {
@@ -33,6 +36,10 @@ const AnswerQuestionCheckbox = ({lastValue, questionId, statusAnswer, shuffleArr
   }, [formInstance, checkedList]);
 
   const onCheckboxChange: GetProp<typeof Checkbox.Group, 'onChange'> = (checkedValues) => {
+    if (disabled) {
+      return;
+    }
+
     setCheckedList(checkedValues as any);
   };
 
@@ -44,31 +51,40 @@ const AnswerQuestionCheckbox = ({lastValue, questionId, statusAnswer, shuffleArr
         <Space direction="vertical" className="gap-10">
           {shuffleArraysIds.map((id, index) => {
             const isLast = lastValue.includes(id);
+            const isChecked = checkedList.includes(id);
             const isRightAnswer = answers?.checkbox?.keys?.includes(id);
             return (
               <div
                 key={id}
-                className="flex-row flex-middle flex-center gap-20 cursor-pointer"
-                onClick={() => setCheckedList(prev => {
-                  const newArr = [...(prev || [])];
-                  if (newArr.includes(id)) {
-                    return newArr.filter(el => el !== id);
+                className={clsx('flex-row flex-middle flex-center gap-20', {['cursor-pointer']: !disabled})}
+                onClick={() => {
+                  if (disabled) {
+                    return;
                   }
 
-                  return [...newArr, id];
-                })}
+                  setCheckedList(prev => {
+
+                    const newArr = [...(prev || [])];
+                    if (newArr.includes(id)) {
+                      return newArr.filter(el => el !== id);
+                    }
+
+                    return [...newArr, id];
+                  });
+                }}
               >
-                <div className="flex-row flex-middle flex-center gap-20 testBackground boxShadow1 hover">
+                <div
+                  className={clsx('flex-row flex-middle flex-center gap-20 testBackground boxShadow1', {['hover']: !disabled})}>
                   <Row wrap={false} className={clsx('flex-row flex-middle', sC.row)}>
                     <div className="flex-row flex-middle flex-center gap-10">
                       <Checkbox value={id}/>
-                      <div>{arrayValues?.[index]?.key}) </div>
+                      <div>{arrayValues?.[index]?.key})</div>
                     </div>
                     <div>{answers?.checkbox?.values?.[id]?.title}</div>
                   </Row>
                 </div>
                 <div className="w30p">
-                  <IsVisible isVisible={isLast}>
+                  <IsVisible isVisible={isAnswerForVariant ? isChecked : isLast}>
                     {!isRightAnswer && <CloseOutlined className="red"/>}
                     {isRightAnswer && <CheckOutlined className="green"/>}
                   </IsVisible>

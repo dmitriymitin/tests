@@ -75,6 +75,7 @@ const AdminTestInfoTable = ({
   isFullInfo
 }: AdminTestInfoTableProps) => {
   const testType = getTestType(currentTest);
+  const isVariant = currentTest?.setting?.isPublicTestVariants;
   const firstQuestionTitle = currentTest.firstQuestionTitle || 'Фамилия, номер группы';
   const questions = currentTest?.questions;
   const quantityQuestion = currentTest?.quantityQuestion || currentTest.questionsId?.length;
@@ -222,14 +223,19 @@ const AdminTestInfoTable = ({
 
     const correctAnswers = countCorrectAnswers.toString();
 
-    return {
+    const res = {
       key: el._id,
       fiogroup: el.FIOGroup,
-      variant: (<Link to={RouteNames.TEST_USER_RESULT + '/' + el._id}>{el.convertId}</Link>),
       correctAnswers,
       ...initCustomAnswers,
       ...newCustomAnswers
     };
+
+    if (isVariant) {
+      res['variant'] = <Link to={RouteNames.TEST_USER_RESULT + '/' + el._id}>{el.convertId}</Link>;
+    }
+
+    return res;
   });
 
   const FIOWidth = () => {
@@ -275,7 +281,7 @@ const AdminTestInfoTable = ({
           <Table.Summary.Row>
             <Table.Summary.Cell index={0}>Кол-во неверных ответов на вопрос</Table.Summary.Cell>
             <IsVisible isVisible={testType === ETypeTest.WITH_QUESTIONS}>
-              <Table.Summary.Cell key={'variant'} index={0}>{''}</Table.Summary.Cell>
+              {isVariant && <Table.Summary.Cell key={'variant'} index={0}>{''}</Table.Summary.Cell>}
               {questions?.map((quest, index) =>
                 <Table.Summary.Cell key={quest._id} index={index + 1}>
                   {getCorrectAnswersCustom(quest._id)}%
@@ -294,7 +300,13 @@ const AdminTestInfoTable = ({
       )}
     >
       <Column fixed={'left'} width={FIOWidth()} title={firstQuestionTitle} dataIndex="fiogroup" key="fiogroup" />
-      {testType === ETypeTest.WITH_QUESTIONS && <Column width={150} title={'Вариант'} dataIndex="variant" key="variant" />}
+      {testType === ETypeTest.WITH_QUESTIONS && isVariant &&
+        <Column width={150}
+                title={'Вариант'}
+                dataIndex="variant"
+                key="variant"
+        />
+      }
       {testType === ETypeTest.WITH_QUESTIONS && questions
         ? questions?.map((el, index) => (
           <Column

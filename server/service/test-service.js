@@ -415,11 +415,14 @@ class TestService {
         return buffer;
     }
 
-    async getOneInfo(id){
+    async getOneInfo(id, isAuth){
         const testModel  = await TestModel.findOne({_id: new ObjectId(id)})
         const testUserModel  = await TestUserModel.find({testId: new ObjectId(id)})
 
         if (testModel) {
+            if (!isAuth && !testModel?.setting?.isPublicTestAnswers) {
+                throw ApiError.ForbiddenRequest(`Результаты теста не доступны для просмотра`);
+            }
             return {
                 test: testModel,
                 usersInfo: testUserModel,
@@ -427,6 +430,10 @@ class TestService {
             }
         }
         const customTestModel = await TestCustomModel.findOne({_id: new ObjectId(id)})
+        if (!isAuth && !customTestModel?.setting?.isPublicTestAnswers) {
+            throw ApiError.ForbiddenRequest(`Результаты теста не доступны для просмотра`);
+        }
+
         const questions = await getQuestions(customTestModel?.questionsId)
         return {
             test: {
@@ -1005,7 +1012,7 @@ class TestService {
         }
     }
 
-    async changeInfoTest(id, title, quantityQuestion, description){
+    async changeInfoTest(id, title, quantityQuestion, description, setting){
         const testModel  = await TestModel.findOne({_id: new ObjectId(id)})
         if (title) {
             testModel.title = title;
@@ -1017,6 +1024,7 @@ class TestService {
         if (description) {
             testModel.descriptionEditor = description;
         }
+        testModel.setting = setting;
         testModel.updateDate = new Date();
         await testModel.save()
         return {

@@ -1,20 +1,20 @@
 import React from 'react';
 import {IQuestion, IQuestionAnswer} from '../../../../api/question/type';
 import {AnswerType, TAnswerType} from '../../../../models/question';
-import {Form} from "antd";
+import {Form} from 'antd';
 import QuestionTypeAnswerInput
-  from "../../../UpdateQuestionForm/components/QuestionTypeAnswerInput/QuestionTypeAnswerInput";
+  from '../../../UpdateQuestionForm/components/QuestionTypeAnswerInput/QuestionTypeAnswerInput';
 import QuestionTypeAnswerRadio
-  from "../../../UpdateQuestionForm/components/QuestionTypeAnswerRadio/QuestionTypeAnswerRadio";
+  from '../../../UpdateQuestionForm/components/QuestionTypeAnswerRadio/QuestionTypeAnswerRadio';
 import QuestionTypeAnswerCheckbox
-  from "../../../UpdateQuestionForm/components/QuestionTypeAnswerChecbox/QuestionTypeAnswerChecbox";
-import AnswerQuestionText from "../AnswerQuestionText/AnswerQuestionText";
-import AnswerQuestionRadio from "../AnswerQuestionRadio/AnswerQuestionRadio";
-import AnswerQuestionCheckbox from "../AnswerQuestionCheckbox/AnswerQuestionCheckbox";
-import useFormInstance from "antd/es/form/hooks/useFormInstance";
+  from '../../../UpdateQuestionForm/components/QuestionTypeAnswerChecbox/QuestionTypeAnswerChecbox';
+import AnswerQuestionText from '../AnswerQuestionText/AnswerQuestionText';
+import AnswerQuestionRadio from '../AnswerQuestionRadio/AnswerQuestionRadio';
+import AnswerQuestionCheckbox from '../AnswerQuestionCheckbox/AnswerQuestionCheckbox';
+import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import s from './AnswerQuestionParse.module.scss';
 
-const FormWrapper = ({questionId, children}: {questionId: string, children: any}) => {
+const FormWrapper = ({questionId, children}: {questionId: string; children: any}) => {
   return (
     <Form.Item
       className={s.form}
@@ -34,13 +34,19 @@ interface IAnswerQuestionParseProps {
   answers: IQuestionAnswer;
   shuffleArraysIds: string[];
   statusAnswer?: 'error' | 'warning';
+  disabled?: boolean;
+  isAnswerForVariant?: boolean;
 }
 
-const AnswerQuestionParse = ({questionId, lastValue, answerType, answers, shuffleArraysIds, statusAnswer}: IAnswerQuestionParseProps) => {
+const AnswerQuestionParse = ({questionId, isAnswerForVariant, lastValue, answerType, answers, shuffleArraysIds, statusAnswer, disabled}: IAnswerQuestionParseProps) => {
   if (answerType === AnswerType.Text) {
     return (
       <FormWrapper key={'1'} questionId={questionId}>
-        <AnswerQuestionText questionId={questionId} statusAnswer={statusAnswer}/>
+        <AnswerQuestionText
+          isAnswerForVariant={isAnswerForVariant}
+          questionId={questionId}
+          statusAnswer={statusAnswer}
+        />
       </FormWrapper>
     );
   }
@@ -48,14 +54,30 @@ const AnswerQuestionParse = ({questionId, lastValue, answerType, answers, shuffl
   if (answerType === AnswerType.Radio) {
     return (
       <FormWrapper key={'2'} questionId={questionId}>
-        <AnswerQuestionRadio lastValue={lastValue} questionId={questionId} answers={answers} shuffleArraysIds={shuffleArraysIds} statusAnswer={statusAnswer}/>
+        <AnswerQuestionRadio
+          isAnswerForVariant={isAnswerForVariant}
+          disabled={disabled}
+          lastValue={lastValue}
+          questionId={questionId}
+          answers={answers}
+          shuffleArraysIds={shuffleArraysIds}
+          statusAnswer={statusAnswer}
+        />
       </FormWrapper>
     );
   }
 
   return (
     <FormWrapper key={'3'} questionId={questionId}>
-      <AnswerQuestionCheckbox lastValue={lastValue} questionId={questionId} answers={answers} shuffleArraysIds={shuffleArraysIds} statusAnswer={statusAnswer}/>
+      <AnswerQuestionCheckbox
+        isAnswerForVariant={isAnswerForVariant}
+        disabled={disabled}
+        lastValue={lastValue}
+        questionId={questionId}
+        answers={answers}
+        shuffleArraysIds={shuffleArraysIds}
+        statusAnswer={statusAnswer}
+      />
     </FormWrapper>
   );
 };

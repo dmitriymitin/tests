@@ -85,7 +85,7 @@ const AdminSearchStudentsBlock = () => {
                                         type={'primary'}
                                         onClick={() => {
                                           localStorage.setItem('FIO', el.userInfo.FIOGroup);
-                                          navigate(RouteNames.ADMIN_TEST_INFO + `/${el.userInfo.testId}`);
+                                          navigate(RouteNames.TEST_INFO + `/${el.userInfo.testId}`);
                                         }}
                   >
                     Перейти к тесту
