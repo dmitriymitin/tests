@@ -59,6 +59,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
     testId: '',
     title: '',
     isPublicTestAnswers: false,
+    isTestAnswersDetail: false,
     quantityQuestion: 0,
     openModal: false,
   });
@@ -288,6 +289,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                           setCurrentDefaultTestData({
                             testId: el._id,
                             isPublicTestAnswers: el?.setting?.isPublicTestAnswers,
+                            isTestAnswersDetail: el?.setting?.isTestAnswersDetail,
                             title: el.title,
                             quantityQuestion: el.quantityQuestion,
                             openModal: true
@@ -392,6 +394,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
               key={JSON.stringify(currentDefaultTestData)}
               refetch={allTestRefetch}
               isPublicTestAnswers={currentDefaultTestData?.isPublicTestAnswers}
+              isTestAnswersDetail={currentDefaultTestData?.isTestAnswersDetail}
               testId={currentDefaultTestData.testId}
               title={currentDefaultTestData.title}
               quantityQuestion={currentDefaultTestData.quantityQuestion}

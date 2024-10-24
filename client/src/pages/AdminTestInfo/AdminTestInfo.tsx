@@ -98,6 +98,11 @@ const AdminTestInfo = () => {
           Результаты теста не доступны для просмотра студентам
         </div>
       </IsVisible>
+      <IsVisible isVisible={isAuth && currentTest?.setting?.isPublicTestAnswers && currentTest?.setting?.isTestAnswersDetail}>
+        <div className="red fs-16">
+          Результаты теста для студентов будут не детализированы
+        </div>
+      </IsVisible>
       <IsVisible isVisible={isAuth}>
         <div className={s.admin__test__info__changeKey}>
           <IsVisible isVisible={testType !== ETypeTest.WITH_QUESTIONS}>
@@ -128,12 +133,14 @@ const AdminTestInfo = () => {
         </div>
       </IsVisible>
       <Input placeholder={'Введите ФИО для поиска'} value={search} onChange={e => setSearch(e.target.value)}/>
-      <div className={s.change__status__wrapper}>
-        <Radio.Group value={isFullInfo} onChange={handleChangeFullInfo}>
-          <Radio.Button value={false}>Общая информация</Radio.Button>
-          <Radio.Button value={true}>Подробная информация</Radio.Button>
-        </Radio.Group>
-      </div>
+      <IsVisible isVisible={isAuth ? true : testInfoData?.test?.setting?.isTestAnswersDetail}>
+        <div className={s.change__status__wrapper}>
+          <Radio.Group value={isFullInfo} onChange={handleChangeFullInfo}>
+            <Radio.Button value={false}>Общая информация</Radio.Button>
+            <Radio.Button value={true}>Подробная информация</Radio.Button>
+          </Radio.Group>
+        </div>
+      </IsVisible>
       {
         testInfoUsersResult?.length === 0
           ? <p>Результов по тесту нет</p>

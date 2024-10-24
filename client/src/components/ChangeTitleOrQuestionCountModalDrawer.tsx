@@ -18,6 +18,7 @@ interface ChangeTitleOrQuestionCountModalDrawerProps {
     quantityQuestion: number;
     setOpen: (val: boolean) => void;
     isPublicTestAnswers?: boolean;
+    isTestAnswersDetail?: boolean;
 }
 
 const testSetting: ISegmentedSetting[] = [
@@ -26,9 +27,13 @@ const testSetting: ISegmentedSetting[] = [
     text: 'Сделать результаты публчиными',
     description: 'Студенты смогут посмотреть результаты тестирования.',
   },
+  {
+    formName: 'isTestAnswersDetail',
+    text: 'Сделать результаты детализированными',
+  },
 ];
 
-const ChangeTitleOrQuestionCountModalDrawer: FC<ChangeTitleOrQuestionCountModalDrawerProps> = ({refetch, open, isPublicTestAnswers, quantityQuestion, title, testId, setOpen}) => {
+const ChangeTitleOrQuestionCountModalDrawer: FC<ChangeTitleOrQuestionCountModalDrawerProps> = ({refetch, isTestAnswersDetail, open, isPublicTestAnswers, quantityQuestion, title, testId, setOpen}) => {
   const isPC = useMedia('(min-width: 768px)');
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -46,12 +51,14 @@ const ChangeTitleOrQuestionCountModalDrawer: FC<ChangeTitleOrQuestionCountModalD
       const testName = form.getFieldValue('testName');
       const testQuestionNumber = form.getFieldValue('testQuestionNumber');
       const isPublicTestAnswers = form.getFieldValue('isPublicTestAnswers');
+      const isTestAnswersDetail = form.getFieldValue('isTestAnswersDetail');
       await onUpdateCustomTestTitleTrigger({
         testId,
         title: testName,
         quantityQuestion: testQuestionNumber,
         setting: {
-          isPublicTestAnswers: Boolean(isPublicTestAnswers)
+          isPublicTestAnswers: Boolean(isPublicTestAnswers),
+          isTestAnswersDetail: Boolean(isTestAnswersDetail),
         }
       });
       await refetch();
@@ -69,7 +76,8 @@ const ChangeTitleOrQuestionCountModalDrawer: FC<ChangeTitleOrQuestionCountModalD
       initialValues={{
         testName: title,
         testQuestionNumber: quantityQuestion,
-        isPublicTestAnswers
+        isPublicTestAnswers,
+        isTestAnswersDetail,
       }}
     >
       <Form.Item

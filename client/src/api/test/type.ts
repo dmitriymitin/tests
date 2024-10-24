@@ -59,6 +59,7 @@ export interface ITestModelResponse {
     folderId?: string;
     setting: {
         isPublicTestAnswers?: boolean;
+        isTestAnswersDetail?: boolean;
     };
 }
 
@@ -86,6 +87,7 @@ export interface ICustomTestSetting {
     isRandomQuestions: boolean;
     timeForAnswer: string;
     isPublicTest: boolean;
+    isTestAnswersDetail: boolean;
     isPublicTestAnswers: boolean;
     isPublicTestVariants: boolean;
     isPublicTestVariantsAnswers: boolean;

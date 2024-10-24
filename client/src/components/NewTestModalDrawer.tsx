@@ -21,6 +21,10 @@ const testSetting: ISegmentedSetting[] = [
     text: 'Сделать результаты публчиными',
     description: 'Студенты смогут посмотреть результаты тестирования.',
   },
+  {
+    formName: 'isTestAnswersDetail',
+    text: 'Сделать результаты детализированными',
+  },
 ];
 
 const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
@@ -40,6 +44,7 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
       const testName = form.getFieldValue('testName');
       const testQuestionNumber = form.getFieldValue('testQuestionNumber');
       const isPublicTestAnswers = form.getFieldValue('isPublicTestAnswers');
+      const isTestAnswersDetail = form.getFieldValue('isTestAnswersDetail');
       const date = new Date();
       const createDate = getFormateDate(date);
       await createNewTestTrigger({
@@ -48,6 +53,7 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
         createDate,
         setting: {
           isPublicTestAnswers: Boolean(isPublicTestAnswers),
+          isTestAnswersDetail: Boolean(isTestAnswersDetail),
         }
       });
       await queryClient.invalidateQueries({queryKey: ['allTests']});

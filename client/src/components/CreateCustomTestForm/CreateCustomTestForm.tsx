@@ -45,6 +45,10 @@ const testSetting: ISegmentedSetting[] = [
     description: 'Студенты смогут посмотреть результаты тестирования.',
   },
   {
+    formName: 'isTestAnswersDetail',
+    text: 'Сделать результаты детализированными',
+  },
+  {
     formName: 'isPublicTestVariants',
     text: 'Показывать в результатах варианты студентов',
   },
@@ -71,6 +75,7 @@ interface IFormData {
   isPublicTest: 0 | 1;
   isPublicTestAnswers: 0 | 1;
   isPublicTestVariants: 0 | 1;
+  isTestAnswersDetail: 0 | 1;
   isPublicTestVariantsAnswers: 0 | 1;
   isRandomQuestions: 0 | 1;
   testTitle: string;
@@ -98,6 +103,7 @@ const CreateCustomTestForm = ({questionData, testData, isAllQuestionsLoading, is
     timeForAnswer: testData?.test?.setting?.timeForAnswer,
     isPublicTest: testData?.test?.setting?.isPublicTest ? 1 : 0,
     isPublicTestAnswers: testData?.test?.setting?.isPublicTestAnswers ? 1 : 0,
+    isTestAnswersDetail: testData?.test?.setting?.isTestAnswersDetail ? 1 : 0,
     isPublicTestVariants: testData?.test?.setting?.isPublicTestVariants ? 1 : 0,
     isPublicTestVariantsAnswers: testData?.test?.setting?.isPublicTestVariantsAnswers ? 1 : 0,
   };
@@ -124,6 +130,7 @@ const CreateCustomTestForm = ({questionData, testData, isAllQuestionsLoading, is
               timeForAnswer: formData?.timeForAnswer?.toString(),
               isPublicTest: Boolean(formData?.isPublicTest),
               isPublicTestAnswers: Boolean(formData?.isPublicTestAnswers),
+              isTestAnswersDetail: Boolean(formData?.isTestAnswersDetail),
               isPublicTestVariants: Boolean(formData?.isPublicTestVariants),
               isPublicTestVariantsAnswers: Boolean(formData?.isPublicTestVariantsAnswers),
             }

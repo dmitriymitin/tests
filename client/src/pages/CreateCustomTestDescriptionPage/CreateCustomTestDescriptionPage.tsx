@@ -24,6 +24,10 @@ const testSetting: ISegmentedSetting[] = [
     text: 'Сделать результаты публчиными',
     description: 'Студенты смогут посмотреть результаты тестирования.',
   },
+  {
+    formName: 'isTestAnswersDetail',
+    text: 'Сделать результаты детализированными',
+  },
 ];
 
 
@@ -61,11 +65,16 @@ const CreateCustomTestDescriptionPage = () => {
     return form.getFieldValue('isPublicTestAnswers');
   };
 
+  const getIsPublisTestAnswersDetail= (): boolean => {
+    return form.getFieldValue('isTestAnswersDetail');
+  };
+
   const handleSaveTestInfo = async () => {
     try {
       const title = getFieldTestTitle();
       const quantityQuestion = getFieldTestQuantityQuestion();
       const isPublicTestAnswers = getIsPublicTestAnswers();
+      const isTestAnswersDetail = getIsPublisTestAnswersDetail();
       await onUpdateTestInfoTrgiier({
         testId,
         title,
@@ -73,6 +82,7 @@ const CreateCustomTestDescriptionPage = () => {
         description: descriptionPARSE,
         setting: {
           isPublicTestAnswers: Boolean(isPublicTestAnswers),
+          isTestAnswersDetail: Boolean(isTestAnswersDetail),
         }
       });
       message.success('Тест успешно сохранен');
@@ -91,6 +101,7 @@ const CreateCustomTestDescriptionPage = () => {
           testTitle: testData?.title || 'Название теста',
           quantityQuestion: testData?.quantityQuestion || 0,
           isPublicTestAnswers: testData?.setting?.isPublicTestAnswers ? 1 : 0,
+          isTestAnswersDetail: testData?.setting?.isTestAnswersDetail ? 1 : 0,
         }}
       >
         <h1 className="title">
