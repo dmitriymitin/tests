@@ -66,15 +66,6 @@ const AdminSearchStudentsBlock = () => {
         {students && students?.length > 0 &&
         <ul className={s.resultsWrapper}>
           {students?.map(el => {
-            const getCountCorrectAnswers = () => {
-              if (!el.test?.testKey) {
-                return 'Ключ не установлен';
-              }
-
-              return Object.values(el.userInfo.answer).reduce((acc, answer, index) =>
-                acc += answer.toUpperCase() === el.test.testKey![index].toUpperCase() ? 1 : 0
-              , 0);
-            };
 
             return (
               <li key={el.userInfo._id} className={clsx(s.resultsWrapperItem, 'testBackground')}>
@@ -86,7 +77,7 @@ const AdminSearchStudentsBlock = () => {
                     <strong>Название теста:</strong> {el.test?.title}
                   </p>
                   <p className={s.title}>
-                    <strong>Кол-во верных ответов:</strong> {getCountCorrectAnswers()}
+                    <strong>Кол-во верных ответов:</strong> {el.userInfo.countCorrectAnswers}
                   </p>
                 </div>
                 <div className={s.btns}>
@@ -94,7 +85,7 @@ const AdminSearchStudentsBlock = () => {
                                         type={'primary'}
                                         onClick={() => {
                                           localStorage.setItem('FIO', el.userInfo.FIOGroup);
-                                          navigate(RouteNames.ADMIN_TEST_INFO + `/${el.userInfo.testId}`);
+                                          navigate(RouteNames.TEST_INFO + `/${el.userInfo.testId}`);
                                         }}
                   >
                     Перейти к тесту

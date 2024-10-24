@@ -11,8 +11,9 @@ import {DownloadOutlined} from '@ant-design/icons';
 import {API_URL} from '../../http';
 import gs from '../../GlobalStyles.module.scss';
 import {RouteNames} from '../../router';
-import IsVisible from "../../components/ui/isVisibleWrapper";
-import {getTestType} from "../../utils/helpers";
+import IsVisible from '../../components/ui/isVisibleWrapper';
+import {getTestType} from '../../utils/helpers';
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 const AdminTestInfo = () => {
   const navigate = useNavigate();
@@ -20,14 +21,16 @@ const AdminTestInfo = () => {
   const fio = localStorage.getItem('FIO');
   const [isFullInfo, setIsFullInfo] = useState(false);
   const [search, setSearch] = useState(fio || '');
+  const {isAuth} = useTypedSelector(state => state.auth);
 
   const {
     data: testInfoData,
     isLoading: isTestInfoLoading,
     isFetching: isTestInfoFetching,
-    refetch
+    refetch,
   } = useQuery(['adminTestInfo', testId], () => getOneTestInfo(testId), {
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: 1
   });
   const [testInfoUsersResult, setTestInfoUsersResult] = useState(testInfoData?.usersInfo);
   const testType = getTestType(testInfoData?.test);
@@ -61,7 +64,7 @@ const AdminTestInfo = () => {
   }
 
   if (!testInfoData) {
-    message.error('Ошибка при получении теста');
+    message.error('Результаты тестирования не доступны для просмотра');
     navigate('/admin');
     return null;
   }
@@ -90,31 +93,40 @@ const AdminTestInfo = () => {
       <h1 className={'title'}>
         {currentTest.title}
       </h1>
-      <div className={s.admin__test__info__changeKey}>
-        <IsVisible isVisible={testType !== ETypeTest.WITH_QUESTIONS}>
-          Ключ {testInfoData.testKey || 'не установлен'}
-          <Button onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${currentTest._id}`)}>Изменить ключ</Button>
-        </IsVisible>
-        {testInfoData.test.questions &&
-        <Button onClick={() => navigate(RouteNames.CREATE_CUSTOM_TEST + `/${currentTest._id}`)}>Редактировать тест</Button>
-        }
-        <Popconfirm
-          title="Очистка рузльтатов"
-          description="Вы уверены, что хотите очистить результаты?"
-          onConfirm={handleClearResults}
-          okText="Да"
-          cancelText="Нет"
-        >
-          <Button
-            loading={clearTestResultsLoading}
-            style={{width: 200}}
-            type={'default'}
-            danger
+      <IsVisible isVisible={isAuth && !currentTest?.setting?.isPublicTestAnswers}>
+        <div className="red fs-16">
+          Результаты теста не доступны для просмотра студентам
+        </div>
+      </IsVisible>
+      <IsVisible isVisible={isAuth}>
+        <div className={s.admin__test__info__changeKey}>
+          <IsVisible isVisible={testType !== ETypeTest.WITH_QUESTIONS}>
+            Ключ {testInfoData.testKey || 'не установлен'}
+            <Button onClick={() => navigate(RouteNames.ADMIN_TEST_KEY_INFO + `/${currentTest._id}`)}>Изменить
+              ключ</Button>
+          </IsVisible>
+          {testInfoData.test.questions &&
+              <Button onClick={() => navigate(RouteNames.CREATE_CUSTOM_TEST + `/${currentTest._id}`)}>Редактировать
+                  тест</Button>
+          }
+          <Popconfirm
+            title="Очистка рузльтатов"
+            description="Вы уверены, что хотите очистить результаты?"
+            onConfirm={handleClearResults}
+            okText="Да"
+            cancelText="Нет"
           >
-            Очистить результаты
-          </Button>
-        </Popconfirm>
-      </div>
+            <Button
+              loading={clearTestResultsLoading}
+              style={{width: 200}}
+              type={'default'}
+              danger
+            >
+              Очистить результаты
+            </Button>
+          </Popconfirm>
+        </div>
+      </IsVisible>
       <Input placeholder={'Введите ФИО для поиска'} value={search} onChange={e => setSearch(e.target.value)}/>
       <div className={s.change__status__wrapper}>
         <Radio.Group value={isFullInfo} onChange={handleChangeFullInfo}>
@@ -126,12 +138,12 @@ const AdminTestInfo = () => {
         testInfoUsersResult?.length === 0
           ? <p>Результов по тесту нет</p>
           : <div className={s.test__info__wrapper}>
-            {isFullInfo && (
+            {isFullInfo && isAuth && (
               <div className={s.downloadBtnWrapper}>
                 <Link
                   to={`${API_URL}/test/downloadTest/${testId}`}>
                   <button
-                  className={clsx('clearButton fs-14 gap-10', gs.btnTitleSmall)}
+                    className={clsx('clearButton fs-14 gap-10', gs.btnTitleSmall)}
                   >
                     <DownloadOutlined/>
                     Скачать EXEL

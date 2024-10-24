@@ -1,11 +1,12 @@
 const ApiError = require("../exceptions/api-error");
 const TestService = require('../service/test-service')
+const {checkAuth} = require("../helpers/util");
 
 class TestController{
     async create(req, res, next){
         try {
-            const {title, quantityQuestion, description, createDate, testType} = req.body;
-            const testData = await TestService.create(title, quantityQuestion, description, createDate, testType);
+            const {title, quantityQuestion, description, createDate, testType, setting} = req.body;
+            const testData = await TestService.create(title, quantityQuestion, description, createDate, testType, setting);
             return res.json(testData)
         } catch (e){
             next(e);
@@ -180,7 +181,19 @@ class TestController{
     async getOneInfo(req, res, next){
         try {
             const {id} = req.params;
-            const response = await TestService.getOneInfo(id);
+            const isAuth = checkAuth(req);
+            const response = await TestService.getOneInfo(id, isAuth);
+            return res.json(response);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    async testResultGerOneInfo(req, res, next) {
+        try {
+            const {id} = req.params;
+            const isAuth = checkAuth(req);
+            const response = await TestService.testResultGerOneInfo(id, isAuth);
             return res.json(response);
         } catch (e) {
             next(e)
@@ -335,8 +348,8 @@ class TestController{
     async changeInfoTest(req, res, next){
         try{
             const {id} = req.query;
-            const {title, quantityQuestion, description} = req.body;
-            const response = await TestService.changeInfoTest(id, title, quantityQuestion, description);
+            const {title, quantityQuestion, description, setting} = req.body;
+            const response = await TestService.changeInfoTest(id, title, quantityQuestion, description, setting);
             return res.json(response);
         } catch (e) {
             next(e)

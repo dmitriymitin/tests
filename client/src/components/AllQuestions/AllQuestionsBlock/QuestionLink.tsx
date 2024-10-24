@@ -13,7 +13,7 @@ interface IQuestionLink {
 
 const QuestionLink = ({id, convertId, className = "fs-16", ...props}: IQuestionLink) => {
   const {isAuth} = useTypedSelector(state => state.auth);
-  const isPublic = isAuth ? true : props.isPublic;
+  const isPublic = isAuth; //props.isPublic
   return (
     isPublic
       ? (

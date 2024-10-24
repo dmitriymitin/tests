@@ -5,11 +5,23 @@ import {useMutation, useQueryClient} from 'react-query';
 import {createNewTest} from '../api/test';
 import {getFormateDate} from '../utils/getFormateDate';
 import drawerStyle from '../DrawerStyles.module.scss';
+import s from "./CreateCustomTestForm/CreateCustomTestForm.module.scss";
+import SettingSegmented from "./ui/SettingSegmented/SettingSegmented";
+import React from "react";
+import {ISegmentedSetting} from "./UpdateQuestionForm/UpdateQuestionForm";
 
 interface NewTestModalDrawerProps {
     open: boolean;
     setOpen: (val: boolean) => void;
 }
+
+const testSetting: ISegmentedSetting[] = [
+  {
+    formName: 'isPublicTestAnswers',
+    text: 'Сделать результаты публчиными',
+    description: 'Студенты смогут посмотреть результаты тестирования.',
+  },
+];
 
 const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
   const isPC = useMedia('(min-width: 768px)');
@@ -27,12 +39,16 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
       await form.validateFields();
       const testName = form.getFieldValue('testName');
       const testQuestionNumber = form.getFieldValue('testQuestionNumber');
+      const isPublicTestAnswers = form.getFieldValue('isPublicTestAnswers');
       const date = new Date();
       const createDate = getFormateDate(date);
       await createNewTestTrigger({
         title: testName,
         quantityQuestion: testQuestionNumber,
-        createDate
+        createDate,
+        setting: {
+          isPublicTestAnswers: Boolean(isPublicTestAnswers),
+        }
       });
       await queryClient.invalidateQueries({queryKey: ['allTests']});
       setOpen(false);
@@ -43,59 +59,72 @@ const NewTestModalDrawer = ({open, setOpen}: NewTestModalDrawerProps) => {
 
   const content = (
     <Form
-            form={form}
-            autoComplete="off"
-            layout={'vertical'}
+      form={form}
+      autoComplete="off"
+      layout={'vertical'}
     >
       <Form.Item
-                label={'Введите название теста'}
-                name={'testName'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Введите название теста'
-                  }
-                ]}
+        label={'Введите название теста'}
+        name={'testName'}
+        rules={[
+          {
+            required: true,
+            message: 'Введите название теста'
+          }
+        ]}
       >
         <Input/>
       </Form.Item>
       <Form.Item
-                label={'Введите кол-во вопросов'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Введите кол-во вопросов'
-                  }
-                ]}
-                name={'testQuestionNumber'}
+        label={'Введите кол-во вопросов'}
+        rules={[
+          {
+            required: true,
+            message: 'Введите кол-во вопросов'
+          }
+        ]}
+        name={'testQuestionNumber'}
       >
         <Input type={'number'}/>
       </Form.Item>
+      <div className={s.title_block}> Настройки</div>
+      <div className="testBackground">
+        {testSetting.map((el, index) => (
+          <SettingSegmented
+            key={index}
+            formName={el.formName}
+            text={el.text}
+            type={el.type}
+            description={el.description}
+            isDev={el.isDev}
+          />
+        ))}
+      </div>
     </Form>
   );
 
   return (
     <>
       {isPC &&
-      <Modal
-                    open={open}
-                    title="Создание нового теста"
-                    onCancel={() => setOpen(false)}
-                    onOk={onOk}
-                    className={'modalWrapper'}
-                    footer={(
-                      <>
-                        <Button onClick={() => setOpen(false)}>Отмена</Button>
-                        <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
-                      </>
-                    )}
-      >
-        {content}
-      </Modal>
+          <Modal
+              open={open}
+              title="Создание нового теста"
+              onCancel={() => setOpen(false)}
+              onOk={onOk}
+              className={'modalWrapper'}
+              footer={(
+                <>
+                  <Button onClick={() => setOpen(false)}>Отмена</Button>
+                  <Button loading={isCreateNewTestLoading} type={'primary'} onClick={onOk}>Подтвердить</Button>
+                </>
+              )}
+          >
+            {content}
+          </Modal>
       }
 
       {!isPC &&
-      <Drawer
+          <Drawer
                     placement={'bottom'}
                     onClose={() => setOpen(false)}
                     open={open}

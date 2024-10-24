@@ -8,6 +8,7 @@ export interface ITestModelRequest {
     title: string;
     quantityQuestion: number;
     createDate: string;
+    setting?: any;
 }
 
 export interface ITestUpdateStatusModelRequest {
@@ -27,6 +28,7 @@ export interface IStudent {
     _id: string;
     FIOGroup: string;
     answer: Record<string, string>;
+    countCorrectAnswers: number;
     testId: string;
 }
 
@@ -55,6 +57,9 @@ export interface ITestModelResponse {
     testKey: string | null;
     updateDate?: string;
     folderId?: string;
+    setting: {
+        isPublicTestAnswers?: boolean;
+    };
 }
 
 export type TypeCustomTestQuestionAnswer = {
@@ -73,6 +78,7 @@ export interface ITestCustomModelResponse {
     createDate: string;
     testKey: string | null;
     updateDate?: string;
+    setting?: ICustomTestSetting;
     folderId?: string;
 }
 
@@ -81,6 +87,8 @@ export interface ICustomTestSetting {
     timeForAnswer: string;
     isPublicTest: boolean;
     isPublicTestAnswers: boolean;
+    isPublicTestVariants: boolean;
+    isPublicTestVariantsAnswers: boolean;
 }
 
 export interface ITestCustomModelUpdateResponse {
@@ -103,13 +111,13 @@ export interface IGetTestInfoCustomModelResponse {
         status: testStatusType;
         testKey: string | null;
     };
-    usersInfo: ISaveNewTestResponse[];
+    usersInfo: IUserInfoForTest[];
     testKey: string | null;
 }
 
 export interface IGetOneTestInfoResponse {
     test: IFullTest;
-    usersInfo: ISaveNewTestResponse[];
+    usersInfo: IUserInfoForTest[];
     testKey: string | null;
 }
 
@@ -127,9 +135,10 @@ export interface ISaveNewTestRequest {
     testId: string;
 }
 
-export interface ISaveNewTestResponse {
+export interface IUserInfoForTest {
     _id: string;
     convertId?: string;
+    countCorrectAnswers: number;
     FIOGroup: string;
     testType?: ETypeTest;
     answer?: {

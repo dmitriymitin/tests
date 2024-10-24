@@ -11,7 +11,7 @@ const QuestionTypeAnswerInput = () => {
   const [keys, setKeys] = useState(defaultFieldForm?.text?.keys?.[0] || '');
 
   useEffect(() => {
-    formInstance.submit();
+    formInstance?.submit();
     formInstance.setFieldValue('answerFieldsData', {
       [AnswerType.Text]: {
         keys: keys ? [keys] : []

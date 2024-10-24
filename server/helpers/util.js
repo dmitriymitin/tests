@@ -1,3 +1,6 @@
+const ApiError = require("../exceptions/api-error");
+const tokenService = require("../service/token-service");
+
 function convertIdToCustomFormat(uniqueId, indexOffset = -1, symbolFirst = '#') {
     // По умолчанию буква будет 'T'
     let letter = 'T';
@@ -31,4 +34,38 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-module.exports = {convertIdToCustomFormat, shuffleArray};
+function getTestType (el)  {
+    if (el?.testType) {
+        return el.testType;
+    }
+
+    if (!!el?.quantityQuestion && !el?.descriptionEditor && !el?.questionsId) {
+        return 'common';
+    }
+
+    if (el?.descriptionEditor && !el?.questionsId) {
+        return 'description';
+    }
+
+    return 'questions'
+};
+
+
+function checkAuth(req) {
+
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader){
+        return false
+    }
+
+    const accessToken = authorizationHeader.split(' ')[1];
+    if (!accessToken){
+        return false;
+    }
+
+    return tokenService.validateAccessToken(accessToken);
+
+
+}
+
+module.exports = {convertIdToCustomFormat, shuffleArray, getTestType, checkAuth};

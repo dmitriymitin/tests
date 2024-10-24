@@ -3,7 +3,7 @@ import {
   ICustomTestQuestion, IFolderModel,
   IGetOneTestInfoResponse, IGetTestInfoCustomModelResponse,
   ISaveNewTestRequest,
-  ISaveNewTestResponse, IStudent, ITestCustomModelResponse, ITestCustomModelUpdateResponse,
+  IUserInfoForTest, IStudent, ITestCustomModelResponse, ITestCustomModelUpdateResponse,
   ITestModelRequest,
   ITestModelResponse,
   ITestUpdateStatusModelRequest
@@ -122,11 +122,13 @@ export const onUpdateTestInfo = async (values: {
     title?: string;
     quantityQuestion?: number;
     description?: EditorDescriptionTest;
+    setting?: any;
 }): Promise<any> => {
   const {data} = await $api.post(`/test/changeInfoTest?id=${values.testId}`, {
     title: values.title,
     quantityQuestion: values.quantityQuestion,
-    description: values.description
+    description: values.description,
+    setting: values.setting
   });
   return data;
 };
@@ -151,7 +153,7 @@ export const createNewCustomTest = async (createDate: string): Promise<ITestCust
   return data;
 };
 
-export const saveNewTest = async (values: ISaveNewTestRequest): Promise<ISaveNewTestResponse> => {
+export const saveNewTest = async (values: ISaveNewTestRequest): Promise<IUserInfoForTest> => {
   const {data} = await $api.post('/test/saveAnswer', {...values, status: 'Start'});
   return data;
 };
@@ -173,6 +175,7 @@ export const getAllFolder = async (): Promise<IFolderModel[]> => {
   const {data} = await $api.get('/test/get/folder');
   return data;
 };
+
 
 export const createNewFolderApi = async ({folderName, testIds = []}: {
     folderName: string; testIds?: string[];
@@ -203,13 +206,21 @@ export const getUsersAllTests = async (): Promise<ITestModelResponse[]> => {
   return data;
 };
 
-export const getCustomTestQuestion = async (id: string): Promise<ICustomTestQuestion> => {
-  const {data} = await $api.get(`/test/custom/getOneQuestionCustomInfo/${id}`);
-  return data;
-};
+// export const getCustomTestQuestion = async (id: string): Promise<ICustomTestQuestion> => {
+//   const {data} = await $api.get(`/test/custom/getOneQuestionCustomInfo/${id}`);
+//   return data;
+// };
 
 export const clearTestResults = async (id: string): Promise<any> => {
   const {data} = await $api.delete(`/test/clearResults/${id}`);
+  return data;
+};
+
+export const getUserResultInTest = async (id: string): Promise<{
+  testInfo: IFullTest;
+  userInfo: IUserInfoForTest;
+}> => {
+  const {data} = await $api.get(`/test/result/getOneInfo/${id}`);
   return data;
 };
 

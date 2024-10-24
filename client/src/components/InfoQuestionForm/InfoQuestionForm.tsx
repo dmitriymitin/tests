@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {IQuestion, TQuestionAnswerKeyValues} from '../../api/question/type';
 import s from './InfoQuestionForm.module.scss';
 import clsx from 'clsx';
@@ -13,9 +13,10 @@ import {shuffleArray} from '../../utils/helpers';
 import AnswerStatusText from './components/AnswerStatusText';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import QuestionLink from '../AllQuestions/AllQuestionsBlock/QuestionLink';
-import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {useLocation} from "react-router-dom";
-import {RouteNames} from "../../router";
+import {useTypedSelector} from '../../hooks/useTypedSelector';
+import {useLocation} from 'react-router-dom';
+import {RouteNames} from '../../router';
+import {useIsMounted} from '../../http/hooks/useIsMounted';
 
 const edjsParser = edjsHTML();
 
@@ -66,9 +67,23 @@ interface IInfoQuestionFormProps {
   onAdd?: () => void;
   isQuestionTitle?: boolean;
   isDisableAddQuestion?: boolean;
+  disabled?: boolean;
+  isAvailableRandomAnswers?: boolean;
+  isAnswerForVariant?: boolean;
+  isDeleteQuestion?: boolean;
 }
 
-const InfoQuestionForm = ({questionData,isDisableAddQuestion, onSubmit, isAnswer, onAdd, isQuestionTitle=false, ...props}: IInfoQuestionFormProps) => {
+const InfoQuestionForm = ({questionData,
+  isDeleteQuestion,
+  isAvailableRandomAnswers = true,
+  isAnswerForVariant,
+  isDisableAddQuestion,
+  onSubmit,
+  isAnswer,
+  onAdd,
+  disabled,
+  isQuestionTitle = false,
+  ...props}: IInfoQuestionFormProps) => {
   const {isAuth} = useTypedSelector(state => state.auth);
   const location = useLocation();
   const isAlwaisVisibleAnswer = isAuth && location.pathname.includes(RouteNames.ADMIN_QUESTION_INFO);
@@ -79,14 +94,57 @@ const InfoQuestionForm = ({questionData,isDisableAddQuestion, onSubmit, isAnswer
   const isPublicAnswer = isAlwaisVisibleAnswer ? true : props.isPublicAnswer && questionData?.setting.isPublicAnswer;
   const isText = questionData?.answerType === AnswerType.Text;
   const randomAnswers = useMemo(() =>
-    isAnswer && questionData?.answerType !== AnswerType.Text ? getRandomAnswers(questionData, questionData?.setting?.isRandomAnswers) : undefined
+    isAnswer && questionData?.answerType !== AnswerType.Text ? getRandomAnswers(questionData, isAvailableRandomAnswers ? questionData?.setting?.isRandomAnswers : false) : undefined
   , [questionData]);
-  const rightAnswer = isAnswer && isPublicAnswer ? getAnswer(questionData, randomAnswers) : '';
+  const rightAnswer = isAnswer && (isAnswerForVariant || isPublicAnswer) ? getAnswer(questionData, randomAnswers) : '';
+
+  const setRightAnswer = (isLastValue?: boolean) => {
+    const lastValueIfi = (() => {
+      const getValue = formInstance.getFieldValue('answerFieldsData/' + questionData?._id);
+      if (questionData?.answerType !== AnswerType.Checkbox) {
+        return getValue?.[questionData?.answerType]?.keys?.[0];
+      }
+
+      return getValue?.checkbox.keys;
+    })();
+    if (isLastValue) {
+      setLastValue(lastValueIfi);
+    }
+
+    const isRight = (() => {
+      if (questionData?.answerType === AnswerType.Text) {
+        return rightAnswer === lastValueIfi;
+      }
+
+      if (questionData?.answerType === AnswerType.Radio) {
+        return questionData?.answers?.radio?.keys.includes(lastValueIfi);
+      }
+
+      return undefined;
+    })();
+    setStatusAnswer(isRight ? 'warning' : 'error');
+
+    if (onSubmit) {
+      onSubmit();
+    }
+  };
+
+  useEffect(() => {
+    if (!isAnswerForVariant) {
+      setStatusAnswer(undefined);
+      return;
+    }
+
+    setRightAnswer();
+  }, [isAnswerForVariant]);
 
   return (
     <div className={s.question}>
       <div
         className={clsx('text-container', s.descriptionBg)}>
+        <IsVisible isVisible={isDeleteQuestion}>
+          <div className="red fs-20">Вопрос был удален из теста</div>
+        </IsVisible>
         <IsVisible isVisible={isQuestionTitle}>
           <div className="flex-row gap-5 flex-middle mb-10">
             Вопрос
@@ -108,47 +166,30 @@ const InfoQuestionForm = ({questionData,isDisableAddQuestion, onSubmit, isAnswer
                 {['flex-col gap-10']: !isText},
                 {['flex-row gap-10 width100']: isText}
               )}>
-                <AnswerQuestionParse
-                  lastValue={lastValue}
-                  questionId={questionData._id}
-                  statusAnswer={statusAnswer}
-                  answers={questionData?.answers}
-                  answerType={questionData.answerType}
-                  shuffleArraysIds={randomAnswers}
-                />
+                <div className="flex-col width100">
+                  <AnswerQuestionParse
+                    isAnswerForVariant={isAnswerForVariant}
+                    disabled={disabled}
+                    lastValue={lastValue}
+                    questionId={questionData._id}
+                    statusAnswer={statusAnswer}
+                    answers={questionData?.answers}
+                    answerType={questionData.answerType}
+                    shuffleArraysIds={randomAnswers}
+                  />
+                  <IsVisible isVisible={isAnswerForVariant}>
+                    <div className="flex-row flex-middle gap-10 mt-10">
+                      <AnswerShowBlock isAnswerForVariant={isAnswerForVariant} answer={rightAnswer}/>
+                    </div>
+                  </IsVisible>
+                </div>
                 <IsVisible isVisible={isPublicAnswer}>
                   <div className="flex-row flex-end flex-middle gap-10">
                     {!isText && questionData?.answerType !== AnswerType.Checkbox &&
-                        <AnswerStatusText status={statusAnswer}/>}
+                    <AnswerStatusText status={statusAnswer}/>}
                     <Button
                       style={{maxWidth: 200}}
-                      onClick={() => {
-                        const lastValueIfi = (() => {
-                          const getValue = formInstance.getFieldValue('answerFieldsData/' + questionData?._id);
-                          if (questionData?.answerType !== AnswerType.Checkbox) {
-                            return getValue?.[questionData?.answerType]?.keys?.[0];
-                          }
-
-                          return getValue?.checkbox.keys;
-                        })();
-                        setLastValue(lastValueIfi);
-                        const isRight = (() => {
-                          if (questionData?.answerType === AnswerType.Text) {
-                            return rightAnswer === lastValueIfi;
-                          }
-
-                          if (questionData?.answerType === AnswerType.Radio) {
-                            return questionData?.answers?.radio?.keys.includes(lastValueIfi);
-                          }
-
-                          return undefined;
-                        })();
-                        setStatusAnswer(isRight ? 'warning' : 'error');
-
-                        if (onSubmit) {
-                          onSubmit();
-                        }
-                      }}
+                      onClick={() => setRightAnswer(true)}
                     >
                       Проверить ответ
                     </Button>

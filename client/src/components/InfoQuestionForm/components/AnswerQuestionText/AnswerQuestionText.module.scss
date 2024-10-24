@@ -5,8 +5,23 @@
   }
 }
 
+.inputRed {
+  span {
+    border-color: #ff4d4f !important;
+    color: #ff4d4f !important;
+  }
+}
+
+.inputBorderNone {
+  input {
+    border-right-color: rgba(255, 255, 255, 0) !important;
+  }
+}
+
+
 .inputWrapper {
   border-color: #55a800 !important;
+
   :global(&.ant-input-status-warning) {
     background-color: #55a800 !important;
   }
@@ -15,5 +30,44 @@
     border-color: #55a800 !important;
     color: #55a800 !important;
   }
+}
 
+.inputWrapperAnswer {
+  border-color: #fff !important;
+  border-right-color: #55a800 !important;
+
+  :global(&.ant-input-status-warning) {
+    background-color: #55a800 !important;
+  }
+
+  :global(&-group-addon) {
+    border-color: #55a800 !important;
+    color: #55a800 !important;
+  }
+}
+
+.inputWrapperRed {
+  border-color: #ff4d4f !important;
+
+  :global(&.ant-input-status-warning) {
+    background-color: #ff4d4f !important;
+  }
+
+  :global(&-group-addon) {
+    border-color: #ff4d4f !important;
+    color: #ff4d4f !important;
+  }
+}
+
+.inputWrapperRedAnswer {
+  border-color: #ff4d4f !important;
+
+  :global(&.ant-input-status-warning) {
+    background-color: #ff4d4f !important;
+  }
+
+  :global(&-group-addon) {
+    border-color: #ff4d4f !important;
+    color: #ff4d4f !important;
+  }
 }

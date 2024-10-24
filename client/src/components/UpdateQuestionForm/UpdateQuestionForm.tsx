@@ -39,18 +39,18 @@ const questionSetting: ISegmentedSetting[] = [
   //   type: 'time',
   //   description: 'Без значения, время не учитывается'
   // },
-  {
-    formName: 'isPublicQuestion',
-    text: 'Сделать вопрос публчиным ',
-    description: 'Студенты смогут посмотреть вопрос, отдельно от теста',
-    isDev: true
-  },
-  {
-    formName: 'isPublicAnswer',
-    text: 'Сделать ответ публчиным ',
-    description: 'Студенты смогут посмотреть ответ на вопрос.',
-    isDev: true
-  }
+  // {
+  //   formName: 'isPublicQuestion',
+  //   text: 'Сделать вопрос публчиным ',
+  //   description: 'Студенты смогут посмотреть вопрос, отдельно от теста',
+  //   isDev: true
+  // },
+  // {
+  //   formName: 'isPublicAnswer',
+  //   text: 'Сделать ответ публчиным ',
+  //   description: 'Студенты смогут посмотреть ответ на вопрос.',
+  //   isDev: true
+  // }
 ];
 
 interface IFormData {

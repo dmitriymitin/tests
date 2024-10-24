@@ -32,7 +32,7 @@ export enum RouteNames {
     CREATE_CUSTOM_TEST = '/admin/test/create/customTest',
     CREATE_CUSTOM_TEST_DESCRIPTION = '/admin/test/create/customTest/description',
     ADMIN = '/admin',
-    ADMIN_TEST_INFO = '/admin/test/info',
+    TEST_INFO = '/test/info',
     ADMIN_TEST_KEY_INFO = '/admin/test/infoKey',
     ADMIN_SEARCH_STUDENTS = '/admin/student/search',
     ADMIN_TESTS_LIST = '/admin/test/list',
@@ -60,6 +60,10 @@ export const allUsersRoutes = [
     component: Tests
   },
   {
+    path: RouteNames.TEST_INFO + '/:testId',
+    component: AdminTestInfo
+  },
+  {
     path: RouteNames.TEST,
     component: Test
   },
@@ -78,10 +82,6 @@ export const privateRoutes : IRoute[] = [
   {
     path: RouteNames.ADMIN,
     component: AdminPage
-  },
-  {
-    path: RouteNames.ADMIN_TEST_INFO + '/:testId',
-    component: AdminTestInfo
   },
   {
     path: RouteNames.ADMIN_TEST_KEY_INFO + '/:testId',
