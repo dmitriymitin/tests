@@ -51,7 +51,7 @@ const AnswerQuestionCheckbox = ({lastValue, disabled, questionId, isAnswerForVar
         <Space direction="vertical" className="gap-10">
           {shuffleArraysIds.map((id, index) => {
             const isLast = lastValue.includes(id);
-            const isChecked = checkedList.includes(id);
+            const isChecked = checkedList?.includes(id);
             const isRightAnswer = answers?.checkbox?.keys?.includes(id);
             return (
               <div

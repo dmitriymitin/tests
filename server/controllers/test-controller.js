@@ -5,8 +5,8 @@ const {checkAuth} = require("../helpers/util");
 class TestController{
     async create(req, res, next){
         try {
-            const {title, quantityQuestion, description, createDate, testType} = req.body;
-            const testData = await TestService.create(title, quantityQuestion, description, createDate, testType);
+            const {title, quantityQuestion, description, createDate, testType, setting} = req.body;
+            const testData = await TestService.create(title, quantityQuestion, description, createDate, testType, setting);
             return res.json(testData)
         } catch (e){
             next(e);
@@ -192,7 +192,8 @@ class TestController{
     async testResultGerOneInfo(req, res, next) {
         try {
             const {id} = req.params;
-            const response = await TestService.testResultGerOneInfo(id);
+            const isAuth = checkAuth(req);
+            const response = await TestService.testResultGerOneInfo(id, isAuth);
             return res.json(response);
         } catch (e) {
             next(e)

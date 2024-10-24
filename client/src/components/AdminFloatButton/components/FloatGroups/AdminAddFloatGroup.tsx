@@ -33,7 +33,8 @@ const AdminAddFloatGroup = () => {
       const res = await createNewTestTrigger({
         title: 'Тест с описанием',
         quantityQuestion: 1,
-        createDate
+        createDate,
+        setting: {}
       });
       navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${res._id}`);
       await queryClient.invalidateQueries({queryKey: ['allTests']});

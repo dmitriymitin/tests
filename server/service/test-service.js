@@ -445,9 +445,14 @@ class TestService {
         }
     }
 
-    async testResultGerOneInfo(id){
+    async testResultGerOneInfo(id, isAuth){
         const testUserModel  = await TestUserModel.findById(id)
         const customTestModel  = await TestCustomModel.findOne({_id: new ObjectId(testUserModel.testId)})
+
+        if (!isAuth && !customTestModel?.setting?.isPublicTestVariants) {
+            throw ApiError.ForbiddenRequest(`Вариант не доступны для просмотра`);
+        }
+
         const {
             countCorrectAnswers,
             questions
@@ -571,11 +576,11 @@ class TestService {
         return testsCustom
     }
 
-    async create(title, quantityQuestion, description, createDate, testType){
+    async create(title, quantityQuestion, description, createDate, testType, setting){
         const firstTest = await TestModel.findOne()
         const firstCustomTest = await TestCustomModel.findOne()
         const firstQuestionTitle = firstTest?.firstQuestionTitle || firstCustomTest?.firstQuestionTitle || 'Фамилия, номер группы'
-        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description, createDate, testType})
+        return await TestModel.create({firstQuestionTitle, title, quantityQuestion, descriptionEditor: description, createDate, testType, setting})
     }
 
     async createFolder(name){
@@ -842,7 +847,6 @@ class TestService {
             data.map(async el => {
                 const test = allTestDataArray.find(test => test._id.toString() === el.testId)
                 const {countCorrectAnswers} = await getCountCorrectAnswersAndQuestions(test, el)
-                console.log(countCorrectAnswers)
                 newData.push({
                     test,
                     userInfo: {

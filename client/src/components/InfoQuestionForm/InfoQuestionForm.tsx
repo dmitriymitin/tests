@@ -16,7 +16,7 @@ import QuestionLink from '../AllQuestions/AllQuestionsBlock/QuestionLink';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import {useLocation} from 'react-router-dom';
 import {RouteNames} from '../../router';
-import {useIsMounted} from "../../http/hooks/useIsMounted";
+import {useIsMounted} from '../../http/hooks/useIsMounted';
 
 const edjsParser = edjsHTML();
 
@@ -68,12 +68,14 @@ interface IInfoQuestionFormProps {
   isQuestionTitle?: boolean;
   isDisableAddQuestion?: boolean;
   disabled?: boolean;
+  isAvailableRandomAnswers?: boolean;
   isAnswerForVariant?: boolean;
   isDeleteQuestion?: boolean;
 }
 
 const InfoQuestionForm = ({questionData,
   isDeleteQuestion,
+  isAvailableRandomAnswers = true,
   isAnswerForVariant,
   isDisableAddQuestion,
   onSubmit,
@@ -92,11 +94,11 @@ const InfoQuestionForm = ({questionData,
   const isPublicAnswer = isAlwaisVisibleAnswer ? true : props.isPublicAnswer && questionData?.setting.isPublicAnswer;
   const isText = questionData?.answerType === AnswerType.Text;
   const randomAnswers = useMemo(() =>
-    isAnswer && questionData?.answerType !== AnswerType.Text ? getRandomAnswers(questionData, !isAnswerForVariant && questionData?.setting?.isRandomAnswers) : undefined
+    isAnswer && questionData?.answerType !== AnswerType.Text ? getRandomAnswers(questionData, isAvailableRandomAnswers ? questionData?.setting?.isRandomAnswers : false) : undefined
   , [questionData]);
   const rightAnswer = isAnswer && (isAnswerForVariant || isPublicAnswer) ? getAnswer(questionData, randomAnswers) : '';
 
-  const setRightAnswer = () => {
+  const setRightAnswer = (isLastValue?: boolean) => {
     const lastValueIfi = (() => {
       const getValue = formInstance.getFieldValue('answerFieldsData/' + questionData?._id);
       if (questionData?.answerType !== AnswerType.Checkbox) {
@@ -105,7 +107,10 @@ const InfoQuestionForm = ({questionData,
 
       return getValue?.checkbox.keys;
     })();
-    setLastValue(lastValueIfi);
+    if (isLastValue) {
+      setLastValue(lastValueIfi);
+    }
+
     const isRight = (() => {
       if (questionData?.answerType === AnswerType.Text) {
         return rightAnswer === lastValueIfi;
@@ -184,7 +189,7 @@ const InfoQuestionForm = ({questionData,
                     <AnswerStatusText status={statusAnswer}/>}
                     <Button
                       style={{maxWidth: 200}}
-                      onClick={setRightAnswer}
+                      onClick={() => setRightAnswer(true)}
                     >
                       Проверить ответ
                     </Button>

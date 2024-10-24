@@ -33,7 +33,7 @@ router.post('/custom/updateOneQuestion',authMiddleware, TestController.updateQue
 router.post('/description/updateDescription/:id',authMiddleware, TestController.updateDescription)
 router.get('/all',authMiddleware, TestController.getAll);
 router.get('/getOneInfo/:id', TestController.getOneInfo);
-router.get('/result/getOneInfo/:id',authMiddleware, TestController.testResultGerOneInfo);
+router.get('/result/getOneInfo/:id', TestController.testResultGerOneInfo);
 router.get('/custom/getOneQuestionCustomInfo/:id',authMiddleware, TestController.getOneQuestionCustomInfo);
 router.get('/getOne/:id',authMiddleware, TestController.getOne);
 router.get('/getOneInfo/custom/:id',authMiddleware, TestController.getOneCustomTestInfo);

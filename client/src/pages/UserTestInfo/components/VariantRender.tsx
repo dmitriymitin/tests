@@ -2,12 +2,14 @@ import React, {Fragment, useState} from 'react';
 import s from './VariantRender.module.scss';
 import {useTestUserResult} from '../../../http/hooks/useTestUserResult';
 import InfoQuestionForm from '../../../components/InfoQuestionForm/InfoQuestionForm';
-import {Form, Segmented} from 'antd';
+import {Form, message, Segmented} from 'antd';
 import {useForm} from 'antd/es/form/Form';
 import clsx from 'clsx';
 import QuestionLink from '../../../components/AllQuestions/AllQuestionsBlock/QuestionLink';
 import DeleteQuestionRender from './DeleteQuestionRender';
 import IsVisible from "../../../components/ui/isVisibleWrapper";
+import {useNavigate} from "react-router-dom";
+import {RouteNames} from "../../../router";
 
 interface IVariantRender {
   userAnswerId?: string;
@@ -17,11 +19,12 @@ const VariantRender = ({userAnswerId}: IVariantRender) => {
   const [isShowAnswer, setIsShowAnswer] = useState<number>();
   const [form] = useForm();
   const {data} = useTestUserResult(userAnswerId);
-  const initQuestionsData = Object.entries(data?.userInfo?.answersCustom.values)
+
+  const initQuestionsData = data ? Object.entries(data?.userInfo?.answersCustom?.values)
     ?.reduce((acc, [idQuest, {keys}]) => {
       acc['answerFieldsData/' + idQuest] = keys;
       return acc;
-    }, {});
+    }, {}) : {};
 
   return (
     <div className="flex-col gap-20">
@@ -72,6 +75,7 @@ const VariantRender = ({userAnswerId}: IVariantRender) => {
 
             return (
               <InfoQuestionForm
+                isAvailableRandomAnswers={false}
                 isAnswerForVariant={Boolean(isShowAnswer)}
                 disabled={true}
                 questionData={currentQuestion}

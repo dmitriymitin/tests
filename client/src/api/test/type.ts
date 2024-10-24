@@ -8,6 +8,7 @@ export interface ITestModelRequest {
     title: string;
     quantityQuestion: number;
     createDate: string;
+    setting?: any;
 }
 
 export interface ITestUpdateStatusModelRequest {

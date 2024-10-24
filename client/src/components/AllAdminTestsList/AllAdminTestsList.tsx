@@ -19,7 +19,7 @@ import PutInFolderBtn from './PutInFolderBtn/PutInFolderBtn';
 import {useSelectTestsStore} from '../../store/folders/useSelectTestsStore';
 import {RouteNames} from '../../router';
 import {getTestType} from '../../utils/helpers';
-import IsVisible from "../ui/isVisibleWrapper";
+import IsVisible from '../ui/isVisibleWrapper';
 
 const getTestStatusTextForBtn = (status: testStatusType) => {
   switch (status) {
@@ -58,6 +58,7 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
   const [currentDefaultTestData, setCurrentDefaultTestData] = useState({
     testId: '',
     title: '',
+    isPublicTestAnswers: false,
     quantityQuestion: 0,
     openModal: false,
   });
@@ -257,14 +258,14 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                 </div>
 
                 {el?.createDate && <div className={s.infoWrapper}>
-                    <p>Тест создан: </p>
-                    <div
+                  <p>Тест создан: </p>
+                  <div
                         className={s.body}>{getFormatCreateDate(el.createDate)}</div>
                 </div>}
 
                 {el?.updateDate && <div className={s.infoWrapper}>
-                    <p>Тест изменен: </p>
-                    <div
+                  <p>Тест изменен: </p>
+                  <div
                         className={s.body}>{getFormatUpdateDate(el.updateDate)}</div>
                 </div>}
 
@@ -286,24 +287,25 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
                         if (testType === ETypeTest.SIMPLE) {
                           setCurrentDefaultTestData({
                             testId: el._id,
+                            isPublicTestAnswers: el?.setting?.isPublicTestAnswers,
                             title: el.title,
-                                quantityQuestion: el.quantityQuestion,
-                                openModal: true
-                              });
-                              return;
-                            }
+                            quantityQuestion: el.quantityQuestion,
+                            openModal: true
+                          });
+                          return;
+                        }
 
-                            if (testType === ETypeTest.WITH_DESCRIPTION) {
-                              navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${el._id}`);
-                              return;
-                            }
+                        if (testType === ETypeTest.WITH_DESCRIPTION) {
+                          navigate(RouteNames.CREATE_CUSTOM_TEST_DESCRIPTION + `/${el._id}`);
+                          return;
+                        }
 
-                            // Тест со своими вопросами
-                            if (testType === ETypeTest.WITH_QUESTIONS) {
-                              navigate(RouteNames.CREATE_CUSTOM_TEST + `/${el._id}`);
-                              return;
-                            }
-                          }}
+                        // Тест со своими вопросами
+                        if (testType === ETypeTest.WITH_QUESTIONS) {
+                          navigate(RouteNames.CREATE_CUSTOM_TEST + `/${el._id}`);
+                          return;
+                        }
+                      }}
                     >
                       Редактировать
                     </Button>
@@ -387,7 +389,9 @@ const AllAdminTestsList = ({filterById, folderId, showTestInFolder, isShowBadge}
       )}
       {currentDefaultTestData.testId &&
       <ChangeTitleOrQuestionCountModalDrawer
+              key={JSON.stringify(currentDefaultTestData)}
               refetch={allTestRefetch}
+              isPublicTestAnswers={currentDefaultTestData?.isPublicTestAnswers}
               testId={currentDefaultTestData.testId}
               title={currentDefaultTestData.title}
               quantityQuestion={currentDefaultTestData.quantityQuestion}

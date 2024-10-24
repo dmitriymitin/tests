@@ -33,6 +33,7 @@ const DeleteQuestionRender = ({id, isShowAnswer}: IDeleteQuestionRender) => {
       </IsVisible>
       <IsVisible isVisible={!isLoadingQuestionData && !!questionData}>
         <InfoQuestionForm
+          isAvailableRandomAnswers={false}
           isDeleteQuestion
           isAnswerForVariant={isShowAnswer}
           disabled={true}

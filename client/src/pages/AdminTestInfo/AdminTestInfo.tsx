@@ -93,6 +93,11 @@ const AdminTestInfo = () => {
       <h1 className={'title'}>
         {currentTest.title}
       </h1>
+      <IsVisible isVisible={isAuth && !currentTest?.setting?.isPublicTestAnswers}>
+        <div className="red fs-16">
+          Результаты теста не доступны для просмотра студентам
+        </div>
+      </IsVisible>
       <IsVisible isVisible={isAuth}>
         <div className={s.admin__test__info__changeKey}>
           <IsVisible isVisible={testType !== ETypeTest.WITH_QUESTIONS}>
@@ -133,7 +138,7 @@ const AdminTestInfo = () => {
         testInfoUsersResult?.length === 0
           ? <p>Результов по тесту нет</p>
           : <div className={s.test__info__wrapper}>
-            {isFullInfo && (
+            {isFullInfo && isAuth && (
               <div className={s.downloadBtnWrapper}>
                 <Link
                   to={`${API_URL}/test/downloadTest/${testId}`}>
