@@ -20,9 +20,9 @@ const getIdQuestionAnswers = (questions) => {
         const currentQuestionAsnwers = Object.values(question?.answers)?.[0];
         if (question?.answers?.['text']) {
             acc[question._id] = {
-                [currentQuestionAsnwers.keys[0]]: {
+                [currentQuestionAsnwers?.keys?.[0]]: {
                     isAnswer: true,
-                    value: currentQuestionAsnwers.keys[0],
+                    value: currentQuestionAsnwers?.keys?.[0],
                     type: 'text'
                 }
             };
@@ -79,7 +79,7 @@ const getQuestions = async (questionsId, isUserQuestion = false) => {
     }
 }
 
-const getCountCorrectAnswersAndQuestions = async (test, userInfo) => {
+const getCountCorrectAnswersAndQuestions = async (test, userInfo, questionsProps) => {
     let questions = []
     let countCorrectAnswers = 'Ключ не установлен';
     const testType = getTestType(test);
@@ -93,13 +93,11 @@ const getCountCorrectAnswersAndQuestions = async (test, userInfo) => {
         }
 
     } else {
-        questions = await getQuestions(test.questionsId);
+        questions = questionsProps || await getQuestions(test?.questionsId);
         const idQuestionAnswers = getIdQuestionAnswers(questions);
-
-        const allAnswers = userInfo.answersCustom.values;
+        const allAnswers = userInfo?.answersCustom?.values;
         let countCorrectAnswersNumber = 0;
-
-        const customAnswers = Object.entries(allAnswers).reduce((acc, [idQuest, {keys}], index) => {
+        const customAnswers = !allAnswers ? {} : Object.entries(allAnswers).reduce((acc, [idQuest, {keys}], index) => {
             let isCorrectAnswer = true;
             const currentQuest = idQuestionAnswers[idQuest];
             let countRightQuest = 0;
@@ -114,7 +112,6 @@ const getCountCorrectAnswersAndQuestions = async (test, userInfo) => {
             const answersFromTestKeys = Object.keys(currentQuest);
             const answersFromTest = Object.values(currentQuest);
             const isTextIndex = answersFromTest.findIndex(el => el.type === 'text');
-
             if (!keys || (keys && !keys.length)) {
                 isCorrectAnswer = false;
                 acc[idQuest] = 'нет ответа';
@@ -141,7 +138,6 @@ const getCountCorrectAnswersAndQuestions = async (test, userInfo) => {
 
                         return accum;
                     }, '');
-
                     if (countRightAnswerToCheck !== countRightQuest) {
                         isCorrectAnswer = false
                     }
@@ -423,24 +419,52 @@ class TestService {
             if (!isAuth && !testModel?.setting?.isPublicTestAnswers) {
                 throw ApiError.ForbiddenRequest(`Результаты теста не доступны для просмотра`);
             }
+            const isUserQuestion = isAuth ? false : !testModel?.setting?.isTestAnswersDetail;
+            let newDataUsersInfo = [];
+
+            await Promise.all(
+                testUserModel.map(async el => {
+                    const {countCorrectAnswers} = await getCountCorrectAnswersAndQuestions(testModel, el)
+                    newDataUsersInfo.push({
+                        ...el._doc,
+                        countCorrectAnswers
+                    })
+                })
+            )
+            if (isUserQuestion) {
+                delete testModel._doc.testKey;
+            }
+
             return {
-                test: testModel,
-                usersInfo: testUserModel,
-                testKey: testModel.testKey
+                test: testModel._doc,
+                usersInfo: newDataUsersInfo,
+                testKey: isUserQuestion ? '' : testModel.testKey
             }
         }
         const customTestModel = await TestCustomModel.findOne({_id: new ObjectId(id)})
         if (!isAuth && !customTestModel?.setting?.isPublicTestAnswers) {
             throw ApiError.ForbiddenRequest(`Результаты теста не доступны для просмотра`);
         }
+        const isUserQuestion = isAuth ? false : !customTestModel?.setting?.isTestAnswersDetail;
+        const questions = await getQuestions(customTestModel?.questionsId);
 
-        const questions = await getQuestions(customTestModel?.questionsId)
+        let newDataUsersInfo = [];
+        await Promise.all(
+            testUserModel.map(async el => {
+                const {countCorrectAnswers} = await getCountCorrectAnswersAndQuestions(customTestModel, el, questions)
+                newDataUsersInfo.push({
+                    ...el._doc,
+                    countCorrectAnswers
+                })
+            })
+        )
+
         return {
             test: {
                 ...customTestModel._doc,
-                questions
+                questions: !isUserQuestion ? questions : await getQuestions(customTestModel?.questionsId, true)
             },
-            usersInfo: testUserModel,
+            usersInfo: newDataUsersInfo,
             testKey: customTestModel.testKey
         }
     }

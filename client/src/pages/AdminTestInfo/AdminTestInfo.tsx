@@ -145,7 +145,7 @@ const AdminTestInfo = () => {
         testInfoUsersResult?.length === 0
           ? <p>Результов по тесту нет</p>
           : <div className={s.test__info__wrapper}>
-            {isFullInfo && isAuth && (
+            {isAuth && (
               <div className={s.downloadBtnWrapper}>
                 <Link
                   to={`${API_URL}/test/downloadTest/${testId}`}>

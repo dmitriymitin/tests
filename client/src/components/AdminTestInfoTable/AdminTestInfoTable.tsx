@@ -40,9 +40,9 @@ const getIdQuestionAnswers = (currentTest: IFullTest): { [key: string]: IdQuestA
     const currentQuestionAsnwers = Object.values(question?.answers)?.[0];
     if (question?.answers?.['text']) {
       acc[question._id] = {
-        [currentQuestionAsnwers.keys[0]]: {
+        [currentQuestionAsnwers?.keys?.[0]]: {
           isAnswer: true,
-          value: currentQuestionAsnwers.keys[0],
+          value: currentQuestionAsnwers?.keys?.[0],
           type: AnswerType.Text
         }
       };
@@ -151,7 +151,7 @@ const AdminTestInfoTable = ({
       return {
         key: el._id,
         fiogroup: el.FIOGroup,
-        correctAnswers,
+        correctAnswers: el?.countCorrectAnswers,
         ...el.answer
       };
     }
@@ -226,7 +226,7 @@ const AdminTestInfoTable = ({
     const res = {
       key: el._id,
       fiogroup: el.FIOGroup,
-      correctAnswers,
+      correctAnswers: el?.countCorrectAnswers,
       ...initCustomAnswers,
       ...newCustomAnswers
     };
